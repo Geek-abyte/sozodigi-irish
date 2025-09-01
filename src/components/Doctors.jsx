@@ -44,15 +44,17 @@ const DoctorsPage = ({ limit = 6 }) => {
       try {
         setLoading(true);
         const response = await fetchData("users/get-all/doctors/no-pagination");
+        console.log("Raw doctors response:", response);
         if (response) {
           const doctorsData = response;
           console.log("Fetched doctors:", doctorsData);
+          // Filter to show only general practitioners
           const gpsOnly = doctorsData.filter((specialist) =>
             (specialist.category || "").trim().toLowerCase() === "general practitioner"
-            );
+          );
           setSpecialists(gpsOnly.slice(0, limit));
           setFilteredSpecialists(gpsOnly.slice(0, limit));
-          console.log(filteredSpecialists)
+          console.log("Filtered GPs:", gpsOnly.slice(0, limit));
         } else {
           console.error("Invalid response format:", response);
           setError("Failed to load doctors data. Please try again later.");
@@ -122,7 +124,7 @@ const DoctorsPage = ({ limit = 6 }) => {
   return (
     <div className="min-h-screen bg-gray-50 py-4 px-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {filteredSpecialists.length && 
+        {filteredSpecialists && filteredSpecialists.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredSpecialists.map((doctor) => (
               <motion.div
@@ -182,7 +184,11 @@ const DoctorsPage = ({ limit = 6 }) => {
               </motion.div>
             ))}
           </div>
-        }
+        ) : (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No doctors available at the moment.</p>
+          </div>
+        )}
       </div>
       
       {/* Doctor Profile Modal */}

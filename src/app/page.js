@@ -51,6 +51,8 @@ export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [blogs, setBlogs] = useState([])
+  const [blogsLoading, setBlogsLoading] = useState(false);
+  const [blogsError, setBlogsError] = useState(null);
 
   const dispatch = useDispatch()
 
@@ -73,7 +75,7 @@ export default function HomePage() {
       title: "Real-time Medical Consultation",
       description: "Connect instantly with licensed healthcare professionals through secure video or chat, receiving expert medical advice, diagnosis, and personalized treatment recommendations anytime, anywhere.",
       animation: "M10 50 Q50 10 90 50 Q50 90 10 50",
-      link: "/gp-consultation"
+      link: "/gp-consultation"    
     },
     {
       icon: <FaComments className="text-5xl text-[var(--color-primary-6)]" />,
@@ -139,11 +141,17 @@ export default function HomePage() {
 
     async function fetchBlogs() {
       try {
+        setBlogsLoading(true);
+        setBlogsError(null);
         const data = await fetchData('blogs');
+        console.log('Raw blogs response:', data);
         setBlogs(data.data || []);
-        console.log(data)
+        console.log('Processed blogs:', data.data || []);
       } catch (error) {
-        console.error('Failed to fetch galleries:', error);
+        console.error('Failed to fetch blogs:', error);
+        setBlogsError(error.message || 'Failed to fetch blogs');
+      } finally {
+        setBlogsLoading(false);
       }
     }
 
@@ -215,7 +223,7 @@ export default function HomePage() {
   );
 
   const renderBlogPost = (blog) => (
-    <div key={blog.id} className="w-full">
+    <div key={blog._id} className="w-full">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-[320px] flex flex-col">
         <img src={ process.env.NEXT_PUBLIC_NODE_BASE_URL+"/"+blog.featuredImage} alt={blog.title} className="w-full h-40 object-cover" />
         <div className="p-4 flex flex-col flex-grow">
@@ -513,7 +521,22 @@ export default function HomePage() {
       <section className='py-20 bg-gray-50 rounded-3xl mx-4 mt-8'>
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-primary-10">Latest Blog Posts</h2>
-          <SimpleCarousel items={blogs.map(renderBlogPost)} autoplay={true} autoplayInterval={7000} />
+          {blogsLoading ? (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 border-4 border-[var(--color-primary-6)] border-t-transparent rounded-full animate-spin mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading blog posts...</p>
+            </div>
+          ) : blogsError ? (
+            <div className="text-center py-12">
+              <p className="text-red-500">Error: {blogsError}</p>
+            </div>
+          ) : blogs && blogs.length > 0 ? (
+            <SimpleCarousel items={blogs.map(renderBlogPost)} autoplay={true} autoplayInterval={7000} />
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No blog posts available at the moment.</p>
+            </div>
+          )}
           <div className="text-center mt-12">
             <Link
               href="/blog"
