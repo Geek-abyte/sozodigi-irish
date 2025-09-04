@@ -150,13 +150,7 @@ export default function CompleteProfilePage() {
             <p className="text-lg">Complete your profile to get started.</p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => router.push('/admin')}
-            className="mt-4 px-6 py-2 border border-white rounded-full text-white hover:bg-white hover:text-[var(--color-primary-7)] transition"
-          >
-            Complete Later
-          </button>
+          {/* Complete Later removed to enforce mandatory completion */}
         </div>
 
 
@@ -293,14 +287,7 @@ export default function CompleteProfilePage() {
               {submitting ? 'Saving...' : 'Save & Continue'}
             </button>
 
-            {/* Complete Later button visible only on small screens */}
-            <button
-              type="button"
-              onClick={() => router.push('/admin')} // Adjust redirect as needed
-              className="mt-3 w-full py-2 px-4 rounded-md border border-[var(--color-primary-7)] text-[var(--color-primary-7)] font-semibold hover:bg-[var(--color-primary-7)] hover:text-white transition md:hidden"
-            >
-              Complete Later
-            </button>
+            {/* Complete Later removed to enforce mandatory completion */}
 
           </form>
         </div>

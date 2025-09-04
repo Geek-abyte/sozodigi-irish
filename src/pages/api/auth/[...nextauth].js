@@ -52,6 +52,7 @@ export default NextAuth({
         token.email = user.user.email;
         token.role = user.user.role;
         token.name = user.user.name;
+        token.isProfileComplete = user.user.isProfileComplete ?? false;
         // token.isHealthQuestionsAnswered = user.user.isHealthQuestionsAnswered ?? false;
         token.approvalStatus = user.user.approvalStatus ?? "pending";
 
@@ -79,6 +80,7 @@ export default NextAuth({
         session.user.email = token.email;
         session.user.role = token.role;
         session.user.name = token.name;
+        session.user.isProfileComplete = token.isProfileComplete ?? false;
         session.user.approvalStatus = token.approvalStatus ?? "pending";
         session.error = token.error ?? null;
       }

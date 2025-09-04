@@ -46,6 +46,18 @@ export async function middleware(req) {
         return NextResponse.redirect(url);
       }
 
+      // Enforce profile completion for specialists before accessing admin
+      if (
+        token.role === "specialist" &&
+        token.isProfileComplete !== true &&
+        !pathname.startsWith("/auth/complete-profile")
+      ) {
+        const url = req.nextUrl.clone();
+        url.pathname = "/auth/complete-profile";
+        url.searchParams.set("email", token.email || "");
+        return NextResponse.redirect(url);
+      }
+
       // Second: check if specialist and not approved
       if (
         token.role === "specialist" &&
