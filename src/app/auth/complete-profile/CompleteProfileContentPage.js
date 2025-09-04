@@ -28,12 +28,20 @@ export default function CompleteProfilePage() {
     DOB: '',
     phone: '',
     address: { street: '', city: '', state: '', country: '' },
-    specialty: '',
+    specialty: 'General Practitioner',
     licenseNumber: '',
     experience: '',
     languages: '',
     category: '',
-    bio: ''
+    bio: '',
+    bankDetails: {
+      bankName: '',
+      accountName: '',
+      accountNumber: '',
+      sortCode: '',
+      iban: '',
+      swiftBic: ''
+    }
   });
 
   const [profileImageFile, setProfileImageFile] = useState(null);
@@ -83,6 +91,12 @@ export default function CompleteProfilePage() {
         ...prev,
         address: { ...prev.address, [key]: value },
       }));
+    } else if (name.includes('bankDetails.')) {
+      const key = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        bankDetails: { ...prev.bankDetails, [key]: value },
+      }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -113,6 +127,9 @@ export default function CompleteProfilePage() {
     }
     for (const key in formData.address) {
       payload.append(`address.${key}`, formData.address[key]);
+    }
+    for (const key in formData.bankDetails) {
+      payload.append(`bankDetails.${key}`, formData.bankDetails[key]);
     }
     if (profileImageFile) payload.append('profileImage', profileImageFile);
     if (practicingLicenseFile) payload.append('practicingLicense', practicingLicenseFile);
@@ -230,12 +247,7 @@ export default function CompleteProfilePage() {
               <>
                 <div>
                   <label className="block mb-1 text-sm text-gray-600">Specialty <span className='text-red-700'>*</span></label>
-                  <select name="specialty" value={formData.specialty} onChange={handleChange} className={inputStyle} required>
-                    <option value="">Select Specialty</option>
-                    {specialistSpecialties.map((spec) => (
-                      <option key={spec} value={spec}>{spec}</option>
-                    ))}
-                  </select>
+                  <input name="specialty" value={formData.specialty} className={inputStyle} readOnly />
                 </div>
                 <div>
                   <label className="block mb-1 text-sm text-gray-600">Category <span className='text-red-700'>*</span></label>
@@ -265,6 +277,32 @@ export default function CompleteProfilePage() {
                 <div>
                   <label className="block mb-1 text-sm text-gray-600">Languages Spoken</label>
                   <input name="languages" value={formData.languages} onChange={handleChange} className={inputStyle} />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block mb-1 text-sm text-gray-600">Bank Name <span className='text-red-700'>*</span></label>
+                    <input name="bankDetails.bankName" value={formData.bankDetails.bankName} onChange={handleChange} className={inputStyle} required />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm text-gray-600">Account Name <span className='text-red-700'>*</span></label>
+                    <input name="bankDetails.accountName" value={formData.bankDetails.accountName} onChange={handleChange} className={inputStyle} required />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm text-gray-600">Account Number <span className='text-red-700'>*</span></label>
+                    <input name="bankDetails.accountNumber" value={formData.bankDetails.accountNumber} onChange={handleChange} className={inputStyle} required />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm text-gray-600">Sort Code</label>
+                    <input name="bankDetails.sortCode" value={formData.bankDetails.sortCode} onChange={handleChange} className={inputStyle} />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm text-gray-600">IBAN</label>
+                    <input name="bankDetails.iban" value={formData.bankDetails.iban} onChange={handleChange} className={inputStyle} />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm text-gray-600">SWIFT/BIC</label>
+                    <input name="bankDetails.swiftBic" value={formData.bankDetails.swiftBic} onChange={handleChange} className={inputStyle} />
+                  </div>
                 </div>
               </>
             )}

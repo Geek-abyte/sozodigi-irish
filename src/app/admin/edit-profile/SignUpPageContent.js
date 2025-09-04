@@ -37,6 +37,14 @@ export default function ProfileFormPage() {
     specialty: '',
     licenseNumber: '',
     bio: '',
+    bankDetails: {
+      bankName: '',
+      accountName: '',
+      accountNumber: '',
+      sortCode: '',
+      iban: '',
+      swiftBic: ''
+    }
   });
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [practicingLicenseFile, setPracticingLicenseFile] = useState(null);
@@ -71,6 +79,14 @@ export default function ProfileFormPage() {
           specialty:       user.specialty       || '',
           licenseNumber:   user.licenseNumber   || '',
           bio:             user.bio             || '',
+          bankDetails: {
+            bankName: user.bankDetails?.bankName || '',
+            accountName: user.bankDetails?.accountName || '',
+            accountNumber: user.bankDetails?.accountNumber || '',
+            sortCode: user.bankDetails?.sortCode || '',
+            iban: user.bankDetails?.iban || '',
+            swiftBic: user.bankDetails?.swiftBic || ''
+          }
         });
       } catch (err) {
         setError(err.message);
@@ -88,6 +104,12 @@ export default function ProfileFormPage() {
       setFormData(f => ({
         ...f,
         address: { ...f.address, [field]: value },
+      }));
+    } else if (name.startsWith('bankDetails.')) {
+      const [, field] = name.split('.');
+      setFormData(f => ({
+        ...f,
+        bankDetails: { ...f.bankDetails, [field]: value },
       }));
     } else {
       setFormData(f => ({ ...f, [name]: value }));
@@ -132,6 +154,10 @@ export default function ProfileFormPage() {
     // address
     Object.entries(formData.address).forEach(([k, v]) =>
       payload.append(`address.${k}`, v)
+    );
+    // bankDetails
+    Object.entries(formData.bankDetails).forEach(([k, v]) =>
+      payload.append(`bankDetails.${k}`, v)
     );
     // files
     if (profileImageFile)      payload.append('profileImage', profileImageFile);
@@ -266,6 +292,40 @@ export default function ProfileFormPage() {
               className="w-full p-2 border rounded"
               value={formData.languages} onChange={handleChange}
             />
+
+            {/* Bank Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input
+                name="bankDetails.bankName" placeholder="Bank Name"
+                className="w-full p-2 border rounded"
+                value={formData.bankDetails.bankName} onChange={handleChange}
+              />
+              <input
+                name="bankDetails.accountName" placeholder="Account Name"
+                className="w-full p-2 border rounded"
+                value={formData.bankDetails.accountName} onChange={handleChange}
+              />
+              <input
+                name="bankDetails.accountNumber" placeholder="Account Number"
+                className="w-full p-2 border rounded"
+                value={formData.bankDetails.accountNumber} onChange={handleChange}
+              />
+              <input
+                name="bankDetails.sortCode" placeholder="Sort Code"
+                className="w-full p-2 border rounded"
+                value={formData.bankDetails.sortCode} onChange={handleChange}
+              />
+              <input
+                name="bankDetails.iban" placeholder="IBAN"
+                className="w-full p-2 border rounded"
+                value={formData.bankDetails.iban} onChange={handleChange}
+              />
+              <input
+                name="bankDetails.swiftBic" placeholder="SWIFT/BIC"
+                className="w-full p-2 border rounded"
+                value={formData.bankDetails.swiftBic} onChange={handleChange}
+              />
+            </div>
 
             <div>
               <label className="block mb-1">Practicing License (PDF/image)</label>
