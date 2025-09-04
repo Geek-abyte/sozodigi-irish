@@ -7,7 +7,7 @@ import AuthLayout from "@/app/authLayout";
 import Link from "next/link";
 import Image from "next/image";
 import { doctors2 } from '@/assets';
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
 import { useSearchParams } from "next/navigation";
 
@@ -19,6 +19,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   const { addToast } = useToast();
@@ -31,28 +33,76 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    
+    // Basic validation
+    if (!email.trim()) {
+      setError("Please enter your email address.");
+      addToast("Please enter your email address.", "error");
+      return;
+    }
+    
+    if (!password.trim()) {
+      setError("Please enter your password.");
+      addToast("Please enter your password.", "error");
+      return;
+    }
+    
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      addToast("Please enter a valid email address.", "error");
+      return;
+    }
+    
     setIsSubmitting(true);
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl,
-    });
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl,
+      });
 
-    if (res?.error) {
-      let friendlyMessage = "An unexpected error occurred. Please try again.";
-      if (res.error.toLowerCase().includes("credentials" || "Unauthorized")) {
-        friendlyMessage = "Incorrect email or password.";
-      } else if (res.error.toLowerCase().includes("network")) {
-        friendlyMessage = "Network error. Please check your connection.";
+      console.log("Login response:", res);
+
+      if (res?.error) {
+        let friendlyMessage = "An unexpected error occurred. Please try again.";
+        
+        // More comprehensive error handling
+        const errorLower = res.error.toLowerCase();
+        if (errorLower.includes("credentials") || errorLower.includes("unauthorized")) {
+          friendlyMessage = "Incorrect email or password. Please check your credentials.";
+        } else if (errorLower.includes("network") || errorLower.includes("fetch")) {
+          friendlyMessage = "Network error. Please check your internet connection and try again.";
+        } else if (errorLower.includes("timeout")) {
+          friendlyMessage = "Request timed out. Please try again.";
+        } else if (errorLower.includes("server") || errorLower.includes("500")) {
+          friendlyMessage = "Server error. Please try again later.";
+        } else if (errorLower.includes("email") && errorLower.includes("verified")) {
+          friendlyMessage = "Please verify your email before signing in.";
+        } else if (errorLower.includes("account") && errorLower.includes("disabled")) {
+          friendlyMessage = "Your account has been disabled. Please contact support.";
+        }
+        
+        setError(friendlyMessage);
+        addToast(friendlyMessage, "error");
+        setIsSubmitting(false);
+      } else if (res?.ok) {
+        addToast("Login successful!", "success");
+        router.push(res.url || callbackUrl);
+      } else {
+        setError("Login failed. Please try again.");
+        addToast("Login failed. Please try again.", "error");
+        setIsSubmitting(false);
       }
-      setError(friendlyMessage);
-      addToast(friendlyMessage, "error")
+    } catch (err) {
+      console.error("Login error:", err);
+      const errorMessage = "An unexpected error occurred. Please try again.";
+      setError(errorMessage);
+      addToast(errorMessage, "error");
       setIsSubmitting(false);
-    } else {
-      addToast("Login successful!", "success")
-      router.push(res.url || callbackUrl);
     }
   };
 
@@ -95,14 +145,44 @@ export default function LoginPage() {
                   className={formInput}
                 />
 
-                <input
-                  type="password"
-                  required
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className={formInput}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={formInput}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  </button>
+                </div>
+
+                {/* Remember Me and Forgot Password */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="mr-2 h-4 w-4 text-primary-5 focus:ring-primary-5 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-gray-600">Remember me</span>
+                  </label>
+                  
+                  <Link
+                    href="/auth/forgot-password"
+                    className="text-sm text-[var(--color-primary-5)] hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
 
                 <button
                   type="submit"
@@ -114,16 +194,6 @@ export default function LoginPage() {
                   ) : null}
                   {isSubmitting ? "Signing In..." : "Sign In"}
                 </button>
-
-                <div className="text-sm text-center text-gray-600">
-                  Forgot password?{" "}
-                  <Link
-                    href="/auth/forgot-password"
-                    className="text-[var(--color-primary-5)] underline"
-                  >
-                    Click here
-                  </Link>
-                </div>
 
                 <div className="text-sm text-center text-gray-600">
                   Don't have an account?{" "}
