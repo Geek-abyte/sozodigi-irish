@@ -206,7 +206,7 @@ export default function CompleteProfilePage() {
               </div>
               <div>
                 <label className="block mb-1 text-sm text-gray-600">Date of Birth <span className='text-red-700'>*</span></label>
-                <input name="DOB" value={formData.DOB} onChange={handleChange} className={inputStyle} required />
+                <input type="date" name="DOB" value={formData.DOB} onChange={handleChange} className={inputStyle} required />
               </div>
               <div>
                 <label className="block mb-1 text-sm text-gray-600">Phone <span className='text-red-700'>*</span></label>

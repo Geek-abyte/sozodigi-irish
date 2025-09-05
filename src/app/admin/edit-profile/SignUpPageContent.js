@@ -27,6 +27,7 @@ export default function ProfileFormPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    DOB: '',
     phone: '',
     address: { street: '', city: '', state: '', country: '' },
     // consultant-only
@@ -66,6 +67,7 @@ export default function ProfileFormPage() {
         setFormData({
           firstName: user.firstName || '',
           lastName:  user.lastName  || '',
+          DOB:       user.DOB       || '',
           phone:     user.phone     || '',
           address: {
             street: user.address?.street  || '',
@@ -149,7 +151,7 @@ export default function ProfileFormPage() {
     const payload = new FormData();
     // flat fields
     Object.entries(formData).forEach(([k, v]) => {
-      if (k !== 'address') payload.append(k, v);
+      if (k !== 'address' && k !== 'bankDetails') payload.append(k, v);
     });
     // address
     Object.entries(formData.address).forEach(([k, v]) =>
@@ -213,6 +215,12 @@ export default function ProfileFormPage() {
           name="lastName" placeholder="Last Name" required
           className="w-full p-2 border rounded"
           value={formData.lastName} onChange={handleChange}
+        />
+        <input
+          type="date"
+          name="DOB" placeholder="Date of Birth" required
+          className="w-full p-2 border rounded"
+          value={formData.DOB} onChange={handleChange}
         />
         <input
           name="phone" placeholder="Phone" required
