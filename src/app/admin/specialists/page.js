@@ -20,6 +20,7 @@ export default function SpecialistsPageContent() {
   const [specialists, setSpecialists] = useState([]);
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [deletingEmail, setDeletingEmail] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { data: session } = useSession();
@@ -45,7 +46,8 @@ export default function SpecialistsPageContent() {
 
   const handleDelete = async () => {
     try {
-      await deleteData(`/api/specialists/${deletingId}`);
+      // Preferred: delete by ID
+      await deleteData(`users/${deletingId}`);
       addToast("Specialist deleted successfully", "success");
       setSpecialists((prev) => prev.filter((specialist) => specialist._id !== deletingId));
     } catch {
@@ -53,6 +55,7 @@ export default function SpecialistsPageContent() {
     } finally {
       setIsDialogOpen(false);
       setDeletingId(null);
+      setDeletingEmail(null);
     }
   };
 
@@ -99,6 +102,7 @@ export default function SpecialistsPageContent() {
                         </Link>
                         <button className="text-red-500" onClick={() => {
                           setDeletingId(specialist._id);
+                          setDeletingEmail(specialist.email);
                           setIsDialogOpen(true);
                         }}>
                           <Trash2Icon className="w-5 h-5" />
