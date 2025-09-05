@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useToast } from '@/context/ToastContext';
 import { fetchData, updateData } from '@/utils/api';
 import { useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import specialistCategories from '@/utils/specialistCategories';
 import specialistSpecialties from '@/utils/specialistSpecialties';
 import PhoneInput from 'react-phone-input-2';
@@ -142,8 +143,26 @@ export default function CompleteProfilePage() {
         setError(friendlyMessage);
       } else {
         alertSuccess('Profile updated successfully!');
-        // router.push("/admin");
-        window.location.href = "/admin"
+        // Refresh NextAuth session so middleware sees isProfileComplete=true
+        try {
+          const loginRes = await signIn('credentials', {
+            redirect: false,
+            email,
+            token: token,
+            callbackUrl: '/admin',
+          });
+
+          if (loginRes?.error) {
+            // Fallback redirect; middleware may still block if session not updated
+            window.location.href = "/admin";
+          } else if (loginRes?.url) {
+            window.location.href = loginRes.url;
+          } else {
+            window.location.href = "/admin";
+          }
+        } catch (e) {
+          window.location.href = "/admin";
+        }
       }
     } catch (err) {
       alertError("Profile update failed.");
