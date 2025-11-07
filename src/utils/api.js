@@ -81,6 +81,17 @@ export async function postData(endpoint, data, token = null, isFormData = false)
   return handleResponse(res);
 }
 
+export async function rescheduleAppointment(id, payload = {}, token = null) {
+  try {
+    return await postData(`appointments/${id}/reschedule`, payload, token);
+  } catch (error) {
+    if (error?.data?.message) {
+      error.message = error.data.message;
+    }
+    throw error;
+  }
+}
+
 // PUT
 export async function updateData(endpoint, data, token = null, isFormData = false) {
   const headers = token

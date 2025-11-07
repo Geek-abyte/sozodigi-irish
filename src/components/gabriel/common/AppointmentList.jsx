@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useSession } from 'next-auth/react';
+
+import ModalContainer from '@/components/gabriel/ModalContainer';
+import RescheduleDialog from './RescheduleDialog.jsx';
 
 const AppointmentList = ({ userRole }) => {
   const [appointments, setAppointments] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [rescheduleTarget, setRescheduleTarget] = useState(null);
+
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
   useEffect(() => {
     fetchAppointments();
@@ -14,6 +22,7 @@ const AppointmentList = ({ userRole }) => {
   }, [activeTab]);
 
   const fetchAppointments = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('/api/appointments/my-appointments', {
         params: {
@@ -64,6 +73,31 @@ const AppointmentList = ({ userRole }) => {
     } catch (error) {
       toast.error('Error marking notification as read');
     }
+  };
+
+  const openRescheduleDialog = (appointment) => {
+    if (!token) {
+      toast.error('You must be logged in to reschedule an appointment.');
+      return;
+    }
+    setRescheduleTarget(appointment);
+  };
+
+  const closeRescheduleDialog = () => {
+    setRescheduleTarget(null);
+  };
+
+  const handleRescheduled = async (updatedAppointment) => {
+    if (updatedAppointment?._id) {
+      setAppointments((prev) =>
+        prev.map((appointment) =>
+          appointment._id === updatedAppointment._id
+            ? { ...appointment, ...updatedAppointment }
+            : appointment
+        )
+      );
+    }
+    await fetchAppointments();
   };
 
   if (loading) {
@@ -121,14 +155,47 @@ const AppointmentList = ({ userRole }) => {
                         Specialty: {appointment.specialistCategory}
                       </p>
                       <p className="text-gray-600">Reason: {appointment.reason}</p>
+                      {appointment.duration && (
+                        <p className="text-gray-600">Duration: {appointment.duration} mins</p>
+                      )}
+                      <p className="mt-2 text-sm text-gray-600">
+                        Changes left: {Math.max(0, 2 - (appointment.rescheduleCount ?? 0))}
+                      </p>
+                      {Array.isArray(appointment.rescheduleHistory) && appointment.rescheduleHistory.length > 0 && (
+                        <div className="mt-2 rounded-md bg-gray-50 p-2">
+                          <p className="text-xs font-semibold text-gray-700">Reschedule history</p>
+                          <ul className="mt-1 space-y-1 text-xs text-gray-600">
+                            {appointment.rescheduleHistory.map((historyItem, index) => (
+                              <li key={historyItem.rescheduledAt || index}>
+                                {historyItem.previousDateTime
+                                  ? `From ${new Date(historyItem.previousDateTime).toLocaleString()}`
+                                  : 'Rescheduled'}{' '}
+                                {historyItem.rescheduledAt
+                                  ? `on ${new Date(historyItem.rescheduledAt).toLocaleString()}`
+                                  : ''}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                     {activeTab === 'upcoming' && appointment.status === 'scheduled' && (
-                      <button
-                        onClick={() => handleCancelAppointment(appointment._id)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Cancel
-                      </button>
+                      <div className="flex flex-col items-end space-y-2 md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                        {appointment.rescheduleCount < 2 && (
+                          <button
+                            onClick={() => openRescheduleDialog(appointment)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            Reschedule
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleCancelAppointment(appointment._id)}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -166,6 +233,18 @@ const AppointmentList = ({ userRole }) => {
           )}
         </div>
       </div>
+      {rescheduleTarget && (
+        <ModalContainer
+          modal={
+            <RescheduleDialog
+              appointment={rescheduleTarget}
+              token={token}
+              onClose={closeRescheduleDialog}
+              onRescheduled={handleRescheduled}
+            />
+          }
+        />
+      )}
     </div>
   );
 };
