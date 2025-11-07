@@ -41,7 +41,8 @@ const SpecialistDetailPage = () => {
     if (!statusDialog.newStatus || !specialist) return;
     try {
       await updateData(`users/${specialist._id}/status`, { status: statusDialog.newStatus }, token);
-      setSpecialist({ ...specialist, approvalStatus: statusDialog.newStatus });
+      // Refresh specialist data to get the latest from backend
+      await fetchSpecialist();
       addToast(`Specialist marked as ${statusDialog.newStatus}`, "success");
     } catch (error) {
       addToast("Failed to update status", "error");
@@ -58,13 +59,23 @@ const SpecialistDetailPage = () => {
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-xl shadow-md max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Specialist Detail</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Specialist Detail</h1>
+        <button
+          onClick={() => router.push("/admin/specialists")}
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
+        >
+          ← Back to Specialists
+        </button>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <p><strong>Name:</strong> {specialist.firstName} {specialist.lastName}</p>
           <p><strong>Email:</strong> {specialist.email}</p>
           <p><strong>Specialty:</strong> {specialist.specialty}</p>
-          <p><strong>Approval Status:</strong> <span className="capitalize">{specialist.approvalStatus}</span></p>
+          <p><strong>Approval Status:</strong> <span className="capitalize">
+            {specialist.approvalStatus || (specialist.isApproved ? "approved" : "pending")}
+          </span></p>
           <p><strong>Bio:</strong> {specialist.bio || "N/A"}</p>
         </div>
         <div>
