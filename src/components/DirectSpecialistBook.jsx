@@ -225,7 +225,7 @@ const ConsultationBookingPageContent = () => {
                       Specialist: {slot.consultant.firstName} {slot.consultant.lastName}
                     </div>
                     <div className="text-sm text-indigo-700 font-semibold mt-1">
-                      Appointment Fee: ${ getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE}
+                      Appointment Fee: £{ getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE}
                     </div>
                   </div>
                 ))}
@@ -282,7 +282,7 @@ const ConsultationBookingPageContent = () => {
                 <CheckoutModal
                   closeModal={closeModal}
                   amount={price}
-                  currency="USD"
+                  currency="GBP"
                   duration={duration}
                   date={new Date(selectedSlot.date)}
                   consultMode="appointment"

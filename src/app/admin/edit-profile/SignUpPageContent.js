@@ -337,13 +337,24 @@ export default function ProfileFormPage() {
 
             <div>
               <label className="block mb-1">Practicing License (PDF/image)</label>
-              <input
-                type="file"
-                accept="application/pdf,image/*"
-                onChange={handleLicenseChange}
-                className="w-full"
-                // required={!isEditMode}
-              />
+              <div className="flex items-center gap-3">
+                <input
+                  id="practicingLicenseUpload"
+                  type="file"
+                  accept="application/pdf,image/*"
+                  onChange={handleLicenseChange}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="practicingLicenseUpload"
+                  className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Upload File
+                </label>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {practicingLicenseFile ? practicingLicenseFile.name : 'No file selected'}
+                </span>
+              </div>
             </div>
 
             <div>
@@ -372,12 +383,24 @@ export default function ProfileFormPage() {
         {/* Profile Image */}
         <div>
           <label className="block mb-1">Profile Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full"
-          />
+          <div className="flex items-center gap-3">
+            <input
+              id="profileImageUpload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <label
+              htmlFor="profileImageUpload"
+              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              Upload Image
+            </label>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {profileImageFile ? profileImageFile.name : 'No file selected'}
+            </span>
+          </div>
         </div>
 
         <button

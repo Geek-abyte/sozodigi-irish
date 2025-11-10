@@ -10,7 +10,7 @@ import FullCalendar from '@fullcalendar/react'
 import interactionPlugin from '@fullcalendar/interaction' // optional but useful
 import dayGridPlugin from '@fullcalendar/daygrid'
 import { useToast } from '@/context/ToastContext'
-import { ClockIcon, DollarSignIcon, CheckCircleIcon } from "lucide-react";
+import { ClockIcon, PoundSterlingIcon, CheckCircleIcon } from "lucide-react";
 // import Link from "next/link";
 
 
@@ -199,7 +199,7 @@ export default function ConsultationBookingPageContent() {
 
       // Initiate payment request to the backend
       const paymentPayload = {
-        amount: calculatedCost, // Ensure the cost is in the correct unit (e.g., dollars)
+        amount: calculatedCost, // Ensure the cost is in the correct unit (e.g., pounds)
         email: session.user.email,
         productName: `Consultation with ${consultant.firstName}`,
       };
@@ -491,8 +491,8 @@ export default function ConsultationBookingPageContent() {
                         </div>
                 
                         <div className="mt-2 flex items-center gap-2 text-sm">
-                          <DollarSignIcon className="w-4 h-4" />
-                          <span>${price.toFixed(2)}</span>
+                          <PoundSterlingIcon className="w-4 h-4" />
+                          <span>£{price.toFixed(2)}</span>
                         </div>
                       </div>
                     );
@@ -526,7 +526,7 @@ export default function ConsultationBookingPageContent() {
               )}
               <div className="text-sm text-gray-700">
                 Estimated Cost:{' '}
-                <span className="font-semibold text-gray-900">${calculatedCost}</span>
+                <span className="font-semibold text-gray-900">£{calculatedCost}</span>
               </div>
       
               <div>

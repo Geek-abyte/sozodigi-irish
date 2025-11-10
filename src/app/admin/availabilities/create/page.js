@@ -12,6 +12,13 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 
+// Pricing tiers in minutes
+const PRICING_TIERS = [
+  { duration: 15, label: "Basic", price: 20, discount: 0 },
+  { duration: 45, label: "Delux", price: 40, discount: 10 },
+  { duration: 60, label: "Premium", price: 70, discount: 20 },
+];
+
 const CreateConsultantAvailabilityPage = () => {
   const [form, setForm] = useState({
     type: "recurring",
@@ -19,7 +26,7 @@ const CreateConsultantAvailabilityPage = () => {
     dayOfWeek: "",
     date: new Date(),
     startTime: "09:00",
-    endTime: "17:00",
+    duration: "", // Duration in minutes (15, 45, or 60)
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -29,33 +36,65 @@ const CreateConsultantAvailabilityPage = () => {
   const router = useRouter();
   const { addToast } = useToast();
 
+  // Calculate end time based on start time and duration
+  const calculateEndTime = (startTime, durationMinutes) => {
+    if (!startTime || !durationMinutes) return "";
+    
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const startDate = new Date();
+    startDate.setHours(hours, minutes, 0, 0);
+    
+    const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
+    const endHours = String(endDate.getHours()).padStart(2, "0");
+    const endMinutes = String(endDate.getMinutes()).padStart(2, "0");
+    
+    return `${endHours}:${endMinutes}`;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleStartTimeChange = (value) => {
+    setForm((prev) => ({ ...prev, startTime: value }));
+  };
+
+  const handleDurationSelect = (durationMinutes) => {
+    setForm((prev) => ({ ...prev, duration: durationMinutes.toString() }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
-    const [startHour, startMinute] = form.startTime.split(":").map(Number);
-    const [endHour, endMinute] = form.endTime.split(":").map(Number);
+    // Validate duration is selected
+    if (!form.duration) {
+      addToast("Please select a duration tier.", "error");
+      setSubmitting(false);
+      return;
+    }
 
-    const start = new Date();
-    start.setHours(startHour, startMinute, 0, 0);
-    const end = new Date();
-    end.setHours(endHour, endMinute, 0, 0);
+    // Validate start time is selected
+    if (!form.startTime) {
+      addToast("Please select a start time.", "error");
+      setSubmitting(false);
+      return;
+    }
 
-    const diffMs = end - start;
-    const diffMins = diffMs / (1000 * 60);
+    // Validate duration is one of the allowed tiers
+    const durationNum = parseInt(form.duration);
+    const isValidTier = PRICING_TIERS.some(tier => tier.duration === durationNum);
+    if (!isValidTier) {
+      addToast("Please select a valid duration tier (15, 45, or 60 minutes).", "error");
+      setSubmitting(false);
+      return;
+    }
 
-    if (diffMins < 10) {
-      addToast(
-        diffMins < 0
-          ? "End time must be after start time."
-          : "Availability must be at least 10 minutes.",
-        "error"
-      );
+    // Calculate end time
+    const endTime = calculateEndTime(form.startTime, durationNum);
+    if (!endTime) {
+      addToast("Error calculating end time. Please check your start time.", "error");
       setSubmitting(false);
       return;
     }
@@ -64,7 +103,7 @@ const CreateConsultantAvailabilityPage = () => {
       user: session?.user?.id,
       type: form.type,
       startTime: form.startTime,
-      endTime: form.endTime,
+      endTime: endTime,
       category: form.category,
       ...(form.type === "recurring"
         ? { dayOfWeek: form.dayOfWeek }
@@ -157,25 +196,53 @@ const CreateConsultantAvailabilityPage = () => {
           </div>
         )}
 
-        {/* Time Range Pickers */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-1 font-medium">Start Time</label>
-            <TimePicker
-              value={form.startTime}
-              onChange={(value) => setForm((prev) => ({ ...prev, startTime: value }))}
-              disableClock
-              className="w-full"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-medium">End Time</label>
-            <TimePicker
-              value={form.endTime}
-              onChange={(value) => setForm((prev) => ({ ...prev, endTime: value }))}
-              disableClock
-              className="w-full"
-            />
+        {/* Start Time Picker */}
+        <div>
+          <label className="block mb-1 font-medium">Start Time</label>
+          <TimePicker
+            value={form.startTime}
+            onChange={handleStartTimeChange}
+            disableClock
+            className="w-full"
+          />
+        </div>
+
+        {/* Duration Tier Selector */}
+        <div>
+          <label className="block mb-2 font-medium">
+            Select Duration <span className="text-red-500">*</span>
+          </label>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+            End time will be calculated automatically.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {PRICING_TIERS.map((tier) => {
+              const isSelected = form.duration === tier.duration.toString();
+              
+              return (
+                <div
+                  key={tier.duration}
+                  onClick={() => handleDurationSelect(tier.duration)}
+                  className={`cursor-pointer rounded-lg border-2 p-4 transition-all text-center ${
+                    isSelected
+                      ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900/20 shadow-md"
+                      : "border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-sm"
+                  }`}
+                >
+                  <div className="text-2xl font-bold text-gray-800 dark:text-gray-200">
+                    {tier.duration}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    minutes
+                  </div>
+                  {isSelected && (
+                    <div className="mt-2 text-xs text-indigo-600 dark:text-indigo-400 font-medium">
+                      ✓ Selected
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 

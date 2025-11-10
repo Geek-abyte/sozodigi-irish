@@ -72,14 +72,14 @@ export default function HomePage() {
     // },
     {
       icon: <FaComments className="text-5xl text-[var(--color-primary-6)]" />,
-      title: "Real-time Medical Consultation",
+      title: "Online Medical Consultation",
       description: "Connect instantly with licensed healthcare professionals through secure video or chat, receiving expert medical advice, diagnosis, and personalized treatment recommendations anytime, anywhere.",
       animation: "M10 50 Q50 10 90 50 Q50 90 10 50",
       link: "/gp-consultation"    
     },
     {
       icon: <FaComments className="text-5xl text-[var(--color-primary-6)]" />,
-      title: "Real-time Prescription",
+      title: "Online Prescription",
       description: "Getting your prescription is simple. We’ll prepare one tailored to your needs and send it straight to your preferred pharmacy, so all you need to do is stop by and collect your medication.",
       animation: "M10 50 Q50 10 90 50 Q50 90 10 50",
       link: "/gp-consultation"
@@ -284,7 +284,7 @@ export default function HomePage() {
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-15">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">SIMPLE STEPS TO REAL-TIME CONSULTATION</h2>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">SIMPLE STEPS TO ONLINE CONSULTATION</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-12">
             Sozo DigiCare has designed a streamlined, user-friendly and secure process for your Video or Phone Consultation. Here’s how it works, simplified into three easy steps:
           </p>
@@ -439,26 +439,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Doctors */}
-      <section className="max-w-7xl mx-auto px-4 py-10">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
-          transition={{ duration: 0.4 }} 
-          className="text-2xl font-bold text-gray-800 mb-8 text-center"
-        >
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
-              Our Doctors
-            </h2>
-          </div>
-          
-        </motion.h2>
-        
-        <DoctorsPage limit={6}  />
-      </section>
-
       {/* Certificates */}
       <section className="max-w-7xl mx-auto px-4 py-10">
         <motion.h2 
@@ -485,6 +465,26 @@ export default function HomePage() {
               </button>
             </Link>
           </div>
+      </section>
+
+      {/* Doctors */}
+      <section className="max-w-7xl mx-auto px-4 py-10">
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }} 
+          whileInView={{ opacity: 1, y: 0 }} 
+          viewport={{ once: true }} 
+          transition={{ duration: 0.4 }} 
+          className="text-2xl font-bold text-gray-800 mb-8 text-center"
+        >
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800">
+              Our Doctors
+            </h2>
+          </div>
+          
+        </motion.h2>
+        
+        <DoctorsPage limit={6}  />
       </section>
 
       {/* Why Choose Sozo Digicare */}

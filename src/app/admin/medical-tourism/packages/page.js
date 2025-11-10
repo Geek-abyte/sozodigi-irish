@@ -113,7 +113,7 @@ const MedicalTourPackagesPage = () => {
                     <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">
                       {new Intl.NumberFormat("en-US", {
                         style: "currency",
-                        currency: "USD",
+                        currency: "GBP",
                       }).format(_package.price)}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">

@@ -259,6 +259,16 @@ layer(base);
   @apply text-brand-500 dark:text-brand-400;
 }
 
+/* Ensure react-datepicker calendar dropdown appears above modals */
+.react-datepicker-popper,
+.react-datepicker-popper-custom {
+  z-index: 99999999 !important;
+}
+
+.react-datepicker__portal {
+  z-index: 99999999 !important;
+}
+
 @utility menu-item-icon-inactive {
   @apply text-gray-500 group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300;
 }

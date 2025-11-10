@@ -93,7 +93,7 @@ const AddMedicalTourismPackagePage = () => {
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Price (USD)</label>
+          <label className="block font-medium mb-1">Price (GBP)</label>
           <input
             type="number"
             name="price"

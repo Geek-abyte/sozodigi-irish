@@ -6,7 +6,6 @@ import { useToast } from '@/context/ToastContext';
 import { fetchData, updateData } from '@/utils/api';
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
-import specialistCategories from '@/utils/specialistCategories';
 import specialistSpecialties from '@/utils/specialistSpecialties';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -30,10 +29,10 @@ export default function CompleteProfilePage() {
     phone: '',
     address: { street: '', city: '', state: '', country: '' },
     specialty: 'General Practitioner',
+    category: 'General Practitioner',
     licenseNumber: '',
     experience: '',
     languages: '',
-    category: '',
     bio: '',
     bankDetails: {
       bankName: '',
@@ -47,10 +46,12 @@ export default function CompleteProfilePage() {
 
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [profileImageFileName, setProfileImageFileName] = useState('');
   const [role, setRole] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [practicingLicenseFile, setPracticingLicenseFile] = useState(null);
+  const [practicingLicenseFileName, setPracticingLicenseFileName] = useState('');
 
   const { addToast } = useToast();
   const alertSuccess = (msg) => addToast(msg, 'success');
@@ -67,6 +68,8 @@ export default function CompleteProfilePage() {
         setFormData((prev) => ({
           ...prev,
           ...user,
+          specialty: 'General Practitioner',
+          category: 'General Practitioner',
           address: {
             street: user.address?.street || '',
             city: user.address?.city || '',
@@ -106,6 +109,7 @@ export default function CompleteProfilePage() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     setProfileImageFile(file);
+    setProfileImageFileName(file ? file.name : '');
     if (file) setImagePreview(URL.createObjectURL(file));
   };
 
@@ -123,8 +127,14 @@ export default function CompleteProfilePage() {
     }
 
     const payload = new FormData();
-    for (const key in formData) {
-      if (key !== 'address') payload.append(key, formData[key]);
+    // Ensure specialty and category are always 'General Practitioner'
+    const dataToSend = {
+      ...formData,
+      specialty: 'General Practitioner',
+      category: 'General Practitioner',
+    };
+    for (const key in dataToSend) {
+      if (key !== 'address' && key !== 'bankDetails') payload.append(key, dataToSend[key]);
     }
     for (const key in formData.address) {
       payload.append(`address.${key}`, formData.address[key]);
@@ -265,25 +275,35 @@ export default function CompleteProfilePage() {
             {role === 'specialist' && (
               <>
                 <div>
-                  <label className="block mb-1 text-sm text-gray-600">Specialty <span className='text-red-700'>*</span></label>
-                  <input name="specialty" value={formData.specialty} className={inputStyle} readOnly />
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm text-gray-600">Category <span className='text-red-700'>*</span></label>
-                  <select name="category" value={formData.category} onChange={handleChange} className={inputStyle} required>
-                    <option value="">Select Category</option>
-                    {specialistCategories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
                   <label className="block mb-1 text-sm text-gray-600">License Number <span className='text-red-700'>*</span></label>
                   <input name="licenseNumber" value={formData.licenseNumber} onChange={handleChange} className={inputStyle} required />
                 </div>
                 <div>
                   <label className="block mb-1 text-sm text-gray-600">Upload Practicing License <span className='text-red-700'>*</span></label>
-                  <input type="file" accept="application/pdf,image/*" onChange={(e) => setPracticingLicenseFile(e.target.files[0])} className={inputStyle} required />
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="file"
+                      id="practicingLicenseInput"
+                      accept="application/pdf,image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        setPracticingLicenseFile(file);
+                        setPracticingLicenseFileName(file ? file.name : '');
+                      }}
+                      className="hidden"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => document.getElementById('practicingLicenseInput').click()}
+                      className="px-4 py-2 bg-[var(--color-primary-7)] text-white rounded-full hover:bg-blue-700 transition-colors text-sm font-medium"
+                    >
+                      Choose File
+                    </button>
+                    {practicingLicenseFileName && (
+                      <span className="text-sm text-gray-600 truncate max-w-xs">{practicingLicenseFileName}</span>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block mb-1 text-sm text-gray-600">Short Bio</label>
@@ -328,7 +348,25 @@ export default function CompleteProfilePage() {
 
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-600">Profile Image</label>
-              <input type="file" accept="image/*" onChange={handleFileChange} className={inputStyle} />
+              <div className="flex items-center gap-3">
+                <input
+                  type="file"
+                  id="profileImageInput"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('profileImageInput').click()}
+                  className="px-4 py-2 bg-[var(--color-primary-7)] text-white rounded-full hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Choose File
+                </button>
+                {profileImageFileName && (
+                  <span className="text-sm text-gray-600 truncate max-w-xs">{profileImageFileName}</span>
+                )}
+              </div>
               {imagePreview && (
                 <img src={imagePreview} alt="Preview" className="mt-2 h-24 w-24 rounded-full object-cover shadow" />
               )}

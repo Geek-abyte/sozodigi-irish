@@ -8,23 +8,25 @@ import { ToastProvider } from "@/context/ToastContext";
 import { UserProvider } from "@/context/UserContext";
 import AuthWatcher from "@/components/AuthWatcher";
 import { ArrowUpCircleIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Footer from "@/components/Footer";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "@/store/store";
 
 import { ChatBot } from '@/components/gabriel';
 import { openChatBot, triggerChatbotAttention } from '@/store/popUpSlice';
 
-export default function RootLayout({ children }) {
+function RootLayoutContent({ children }) {
   const pathname = usePathname();
-
-
+  const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  const handleScroll = () => {
-    setIsVisible(window.scrollY > 300);
-  };
+  const handleScroll = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      setIsVisible(window.scrollY > 300);
+    }
+  }, []);
 
   const handleChat = () => {
     dispatch(triggerChatbotAttention());
@@ -32,72 +34,77 @@ export default function RootLayout({ children }) {
   };
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    setMounted(true);
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
+  }, [handleScroll]);
 
   useEffect(() => {
-    const s1 = document.createElement("script");
-    s1.src = "https://embed.tawk.to/687f67477efc30191580053b/1j0oqms9t";
-    s1.async = true;
-    s1.charset = "UTF-8";
-    s1.setAttribute("crossorigin", "*");
-    document.body.appendChild(s1);
-  }, []);
+    if (mounted && typeof document !== 'undefined') {
+      // Check if script already exists to prevent duplicate injection
+      const existingScript = document.querySelector('script[src*="tawk.to"]');
+      if (existingScript) return;
+      
+      const s1 = document.createElement("script");
+      s1.src = "https://embed.tawk.to/687f67477efc30191580053b/1j0oqms9t";
+      s1.async = true;
+      s1.charset = "UTF-8";
+      s1.setAttribute("crossorigin", "*");
+      document.body.appendChild(s1);
+    }
+  }, [mounted]);
 
   
   // Check if we're on the homepage
-  const isHomepage = pathname === "/";
   const isAdmin = pathname.startsWith("/admin");
 
   return (
+    <>
+      <AuthSessionProvider>
+        <AuthWatcher /> 
+        <UserProvider>
+          <ToastProvider>
+            <CartProvider>
+              {!isAdmin && <Navbar />}
+              {children}
+
+              {/* <ChatBot /> */}
+            </CartProvider>
+          </ToastProvider>
+        </UserProvider>
+      </AuthSessionProvider>
+
+      {mounted && isVisible && 
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-25 right-9 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition"
+          aria-label="Scroll to top"
+        >
+          <ArrowUpCircleIcon className="w-6 h-6" />
+        </button>
+      }
+
+      {!isAdmin && <Footer />}
+    </>
+  );
+}
+
+export default function RootLayout({ children }) {
+  return (
     <html lang="en">
-      <body className="bg-gray-100" 
-      // style={{
-      //   backgroundImage: "url('/images/Medical-tourism.jpg')",
-      //   backgroundSize: 'cover',
-      //   backgroundRepeat: 'no-repeat',
-      //   backgroundPosition: 'center',
-      // }}
-      >
-        <AuthSessionProvider>
-          <AuthWatcher /> 
-          <UserProvider>
-            <Provider store={store}>
-              <ToastProvider>
-                <CartProvider>
-                  {/* Conditionally render Navbar only on homepage */}
-                  {/* {isHomepage && <Navbar />} */}
-                  {/* <Navbar /> */}
-                  
-                  {!isAdmin && <Navbar />}
-                  {children} {/* Children will render as usual */}
-
-                  {/* <ChatBot /> */}
-
-                </CartProvider>
-              </ToastProvider>
-            </Provider>
-          </UserProvider>
-        </AuthSessionProvider>
-
-
-        {isVisible && 
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-25 right-9 z-50 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition"
-            aria-label="Scroll to top"
-          >
-            <ArrowUpCircleIcon className="w-6 h-6" />
-          </button>
-        }
-
-        {!isAdmin && <Footer />}
-        
+      <body className="bg-gray-100">
+        <Provider store={store}>
+          <RootLayoutContent>{children}</RootLayoutContent>
+        </Provider>
       </body>
     </html>
   );

@@ -4,7 +4,7 @@ import { fetchData } from '@/utils/api'
 import {
   ClockIcon,
   MapPinIcon,
-  CurrencyDollarIcon,
+  CurrencyPoundIcon,
   CheckCircleIcon,
 } from '@heroicons/react/24/outline'
 import Link from "next/link";
@@ -68,10 +68,10 @@ export default async function PackagePage({ params }) {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <CurrencyDollarIcon className="h-6 w-6 text-indigo-600" />
+              <CurrencyPoundIcon className="h-6 w-6 text-indigo-600" />
               <div>
                 <p className="text-sm font-medium text-gray-700">Price</p>
-                <p className="text-base text-gray-900">${Number(price).toFixed(2)}</p>
+                <p className="text-base text-gray-900">£{Number(price).toFixed(2)}</p>
               </div>
             </div>
           </div>

@@ -42,7 +42,7 @@ export const getToken = () => {
 };
 
 /**
- * Converts a float amount to cents (for USD, EUR, etc.)
+ * Converts a float amount to cents (for GBP, EUR, etc.)
  * @param {number} amount - The amount in float (e.g., 10.99)
  * @returns {number} The amount in cents as an integer
  */
@@ -83,16 +83,16 @@ export const convertMillisecondsTo24HourFormat = (milliseconds) => {
 /**
  * Converts an amount to the smallest currency unit based on the currency code
  * @param {number} amount - The amount in float
- * @param {string} currencyCode - The ISO currency code (e.g., 'USD', 'NGN')
+ * @param {string} currencyCode - The ISO currency code (e.g., 'GBP', 'NGN')
  * @returns {number} The amount in the smallest currency unit as an integer
  */
 export const toSmallestUnit = (amount, currencyCode) => {
   switch (currencyCode.toUpperCase()) {
     case "NGN":
       return toKobo(amount);
+    case "GBP":
     case "USD":
     case "EUR":
-    case "GBP":
     default:
       return toCents(amount);
   }

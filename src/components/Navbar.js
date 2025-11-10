@@ -95,7 +95,7 @@ export default function TopNav({}) {
     },
     {
       href: "/services/consult",
-      label: "Real-time Medical Consultation",
+      label: "Online Medical Consultation",
       icon: <FaStethoscope size={16} className="text-blue-500" />, // Stethoscope for consultation
     },
     {

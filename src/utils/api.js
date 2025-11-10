@@ -39,18 +39,55 @@ export async function fetchWithTimeout(resource, options = {}, timeout = 10000, 
 // Unified error handler
 async function handleResponse(res) {
   if (res?.aborted) {
-    return { aborted: true };
+    const error = new Error("Request timeout - please try again");
+    error.status = 0;
+    error.data = { message: "Request timeout" };
+    throw error;
   }
 
-  const data = await res.json().catch(() => ({}));
+  // Ensure we have a fetch Response object
+  if (!res || typeof res.text !== "function") {
+    const error = new Error("Invalid response from server");
+    error.status = 0;
+    error.data = { message: "Invalid response from server" };
+    throw error;
+  }
+
+  // Read body once as text to allow manual JSON parsing
+  let text = "";
+  try {
+    text = await res.text();
+  } catch (readError) {
+    const error = new Error("Unable to read server response");
+    error.status = res.status || 0;
+    error.data = { message: readError?.message || "Unable to read server response" };
+    throw error;
+  }
+
+  let data;
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch (jsonError) {
+      data = text;
+    }
+  } else {
+    data = {};
+  }
 
   if (!res.ok) {
-    const error = {
-      status: res.status,
-      data: data,
-      message: data?.message || `Error: ${res.statusText}`,
-    };
+    const message = typeof data === "string"
+      ? data
+      : data?.message || `Error: ${res.statusText || "Unknown error"}`;
+
+    const error = new Error(message);
+    error.status = res.status;
+    error.data = typeof data === "string" ? { message: data } : data;
     throw error;
+  }
+
+  if (typeof data === "string") {
+    return { message: data };
   }
 
   return data;
@@ -82,14 +119,8 @@ export async function postData(endpoint, data, token = null, isFormData = false)
 }
 
 export async function rescheduleAppointment(id, payload = {}, token = null) {
-  try {
-    return await postData(`appointments/${id}/reschedule`, payload, token);
-  } catch (error) {
-    if (error?.data?.message) {
-      error.message = error.data.message;
-    }
-    throw error;
-  }
+  // Reuse the existing update endpoint for consultation appointments
+  return await updateData(`consultation-appointments/update/custom/${id}`, payload, token);
 }
 
 // PUT

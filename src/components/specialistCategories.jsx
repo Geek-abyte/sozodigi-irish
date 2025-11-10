@@ -184,7 +184,7 @@ const SpecialistCategories = () => {
           modal={
             <CheckoutModal
               closeModal={closeModal}
-              currency="USD"
+              currency="GBP"
               duration={duration}
               date={new Date()}
               consultMode="now"

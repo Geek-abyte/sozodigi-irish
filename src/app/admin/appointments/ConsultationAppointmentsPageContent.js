@@ -9,6 +9,8 @@ import { RotateCcw, Trash } from "lucide-react";
 import { fetchData, deleteData } from "@/utils/api";
 import { useToast } from "@/context/ToastContext";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
+import ModalContainer from "@/components/gabriel/ModalContainer";
+import RescheduleDialog from "@/components/gabriel/common/RescheduleDialog";
 import {
   Table,
   TableBody,
@@ -25,6 +27,7 @@ const ConsultationAppointmentsPageContent  = () => {
   const [filters, setFilters] = useState({ status: "", dateFrom: "", dateTo: "" });
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [rescheduleTarget, setRescheduleTarget] = useState(null);
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
@@ -107,6 +110,48 @@ const ConsultationAppointmentsPageContent  = () => {
 
   const changePage = (newPage) => {
     router.push(`?page=${newPage}`);
+  };
+
+  const openRescheduleDialog = (appointment) => {
+    if (!token) {
+      addToast("You must be logged in to reschedule an appointment.", "error");
+      return;
+    }
+    // Check if appointment can be rescheduled (max 2 times, at least 24 hours in advance)
+    const rescheduleCount = appointment.rescheduleCount || 0;
+    if (rescheduleCount >= 2) {
+      addToast("You have reached the maximum number of reschedules (2).", "error");
+      return;
+    }
+    
+    const appointmentDate = new Date(appointment.date);
+    const now = new Date();
+    const hoursUntilAppointment = (appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+    
+    if (hoursUntilAppointment < 24) {
+      addToast("Appointments can only be rescheduled at least 24 hours in advance.", "error");
+      return;
+    }
+    
+    setRescheduleTarget(appointment);
+  };
+
+  const closeRescheduleDialog = () => {
+    setRescheduleTarget(null);
+  };
+
+  const handleRescheduled = async (updatedAppointment) => {
+    if (updatedAppointment?._id) {
+      setAppointments((prev) =>
+        prev.map((appointment) =>
+          appointment._id === updatedAppointment._id
+            ? { ...appointment, ...updatedAppointment }
+            : appointment
+        )
+      );
+    }
+    await loadAppointments();
+    addToast("Appointment rescheduled successfully.", "success");
   };
 
   return (
@@ -264,6 +309,18 @@ const ConsultationAppointmentsPageContent  = () => {
                                     Start Session
                                   </Link>
                                 </MenuItem>
+                                {(appointment.status === "pending" || appointment.status === "confirmed") && 
+                                  (appointment.rescheduleCount || 0) < 2 && (
+                                  <MenuItem>
+                                    <button
+                                      onClick={() => openRescheduleDialog(appointment)}
+                                      className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                                    >
+                                      <RotateCcw className="w-4 h-4 text-blue-500" />
+                                      Reschedule
+                                    </button>
+                                  </MenuItem>
+                                )}
                                 {/* <MenuItem>
                                   <Link
                                     href={`/admin/available-specialists?appointmentId=${appointment._id}`}
@@ -359,6 +416,23 @@ const ConsultationAppointmentsPageContent  = () => {
         confirmText="Yes, Delete"
         cancelText="Cancel"
       />
+
+      {rescheduleTarget && (
+        <ModalContainer
+          allowOverflow={true}
+          modal={
+            <RescheduleDialog
+              appointment={{
+                ...rescheduleTarget,
+                dateTime: rescheduleTarget.date || rescheduleTarget.dateTime
+              }}
+              token={token}
+              onClose={closeRescheduleDialog}
+              onRescheduled={handleRescheduled}
+            />
+          }
+        />
+      )}
     </div>
   );
 };

@@ -107,7 +107,15 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
     try {
       const res = await fetchData('users/get-all/doctors/no-pagination', token)
       
-      const grouped = res.reduce((acc, specialist) => {
+      // Filter to only show General Practitioners
+      const generalPractitioners = res.filter((specialist) => {
+        const category = (specialist.category || '').trim()
+        return category.toLowerCase() === 'general practitioner'
+      })
+      
+      console.log('Total doctors:', res.length, 'General Practitioners:', generalPractitioners.length)
+      
+      const grouped = generalPractitioners.reduce((acc, specialist) => {
         const category = specialist.category || 'Uncategorized'
         if (!acc[category]) acc[category] = []
         acc[category].push(specialist)
@@ -120,9 +128,8 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
         members,
       }))
 
-      if(!showSpecialistCategories){
-        setSpecialistsByCategory(res)
-      }
+      // Always set specialistsByCategory to only General Practitioners
+      setSpecialistsByCategory(generalPractitioners)
 
       setCategories(categoryList)
     } catch (err) {
@@ -141,6 +148,8 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
       const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const selectedDayName = weekdays[selectedDate.getDay()];
       const selectedDateString = selectedDate.toISOString().split('T')[0];
+  
+      console.log('Fetching slots for:', { selectedDayName, selectedDateString, specialistsCount: specialistsByCategory.length, showSpecialistCategories });
   
       const allSlots = [];
   
@@ -163,38 +172,70 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
           token
         );
   
-        const filtered = res.data.filter((slot) => {
+        const slots = res?.data || [];
+        console.log(`Specialist ${specialist.firstName} ${specialist.lastName} - Total slots:`, slots.length);
+  
+        const filtered = slots.filter((slot) => {
           const slotId = slot._id;
-          if (bookedSlotIds.has(slotId)) return false; // Exclude already booked slots
+          if (bookedSlotIds.has(slotId)) {
+            console.log('Slot already booked:', slotId);
+            return false; // Exclude already booked slots
+          }
   
-          if (!showSpecialistCategories) {
-            if (slot.category !== "cert") return false;
-  
-            if (slot.type === 'recurring') {
-              return slot.dayOfWeek === selectedDayName;
-            } else if (slot.type === 'one-time') {
-              return new Date(slot.date).toISOString().split('T')[0] === selectedDateString;
+          // Check category filter
+          // Default behavior: show "general" category slots for consultation appointments
+          // Only filter for "cert" if explicitly needed (e.g., certificate appointments)
+          if (showSpecialistCategories && selectedCategory) {
+            // When a specific category is selected, only show "general" category slots
+            if (slot.category !== "general") {
+              console.log(`Slot category mismatch: expected general, got ${slot.category}`, slot);
+              return false;
             }
+          } else if (showSpecialistCategories && !selectedCategory) {
+            // When showing categories but none selected, show all slots (no filter)
+            // This allows seeing all available slots
           } else {
-            if (slot.category !== "general") return false;
-  
-            if (slot.type === 'recurring') {
-              return slot.dayOfWeek === selectedDayName;
-            } else if (slot.type === 'one-time') {
-              return new Date(slot.date).toISOString().split('T')[0] === selectedDateString;
+            // Default: show "general" category slots (for regular consultation appointments)
+            // Only filter for "cert" if isCertPage is explicitly true
+            if (slot.category !== "general") {
+              console.log(`Slot category mismatch: expected general, got ${slot.category}`, slot);
+              return false;
             }
+          }
+  
+          // Check date/day match
+          if (slot.type === 'recurring') {
+            const dayMatch = slot.dayOfWeek === selectedDayName;
+            if (!dayMatch) {
+              console.log(`Recurring slot day mismatch: slot.dayOfWeek="${slot.dayOfWeek}", selectedDayName="${selectedDayName}"`, slot);
+            }
+            return dayMatch;
+          } else if (slot.type === 'one-time') {
+            if (!slot.date) {
+              console.log('One-time slot missing date:', slot);
+              return false;
+            }
+            // Handle both Date objects and date strings
+            const slotDate = slot.date instanceof Date ? slot.date : new Date(slot.date);
+            const slotDateStr = slotDate.toISOString().split('T')[0];
+            const dateMatch = slotDateStr === selectedDateString;
+            if (!dateMatch) {
+              console.log(`One-time slot date mismatch: slotDate="${slotDateStr}", selectedDate="${selectedDateString}"`, slot);
+            }
+            return dateMatch;
           }
   
           return false;
         });
   
+        console.log(`Specialist ${specialist.firstName} ${specialist.lastName} - Filtered slots:`, filtered.length);
         filtered.forEach((slot) => {
           allSlots.push({ ...slot, consultant: specialist });
         });
       }
   
+      console.log('Total available slots found:', allSlots.length);
       setAvailableSlots(allSlots);
-      setLoadingSlots(false);
     } catch (err) {
       console.error('Error fetching slots:', err);
       addToast('Failed to load slots', 'error');
@@ -237,40 +278,12 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
       <h2 className="text-2xl font-bold mb-2">Book an Appointment</h2>
       <BookingInstructions showSpecialistCategories={showSpecialistCategories} />
 
-      <div className={`grid grid-cols-1 lg:grid-cols-2 [${showSpecialistCategories ? 'lg:grid-cols-3' : ''}] gap-3`}>
-        { (showSpecialistCategories) &&  
-          <div className="max-h-[500px] overflow-y-auto space-y-2 pr-2">
-            {loadingCategories ? (
-              <div className="flex justify-center items-center h-32">
-                <div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            ) : (
-              categories.map((cat) => (
-                <div
-                  key={cat.name}
-                  onClick={() => {
-                    setSelectedCategory(cat)
-                    setSpecialistsByCategory(cat.members)
-                    setAvailableSlots([])
-                    setSelectedSlot(null)
-                  }}
-                  className={`cursor-pointer p-3 rounded-md border transition-all duration-150 ${
-                    selectedCategory?.name === cat.name
-                      ? 'border-indigo-600 bg-indigo-50'
-                      : 'hover:border-indigo-400 hover:bg-gray-50'
-                  }`}
-                >
-                  <h4 className="text-base font-semibold">{cat.name}</h4>
-                  <p className="text-xs text-gray-500">{cat.count} specialist{cat.count > 1 ? 's' : ''}</p>
-                </div>
-              ))
-            )}
-          </div>
-        }
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Category selector removed since we only show General Practitioners */}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Select Date {selectedCategory && `for ${selectedCategory.name}`}
+            Select Date
           </label>
           <div className="mb-2 font-semibold text-lg text-gray-700">
             {selectedDayName}, {selectedDate.toLocaleDateString()}
@@ -319,11 +332,11 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
 
                     { (!showSpecialistCategories && price) ? 
                       <div className="text-sm text-indigo-700 font-semibold mt-1">
-                        Service Fee:  €{price}
+                        Service Fee:  €{Number(price).toFixed(2)}
                       </div>
                     :
                       <div className="text-sm text-indigo-700 font-semibold mt-1">
-                        Appointment Fee:  €{ getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE}
+                        Appointment Fee:  €{(getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE).toFixed(2)}
                       </div>
                     }
                   </div>
@@ -346,10 +359,15 @@ const ConsultationBookingPageContent = ({showSpecialistCategories}) => {
 
               { selectedSlot && 
                 <button
-                  onClick={() => openCheckoutModal(
-                    (!showSpecialistCategories && price) ? price : getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime) * COST_PER_MINUTE,
-                    getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime)
-                  )}
+                  onClick={() => {
+                    const calculatedPrice = (!showSpecialistCategories && price) 
+                      ? Number(price) 
+                      : getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime) * COST_PER_MINUTE;
+                    openCheckoutModal(
+                      Number(calculatedPrice.toFixed(2)),
+                      getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime)
+                    );
+                  }}
                   disabled={!selectedSlot || !reason || loadingBooking}
                   className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >

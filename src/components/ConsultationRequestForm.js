@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ClockIcon, DollarSignIcon, CheckCircleIcon } from "lucide-react";
+import { ClockIcon, PoundSterlingIcon, CheckCircleIcon } from "lucide-react";
 
 export default function ConsultationRequestForm({ handleSubmit, handleChange, formData, submitting, calculatedCost }) {
     return (
@@ -29,8 +29,8 @@ export default function ConsultationRequestForm({ handleSubmit, handleChange, fo
                 </div>
 
                 <div className="mt-2 flex items-center gap-2 text-sm">
-                  <DollarSignIcon className="w-4 h-4" />
-                  <span>${price.toFixed(2)}</span>
+                  <PoundSterlingIcon className="w-4 h-4" />
+                  <span>£{price.toFixed(2)}</span>
                 </div>
               </div>
             );
@@ -38,7 +38,7 @@ export default function ConsultationRequestForm({ handleSubmit, handleChange, fo
         </div>
       
         <div className="text-sm text-gray-700 dark:bg-gray-900 dark:text-white">
-            Estimated Cost: <span className="font-semibold text-gray-900 dark:text-white">${calculatedCost}</span>
+            Estimated Cost: <span className="font-semibold text-gray-900 dark:text-white">£{calculatedCost}</span>
         </div>
 
         <div>

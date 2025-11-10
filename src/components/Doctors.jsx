@@ -18,8 +18,9 @@ import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 
 
-const DoctorsPage = ({ limit = 6 }) => {
+const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(initialVisible);
 
 //   const navigate = useNavigate();
   const [specialists, setSpecialists] = useState([]);
@@ -52,8 +53,8 @@ const DoctorsPage = ({ limit = 6 }) => {
           const gpsOnly = doctorsData.filter((specialist) =>
             (specialist.category || "").trim().toLowerCase() === "general practitioner"
           );
-          setSpecialists(gpsOnly.slice(0, limit));
-          setFilteredSpecialists(gpsOnly.slice(0, limit));
+          setSpecialists(gpsOnly);
+          setFilteredSpecialists(gpsOnly);
           console.log("Filtered GPs:", gpsOnly.slice(0, limit));
         } else {
           console.error("Invalid response format:", response);
@@ -122,16 +123,17 @@ const DoctorsPage = ({ limit = 6 }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 px-4">
+    <div className="bg-gray-50 py-4 px-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {filteredSpecialists && filteredSpecialists.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSpecialists.map((doctor) => (
-              <motion.div
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSpecialists.slice(0, visibleCount).map((doctor, index) => (
+                <motion.div
                 key={doctor._id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow group"
               >
                 <div className="relative">
@@ -182,8 +184,33 @@ const DoctorsPage = ({ limit = 6 }) => {
                   </div>
                 </div>
               </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+            {filteredSpecialists.length > initialVisible && (
+              <motion.div 
+                className="flex justify-center mt-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+              >
+                <button
+                  onClick={() => {
+                    if (visibleCount >= filteredSpecialists.length) {
+                      // Collapse back to initial
+                      setVisibleCount(initialVisible);
+                    } else {
+                      // Load more
+                      const nextCount = Math.min(visibleCount + loadIncrement, filteredSpecialists.length);
+                      setVisibleCount(nextCount);
+                    }
+                  }}
+                  className="px-8 py-3 bg-[var(--color-primary-6)] text-white rounded-lg hover:bg-[var(--color-primary-7)] transition-all duration-300 hover:scale-105 shadow-lg font-medium"
+                >
+                  {visibleCount >= filteredSpecialists.length ? 'View Less' : 'View More'}
+                </button>
+              </motion.div>
+            )}
+          </>
         ) : (
           <div className="text-center py-12">
             <p className="text-gray-500">No doctors available at the moment.</p>

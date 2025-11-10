@@ -129,6 +129,8 @@ const ConsultationBookingPageContent = ({showSpecialistCategories, selectedCateg
       const selectedDayName = weekdays[selectedDate.getDay()];
       const selectedDateString = selectedDate.toISOString().split('T')[0];
   
+      console.log('Fetching slots for:', { selectedDayName, selectedDateString, specialistsCount: specialistsByCategory.length });
+  
       const allSlots = [];
   
       // 1. Fetch appointments for selected date
@@ -150,36 +152,56 @@ const ConsultationBookingPageContent = ({showSpecialistCategories, selectedCateg
           token
         );
   
-        const filtered = res.data.filter((slot) => {
+        const slots = res?.data || [];
+        console.log(`Specialist ${specialist.firstName} ${specialist.lastName} - Total slots:`, slots.length);
+  
+        const filtered = slots.filter((slot) => {
           const slotId = slot._id;
-          if (bookedSlotIds.has(slotId)) return false; // Exclude already booked slots
+          if (bookedSlotIds.has(slotId)) {
+            console.log('Slot already booked:', slotId);
+            return false; // Exclude already booked slots
+          }
   
-          if (!showSpecialistCategories && !selectedCategory) {
-            if (slot.category !== "cert") return false;
+          // Check category filter
+          const expectedCategory = (!showSpecialistCategories && !selectedCategory) ? "cert" : "general";
+          if (slot.category !== expectedCategory) {
+            console.log(`Slot category mismatch: expected ${expectedCategory}, got ${slot.category}`, slot);
+            return false;
+          }
   
-            if (slot.type === 'recurring') {
-              return slot.dayOfWeek === selectedDayName;
-            } else if (slot.type === 'one-time') {
-              return new Date(slot.date).toISOString().split('T')[0] === selectedDateString;
+          // Check date/day match
+          if (slot.type === 'recurring') {
+            const dayMatch = slot.dayOfWeek === selectedDayName;
+            if (!dayMatch) {
+              console.log(`Recurring slot day mismatch: slot.dayOfWeek="${slot.dayOfWeek}", selectedDayName="${selectedDayName}"`, slot);
             }
-          } else {
-            if (slot.category !== "general") return false;
-  
-            if (slot.type === 'recurring') {
-              return slot.dayOfWeek === selectedDayName;
-            } else if (slot.type === 'one-time') {
-              return new Date(slot.date).toISOString().split('T')[0] === selectedDateString;
+            return dayMatch;
+          } else if (slot.type === 'one-time') {
+            // Handle timezone issues by comparing date strings directly
+            if (!slot.date) {
+              console.log('One-time slot missing date:', slot);
+              return false;
             }
+            // Handle both Date objects and date strings
+            const slotDate = slot.date instanceof Date ? slot.date : new Date(slot.date);
+            const slotDateStr = slotDate.toISOString().split('T')[0];
+            const dateMatch = slotDateStr === selectedDateString;
+            if (!dateMatch) {
+              console.log(`One-time slot date mismatch: slotDate="${slotDateStr}", selectedDate="${selectedDateString}"`, slot);
+            }
+            return dateMatch;
           }
   
           return false;
         });
   
+        console.log(`Specialist ${specialist.firstName} - Filtered slots:`, filtered.length);
         filtered.forEach((slot) => {
           allSlots.push({ ...slot, consultant: specialist });
         });
       }
   
+      console.log('Total available slots found:', allSlots.length);
       setAvailableSlots(allSlots);
     } catch (err) {
       console.error('Error fetching slots:', err);
@@ -274,11 +296,11 @@ const ConsultationBookingPageContent = ({showSpecialistCategories, selectedCateg
 
                     { (!showSpecialistCategories && price) ? 
                       <div className="text-sm text-indigo-700 font-semibold mt-1">
-                        Service Fee: ${price}
+                        Service Fee: £{Number(price).toFixed(2)}
                       </div>
                     :
                       <div className="text-sm text-indigo-700 font-semibold mt-1">
-                        Appointment Fee: ${ getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE}
+                        Appointment Fee: £{(getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE).toFixed(2)}
                       </div>
                     }
                   </div>
@@ -301,10 +323,15 @@ const ConsultationBookingPageContent = ({showSpecialistCategories, selectedCateg
 
               { selectedSlot && 
                 <button
-                  onClick={() => openCheckoutModal(
-                    (!showSpecialistCategories && price) ? price : getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime) * COST_PER_MINUTE,
-                    getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime)
-                  )}
+                  onClick={() => {
+                    const calculatedPrice = (!showSpecialistCategories && price) 
+                      ? Number(price) 
+                      : getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime) * COST_PER_MINUTE;
+                    openCheckoutModal(
+                      Number(calculatedPrice.toFixed(2)),
+                      getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime)
+                    );
+                  }}
                   disabled={!selectedSlot || !reason || loadingBooking}
                   className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
@@ -336,7 +363,7 @@ const ConsultationBookingPageContent = ({showSpecialistCategories, selectedCateg
                 <CheckoutModal
                   closeModal={closeModal}
                   amount={price}
-                  currency="USD"
+                  currency="GBP"
                   duration={duration}
                   date={new Date(selectedSlot.date)}
                   consultMode="appointment"

@@ -92,7 +92,7 @@ export default function ReviewAppointmentPage() {
 
       // Initiate payment request to the backend
       const paymentPayload = {
-        amount: appointmentData.cost, // Ensure the cost is in the correct unit (e.g., dollars)
+        amount: appointmentData.cost, // Ensure the cost is in the correct unit (e.g., pounds)
         email: session.user.email,
         productName: `Consultation with ${consultant.firstName}`,
       };

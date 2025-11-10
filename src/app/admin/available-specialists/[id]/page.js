@@ -260,7 +260,7 @@ export default function StartConsultationPage() {
 
       // Initiate payment request to the backend
       const paymentPayload = {
-        amount: calculatedCost, // Ensure the cost is in the correct unit (e.g., dollars)
+        amount: calculatedCost, // Ensure the cost is in the correct unit (e.g., pounds)
         email: session.user.email,
         productName: `Consultation with ${specialist.firstName}`,
       };

@@ -230,7 +230,7 @@ export default function CertificatesConsultationPage() {
                 setPrice={(p) => dispatch(setPrice(p))}
                 setDuration={(d) => dispatch(setDuration(d))}
                 specialist={() => useSelector((state) => state.specialist.specialist)}
-                currency="USD"
+                currency="GBP"
                 plans={[
                     {
                         title: "Basic",

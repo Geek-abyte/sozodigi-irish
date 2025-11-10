@@ -214,9 +214,9 @@ const SpecialistPage = () => {
           modal={
             <CheckoutModal
               closeModal={closeModal}
-              currency="USD"
+              currency="GBP"
               duration={duration}
-              date={new Date(now)}
+              date={new Date()}
               consultMode="now"
             />
           }

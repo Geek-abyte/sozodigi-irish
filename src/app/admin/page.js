@@ -23,7 +23,7 @@ import { useUser } from "@/context/UserContext";
 import { fetchData } from "@/utils/api";
 
 import { triggerChatbotAttention, openChatBot } from "@/store/popUpSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import RecentTransactions from "@/components/admin/ecommerce/RecentTransactions";
 
 import { setPrice, setSpecialist, setDuration } from '@/store/specialistSlice';
@@ -54,6 +54,8 @@ export default function Ecommerce() {
   const token = session?.user?.jwt
 
   const dispatch = useDispatch()
+  const duration = useSelector((state) => state.specialist.duration)
+  const specialist = useSelector((state) => state.specialist.specialist)
 
   const router = useRouter()
 
@@ -465,9 +467,9 @@ export default function Ecommerce() {
     },
     {
       title: "Earning",
-      value: `$${calls.reduce((total, call) => total + (call.appointment?.price || 0) * 2, 0)}`,
+      value: `£${calls.reduce((total, call) => total + (call.appointment?.price || 0) * 2, 0)}`,
       change: calls.length > 0
-        ? `Last: $${(calls[calls.length - 1].durationInMinutes || 0) * 2}`
+        ? `Last: £${(calls[calls.length - 1].durationInMinutes || 0) * 2}`
         : "No past earning",
       icon: <FaMoneyBill className="text-blue-600" size={20} />,
       bgColor: "bg-blue-50",
@@ -514,7 +516,7 @@ export default function Ecommerce() {
     },
     {
       title: "Revenue",
-      value: `$${revenue ? calTotalRevnue(revenue)?.toFixed(2) : 'loading...'}`,
+      value: `£${revenue ? calTotalRevnue(revenue)?.toFixed(2) : 'loading...'}`,
       change: calls.length > 0
         ? `Last: ${revenue ? new Date(revenue[0].created * 1000).toLocaleDateString() : 'loading...'}`
         : "No past payments",
@@ -873,7 +875,7 @@ export default function Ecommerce() {
                     closeModal={closeDialog}
                     setPrice={(p) => dispatch(setPrice(p))}
                     setDuration={(d) => dispatch(setDuration(d))}
-                    specialist={() => useSelector((state) => state.specialist.specialist)}
+                    specialist={specialist}
                     currency="EUR"
                     plans={[
                         {
@@ -925,8 +927,8 @@ export default function Ecommerce() {
               modal={
                 <CheckoutModal
                   closeModal={closeDialog}
-                  currency="USD"
-                  duration={() => useSelector(state => state.specialist.duration)}
+                  currency="GBP"
+                  duration={duration}
                   date={new Date()}
                   consultMode="now"
                 />

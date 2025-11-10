@@ -316,13 +316,6 @@ const AppSidebar = () => {
       //   path: "/admin/medical-tourism/consultations/appointments",
       //   roles: ["admin"]
       // },
-      // Consult Specialist
-      {
-        icon: <MessageSquare  />,
-        name: "Consult Specialist",
-        path: "/admin/available-specialists",
-        roles: ["user"]
-      },
       // Doctor's prescription
       {
         icon: <Pill />,
