@@ -33,6 +33,7 @@ const SessionPage = () => {
   
 
   const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}`
+  // const videoUrl = `http://localhost:4000/?room=${id}`
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
@@ -428,7 +429,7 @@ const SessionPage = () => {
         </div>
         
         {/* Timer */}
-        <div className="absolute top-5 right-25 transform -translate-x-1/2 mb-6 z-999999">
+        <div className="absolute top-5 md:top-5 top-20 right-4 md:right-25 md:transform md:-translate-x-1/2 mb-6 z-999999">
           <SessionTimer
             appointment={appointment}
             setRemainingTime={setRemainingTime}
@@ -440,7 +441,7 @@ const SessionPage = () => {
           />
         </div>
 
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 text-white z-[99999999] bg-black/60 backdrop-blur px-4 py-2 rounded">
+        <div className="absolute top-10 md:top-10 top-32 left-1/2 -translate-x-1/2 text-white z-[99999999] bg-black/60 backdrop-blur px-4 py-2 rounded text-xs md:text-sm">
            { userRole === "user" ? `Consultant: ${appointment.session.specialist.firstName} ${appointment.session.specialist.lastName}` : `Patient: ${appointment.session.user.firstName} ${appointment.session.user.lastName}`}
         </div>
 

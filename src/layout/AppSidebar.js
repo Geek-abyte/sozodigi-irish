@@ -30,7 +30,8 @@ import {
   Newspaper,
   LogOut,
   Camera,
-  MessageSquare 
+  MessageSquare,
+  Stethoscope
 } from 'lucide-react';
 
 const AppSidebar = () => {
@@ -175,6 +176,13 @@ const AppSidebar = () => {
         name: "Specialists",
         path: "/admin/specialists",
         roles: ["admin", "superAdmin"]
+      },
+      // general practitioners
+      {
+        icon: <Stethoscope />,
+        name: "General Practitioner",
+        path: "/admin/general-practitioners",
+        roles: ["user"]
       },
       // availability
       {
