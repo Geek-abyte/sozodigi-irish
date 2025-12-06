@@ -20,24 +20,13 @@ const VideoSection = ({
   iframeRef,
   iframeUrl,
   handleSessionEnded,
-  handleEndUserSession
+  handleRequestEndSession
 }) => {
   const agoraAppId = process.env.NEXT_PUBLIC_VITE_AGORA_API_ID;
 
   const socketRef = useRef();
 
   const [showConfirmEnd, setShowConfirmEnd] = useState(false);
-
-  const handleEndSession = () => {
-    // emit to backend
-    if (socketRef.current) {
-      socketRef.current.emit("end-session", { sessionId: session.id });
-    }
-
-    setShowConfirmEnd(false);
-    handleSessionEnded(); // optionally call this directly
-  };
-
 
   useEffect(() => {
     socketRef.current = getSocket();
@@ -91,10 +80,13 @@ const VideoSection = ({
         <ConfirmationDialog
           isOpen={showConfirmEnd}
           onClose={() => setShowConfirmEnd(false)}
-          onConfirm={handleEndUserSession}
-          title="End Session?"
-          message="Are you sure you want to end this consultation session? This action cannot be undone."
-          confirmText="Yes, End Session"
+          onConfirm={() => {
+            setShowConfirmEnd(false);
+            handleRequestEndSession();
+          }}
+          title="Request to End Session?"
+          message="This will send a request to the other party. The session will only end if both parties agree."
+          confirmText="Send Request"
           cancelText="Cancel"
         />
 

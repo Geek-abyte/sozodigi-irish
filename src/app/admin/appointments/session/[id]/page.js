@@ -17,6 +17,9 @@ import SessionTimer from "@/components/admin/SessionTimer";
 import NotesDialog from "@/components/admin/NotesDialog";
 import PrescriptionDialog from "@/components/admin/PrescriptionDialog";
 import LabReferralDialog from "@/components/admin/LabReferralDialog";
+import CertificateDialog from "@/components/admin/CertificateDialog";
+import EndSessionConsentDialog from "@/components/admin/EndSessionConsentDialog";
+import EndSessionRequestDialog from "@/components/admin/EndSessionRequestDialog";
 
 import QuestionsDialog from "@/components/admin/QuestionsDialog";
 
@@ -32,8 +35,8 @@ const SessionPage = () => {
   const router = useRouter();
   
 
-  const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}`
-  // const videoUrl = `http://localhost:4000/?room=${id}`
+  // const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}`
+  const videoUrl = `http://localhost:4000/?room=${id}`
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
@@ -87,6 +90,13 @@ const SessionPage = () => {
   });
   const [savingReferral, setSavingReferral] = useState(false);
   
+  const [showCertificates, setShowCertificates] = useState(false);
+  const [savingCertificate, setSavingCertificate] = useState(false);
+
+  // Mutual consent for ending session
+  const [endRequestPending, setEndRequestPending] = useState(false);
+  const [showConsentDialog, setShowConsentDialog] = useState(false);
+  const [endRequestData, setEndRequestData] = useState(null);
 
   const [newPrescription, setNewPrescription] = useState({ medication: '', dosage: '', frequency: '' });
 
@@ -96,6 +106,17 @@ const SessionPage = () => {
   
   useEffect(() => {
     socketRef.current = getSocket();
+    
+    // Listen for end session requests
+    socketRef.current.on("end-session-request", handleEndSessionRequest);
+    socketRef.current.on("end-session-consent", handleEndSessionConsent);
+    socketRef.current.on("end-session-rejected", handleEndSessionRejected);
+    
+    return () => {
+      socketRef.current.off("end-session-request", handleEndSessionRequest);
+      socketRef.current.off("end-session-consent", handleEndSessionConsent);
+      socketRef.current.off("end-session-rejected", handleEndSessionRejected);
+    };
   }, []);
 
   useEffect(() => {
@@ -121,9 +142,109 @@ const SessionPage = () => {
     }
   }, [appointmentRef.current])
 
-  const handleEndSession = async () => {
+  // Request to end session (requires mutual consent)
+  const handleRequestEndSession = () => {
+    const currentAppointment = appointmentRef.current;
+    if (!currentAppointment?.session._id || !token) return;
+
+    setShowConfirmEnd(false);
+    setEndRequestPending(true);
+
+    // Emit end session request to the other party
+    socketRef.current.emit("end-session-request", {
+      sessionId: currentAppointment.session._id,
+      appointmentId: currentAppointment.session.appointment._id,
+      requesterId: user._id,
+      requesterName: `${user.firstName} ${user.lastName}`,
+      requesterRole: userRole,
+      targetId: userRole === "user" 
+        ? currentAppointment.session.specialist._id 
+        : currentAppointment.session.user._id,
+    });
+
+    addToast("End session request sent. Waiting for consent...", "info", 5000);
+  };
+
+  // Handle incoming end session request
+  const handleEndSessionRequest = useCallback(({ requesterId, requesterName, requesterRole, sessionId, appointmentId }) => {
+    const currentAppointment = appointmentRef.current;
+    
+    // Check if this request is for current session
+    if (currentAppointment?.session?._id === sessionId) {
+      setEndRequestData({ requesterId, requesterName, requesterRole, sessionId, appointmentId });
+      setShowConsentDialog(true);
+    }
+  }, [appointmentRef]);
+
+  // Accept end session request
+  const handleAcceptEndSession = () => {
+    if (!endRequestData) return;
+
+    setShowConsentDialog(false);
+
+    // Emit consent to requester
+    socketRef.current.emit("end-session-consent", {
+      sessionId: endRequestData.sessionId,
+      appointmentId: endRequestData.appointmentId,
+      requesterId: endRequestData.requesterId,
+      accepterId: user._id,
+    });
+
+    // Proceed to end session
+    finalizeEndSession();
+  };
+
+  // Reject end session request
+  const handleRejectEndSession = () => {
+    if (!endRequestData) return;
+
+    setShowConsentDialog(false);
+
+    // Emit rejection to requester
+    socketRef.current.emit("end-session-rejected", {
+      sessionId: endRequestData.sessionId,
+      appointmentId: endRequestData.appointmentId,
+      requesterId: endRequestData.requesterId,
+      rejecterId: user._id,
+      rejecterName: `${user.firstName} ${user.lastName}`,
+    });
+
+    setEndRequestData(null);
+    addToast("End session request rejected", "info");
+  };
+
+  // Handle consent received
+  const handleEndSessionConsent = useCallback(({ sessionId, accepterId }) => {
+    const currentAppointment = appointmentRef.current;
+    
+    if (currentAppointment?.session?._id === sessionId) {
+      setEndRequestPending(false);
+      addToast("Request accepted. Ending session...", "success");
+      finalizeEndSession();
+    }
+  }, []);
+
+  // Handle rejection received
+  const handleEndSessionRejected = useCallback(({ sessionId, rejecterName }) => {
+    const currentAppointment = appointmentRef.current;
+    
+    if (currentAppointment?.session?._id === sessionId) {
+      setEndRequestPending(false);
+      addToast(`${rejecterName} rejected the end session request`, "error", 5000);
+    }
+  }, []);
+
+  // Cancel pending end request
+  const handleCancelEndRequest = () => {
+    setEndRequestPending(false);
+    addToast("End session request cancelled", "info");
+  };
+
+  // Finalize ending the session (used for both mutual consent and timer expiry)
+  const finalizeEndSession = async () => {
     const currentAppointment = appointmentRef.current;
     if (!currentAppointment?.session._id || !token || currentAppointment.status === "completed") return;
+    
     try {
       setEndingSession(true);
       socketRef.current.emit("session-ended", {
@@ -143,8 +264,14 @@ const SessionPage = () => {
       handleEndCall();
       setIsTimerRunning(false);
       setEndingSession(false);
+      setEndRequestPending(false);
       router.push(`/admin/appointments/session/completed/${id}`)
     }
+  };
+
+  // Direct end session (for timer expiry - no consent needed)
+  const handleEndSession = async () => {
+    await finalizeEndSession();
   };
 
    // load documentation when dialog is opened
@@ -353,6 +480,49 @@ const SessionPage = () => {
     }
   };
 
+  const handleCreateCertificate = async ({ diagnosis, comment, validFrom, validTo }) => {
+    const currentAppointment = appointmentRef.current;
+    if (!currentAppointment?.session?._id || !token) return;
+
+    try {
+      setSavingCertificate(true);
+      
+      // Generate certificate ID
+      const rand = Math.floor(10000 + Math.random() * 90000);
+      const certID = `CERT-${new Date().getFullYear()}-${rand}`;
+
+      const payload = {
+        patient: currentAppointment.session.user._id,
+        doctor: currentAppointment.session.specialist._id,
+        videoSession: currentAppointment.session._id,
+        appointment: currentAppointment.session.appointment._id,
+        diagnosis,
+        comment,
+        validFrom,
+        validTo,
+        certID,
+        issueDate: new Date().toISOString(),
+      };
+
+      const response = await postData("certificates/create", payload, token);
+      
+      if (response.certificate) {
+        addToast("Certificate issued successfully!", "success");
+        setShowCertificates(false);
+        
+        // Optionally redirect to view the certificate
+        // router.push(`/admin/medical-certificates/${response.certificate._id}`);
+      } else {
+        addToast("Failed to issue certificate", "error");
+      }
+    } catch (error) {
+      console.error("Failed to create certificate:", error);
+      addToast("Failed to issue certificate", "error");
+    } finally {
+      setSavingCertificate(false);
+    }
+  };
+
 
 
   const patient = appointment?.session?.user;
@@ -388,7 +558,7 @@ const SessionPage = () => {
     } catch (error) {
       console.error("❌ Error in handleSessionEnded:", error);
     }
-  }, [appointmentRef, session?.user?.id, handleEndSession, handleEndCall]); // Add only necessary dependencies
+  }, [appointmentRef, session?.user?.id, handleEndCall]); // Add only necessary dependencies
   
 
   const handleOpenQuestions = async () => {
@@ -460,7 +630,7 @@ const SessionPage = () => {
             id={id}
             videoRef={videoRef}
             handleSessionEnded={handleSessionEnded}
-            handleEndUserSession={handleEndSession}
+            handleRequestEndSession={handleRequestEndSession}
           />
         </div>
 
@@ -501,6 +671,14 @@ const SessionPage = () => {
                 <span>⚕️</span>
                 Lab Referral
               </button>
+
+              <button
+                onClick={() => setShowCertificates(true)}
+                className="flex items-center gap-2 w-full border border-white text-white dark:text-white px-4 py-2 rounded-lg transition hover:text-gray-200"
+              >
+                <span>📜</span>
+                Issue Certificate
+              </button>
             </div>
 
         )}
@@ -537,14 +715,40 @@ const SessionPage = () => {
           savingReferral={savingReferral}
         />
 
+        <CertificateDialog
+          showCertificates={showCertificates}
+          setShowCertificates={setShowCertificates}
+          onCreateCertificate={handleCreateCertificate}
+          savingCertificate={savingCertificate}
+        />
+
         <ConfirmationDialog
           isOpen={showConfirmEnd}
           onClose={() => setShowConfirmEnd(false)}
-          onConfirm={handleEndSession}
-          title="End Session?"
-          message="Are you sure you want to end this consultation session? This action cannot be undone."
-          confirmText="Yes, End Session"
+          onConfirm={handleRequestEndSession}
+          title="Request to End Session?"
+          message="This will send a request to the other party. The session will only end if both parties agree."
+          confirmText="Send Request"
           cancelText="Cancel"
+        />
+
+        <EndSessionConsentDialog
+          isOpen={showConsentDialog}
+          onAccept={handleAcceptEndSession}
+          onReject={handleRejectEndSession}
+          requesterName={endRequestData?.requesterName}
+          requesterRole={endRequestData?.requesterRole}
+        />
+
+        <EndSessionRequestDialog
+          isOpen={endRequestPending}
+          onCancel={handleCancelEndRequest}
+          targetName={
+            userRole === "user"
+              ? `${appointment?.session?.specialist?.firstName} ${appointment?.session?.specialist?.lastName}`
+              : `${appointment?.session?.user?.firstName} ${appointment?.session?.user?.lastName}`
+          }
+          targetRole={userRole === "user" ? "specialist" : "user"}
         />
 
         {/* <QuestionsDialog

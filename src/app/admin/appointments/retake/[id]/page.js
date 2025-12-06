@@ -109,11 +109,11 @@ export default function ConsultationBookingPageContent() {
       timeSlot: selectedSlot.timeSlot,
       cost: calculatedCost,
       consultMode: consultMode,
-      type: "general",
-      appointmentId: appointmentId
+      type: "general"
     }
 
-    router.push(`/consultation/book/review?data=${encodeURIComponent(JSON.stringify(payload))}`)
+    // Pass appointmentId as a separate query parameter for retakes
+    router.push(`/consultation/book/review?data=${encodeURIComponent(JSON.stringify(payload))}&appointmentId=${appointmentId}`)
   }
 
   return (

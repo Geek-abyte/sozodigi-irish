@@ -733,3 +733,50 @@ body {
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
 }
+
+/* Print Styles for Medical Certificates */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  
+  /* Hide everything except certificate */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Show only certificate container */
+  .print\:p-0,
+  .print\:p-0 * {
+    visibility: visible;
+  }
+  
+  .print\:p-0 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  
+  /* Hide print buttons */
+  .print\:hidden {
+    display: none !important;
+  }
+  
+  /* Ensure proper page breaks */
+  .print\:break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  /* Ensure backgrounds print */
+  .print\:bg-white {
+    background-color: white !important;
+  }
+}

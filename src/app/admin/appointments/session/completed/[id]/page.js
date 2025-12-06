@@ -102,7 +102,7 @@ const SessionPage = () => {
     return <div className="text-center mt-10 text-red-500">Appointment not found</div>;
   }
 
-  if ((appointment.session.appointment.status === "completed" || sessionEnded) && session?.user?.role === "user") {
+  if (appointment.session.appointment.status === "completed" && session?.user?.role === "user") {
     return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] mt-4 px-6 py-10 bg-white dark:bg-gray-800 rounded-xl shadow-xl text-center transition-all">
           <div className="flex items-center justify-center w-12 h-12 mb-4 bg-yellow-100 rounded-full">
@@ -194,7 +194,7 @@ const SessionPage = () => {
       );
   }
 
-  if ((appointment.session.appointment.status === "completed" || sessionEnded) && (session?.user?.role === "specialist" || session?.user?.role === "consultant")) {
+  if (appointment.session.appointment.status === "completed" && (session?.user?.role === "specialist" || session?.user?.role === "consultant")) {
     return (
       <div className="text-center p-10 bg-white dark:bg-gray-800 rounded-lg shadow-md">
         <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Session Ended</h2>

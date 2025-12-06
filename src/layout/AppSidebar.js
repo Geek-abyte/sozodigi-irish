@@ -31,7 +31,8 @@ import {
   LogOut,
   Camera,
   MessageSquare,
-  Stethoscope
+  Stethoscope,
+  FileCheck
 } from 'lucide-react';
 
 const AppSidebar = () => {
@@ -330,6 +331,13 @@ const AppSidebar = () => {
         name: "Doctor Prescriptions",
         path: "/admin/doctor-prescriptions",
         roles: ["user", "specialist", "admin"]
+      },
+      // Medical Certificates
+      {
+        icon: <FileCheck />,
+        name: "Medical Certificates",
+        path: "/admin/medical-certificates",
+        roles: ["user", "specialist", "consultant", "admin"]
       },
       // {
       //   icon: <FlaskConical />,
