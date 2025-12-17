@@ -79,8 +79,8 @@ const Calendar = () => {
                 end: eventEndDate,
                 extendedProps: { calendar: eventLevel },
               }
-            : event
-        )
+            : event,
+        ),
       );
     } else {
       // Add new event

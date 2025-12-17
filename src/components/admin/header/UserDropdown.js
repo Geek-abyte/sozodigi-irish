@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useUser } from "@/context/UserContext";
-import { signOut } from "next-auth/react";  // Import signOut
+import { signOut } from "next-auth/react"; // Import signOut
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,7 +51,9 @@ export default function UserDropdown() {
           />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">{currentUser?.firstName}</span>
+        <span className="block mr-1 font-medium text-theme-sm">
+          {currentUser?.firstName}
+        </span>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}

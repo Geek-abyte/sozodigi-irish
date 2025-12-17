@@ -1,8 +1,7 @@
-"use client"
+"use client";
 
 import React from "react";
 import { useSession } from "next-auth/react";
-
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -15,7 +14,7 @@ export default function Dashboard() {
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       {/* Stats Overview */}
-      {userRole === "admin" && 
+      {userRole === "admin" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-lg font-semibold">Total Orders</h2>
@@ -37,10 +36,10 @@ export default function Dashboard() {
             <p className="text-2xl font-bold mt-2">4,567</p>
           </div>
         </div>
-      }
+      )}
 
       {/* Recent Orders */}
-      {userRole === "admin" &&
+      {userRole === "admin" && (
         <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Recent Orders</h2>
           <table className="w-full border-collapse">
@@ -68,7 +67,7 @@ export default function Dashboard() {
             </tbody>
           </table>
         </div>
-      }
+      )}
     </div>
   );
 }

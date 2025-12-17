@@ -66,7 +66,7 @@ const EditLabServicePage = () => {
           laboratory,
           status,
         },
-        token
+        token,
       );
       alertSuccess("Lab service updated successfully!");
     } catch (error) {

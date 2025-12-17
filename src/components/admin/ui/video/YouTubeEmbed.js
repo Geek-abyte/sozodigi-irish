@@ -1,15 +1,6 @@
 import React from "react";
 
-type AspectRatio = "16:9" | "4:3" | "21:9" | "1:1";
-
-interface YouTubeEmbedProps {
-  videoId: string;
-  aspectRatio?: AspectRatio;
-  title?: string;
-  className?: string;
-}
-
-const YouTubeEmbed: React.FC<YouTubeEmbedProps> = ({
+const YouTubeEmbed = ({
   videoId,
   aspectRatio = "16:9",
   title = "YouTube video",

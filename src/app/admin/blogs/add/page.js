@@ -27,7 +27,8 @@ const AddBlog = () => {
     const { name, value, type, checked, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
 
@@ -68,7 +69,7 @@ const AddBlog = () => {
 
   const imageUploadHandler = async (blobInfo, success, failure) => {
     const reader = new FileReader();
-    
+
     reader.onloadend = () => {
       const imageDataUrl = reader.result; // This is the base64 Data URL of the image
       if (imageDataUrl) {
@@ -77,19 +78,23 @@ const AddBlog = () => {
         failure("Image upload failed");
       }
     };
-  
+
     reader.onerror = () => {
       failure("Failed to read the image file");
     };
-  
+
     // Read the image file as a Data URL
-    reader.readAsDataURL(blobInfo.blob()); 
+    reader.readAsDataURL(blobInfo.blob());
   };
 
   return (
     <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 dark:text-gray-300 p-6 rounded-xl shadow-md">
       <h2 className="text-2xl font-semibold text-center mb-4">Add New Blog</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4" encType="multipart/form-data">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 gap-4"
+        encType="multipart/form-data"
+      >
         <input
           name="title"
           placeholder="Blog Title"
@@ -121,7 +126,7 @@ const AddBlog = () => {
           onChange={handleChange}
           className="p-3 border rounded-lg"
         />
-        
+
         {/* Featured Image Input */}
         <div>
           <label className="block mb-2">Featured Image</label>
@@ -133,7 +138,7 @@ const AddBlog = () => {
             className="p-3 border  rounded-lg"
           />
         </div>
-        
+
         <label className="flex items-center space-x-2">
           <input
             type="checkbox"

@@ -1,4 +1,4 @@
-import Dialog from './Dialog';
+import Dialog from "./Dialog";
 
 const NotesDialog = ({
   showDocs,
@@ -6,12 +6,15 @@ const NotesDialog = ({
   sessionNotes,
   setSessionNotes,
   handleSaveNotes,
-  savingNotes
+  savingNotes,
 }) => {
   if (!showDocs) return null;
 
   return (
-    <Dialog title="Consultation Documentation" onClose={() => setShowDocs(false)}>
+    <Dialog
+      title="Consultation Documentation"
+      onClose={() => setShowDocs(false)}
+    >
       <textarea
         className="w-full h-32 p-2 border rounded"
         placeholder="Enter notes here..."
@@ -23,7 +26,7 @@ const NotesDialog = ({
         onClick={handleSaveNotes}
         disabled={savingNotes}
       >
-        {savingNotes ? 'Saving...' : 'Save Notes'}
+        {savingNotes ? "Saving..." : "Save Notes"}
       </button>
     </Dialog>
   );

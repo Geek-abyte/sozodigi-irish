@@ -4,9 +4,8 @@ import { useEffect, useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { useUser } from "@/context/UserContext";
 import { useToast } from "@/context/ToastContext";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { postData } from "@/utils/api";
-
 
 const steps = [
   "Basic Info",
@@ -120,9 +119,7 @@ const initialState = {
 };
 
 function camelToLabel(str) {
-  return str
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (s) => s.toUpperCase());
+  return str.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
 }
 
 export default function HealthQuestionnaireForm() {
@@ -132,7 +129,7 @@ export default function HealthQuestionnaireForm() {
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const { addToast } = useToast();
 
   const alertSuccess = (msg) => addToast(msg, "success");
@@ -144,11 +141,11 @@ export default function HealthQuestionnaireForm() {
     if (!user) return; // Wait for user data to be available
 
     // console.log(user)
-  
+
     const saved = sessionStorage.getItem("healthQuestionnaire");
 
-    console.log(saved)
-  
+    console.log(saved);
+
     // Default user data (safe fallback)
     const safeUser = {
       firstName: user.firstName || "",
@@ -156,11 +153,11 @@ export default function HealthQuestionnaireForm() {
       email: user.email || "",
       phone: user.phone || "",
     };
-  
+
     // If saved data exists in sessionStorage
     if (saved) {
       const parsed = JSON.parse(saved);
-  
+
       // Merge saved data with user data, ensuring the user details take precedence
       setFormData((prev) => ({
         ...prev,
@@ -174,10 +171,9 @@ export default function HealthQuestionnaireForm() {
         ...safeUser,
       }));
 
-    sessionStorage.setItem("healthQuestionnaire", JSON.stringify(formData));
-
+      sessionStorage.setItem("healthQuestionnaire", JSON.stringify(formData));
     }
-  }, [user]); // Dependency on user so it triggers when user data is available  
+  }, [user]); // Dependency on user so it triggers when user data is available
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -186,7 +182,7 @@ export default function HealthQuestionnaireForm() {
   const handleChange = (section, key, value) => {
     setFormData((prev) => {
       let updatedFormData;
-  
+
       if (!section) {
         updatedFormData = { ...prev, [key]: value };
       } else {
@@ -197,25 +193,27 @@ export default function HealthQuestionnaireForm() {
       }
 
       // Save the updated form data to sessionStorage
-      sessionStorage.setItem("healthQuestionnaire", JSON.stringify(updatedFormData));
-  
+      sessionStorage.setItem(
+        "healthQuestionnaire",
+        JSON.stringify(updatedFormData),
+      );
+
       return updatedFormData;
     });
   };
-  
 
   const handleNext = () => {
     if (step < steps.length - 1) {
       setStep((s) => s + 1);
-      console.log(formData)
+      console.log(formData);
 
       // Save the form data to sessionStorage when moving to the next step
       sessionStorage.setItem("healthQuestionnaire", JSON.stringify(formData));
 
-      console.log(sessionStorage.getItem("healthQuestionnaire"))
+      console.log(sessionStorage.getItem("healthQuestionnaire"));
     }
   };
-  
+
   const handleBack = () => {
     if (step > 0) {
       setStep((s) => s - 1);
@@ -223,26 +221,25 @@ export default function HealthQuestionnaireForm() {
       sessionStorage.setItem("healthQuestionnaire", JSON.stringify(formData));
     }
   };
-  
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-    //   console.log("Submit form data:", formData);
-        formData.user = session.user?.id
+      //   console.log("Submit form data:", formData);
+      formData.user = session.user?.id;
       await postData("health-questionnaires/create/custom", formData, token);
       sessionStorage.removeItem("healthQuestionnaire");
       alertSuccess("Form submitted successfully!");
 
-      const loginRes = await signIn('credentials', {
+      const loginRes = await signIn("credentials", {
         redirect: false,
         email: user.email,
         token: token,
-        callbackUrl: '/admin',
+        callbackUrl: "/admin",
       });
 
-      if(loginRes.ok){
-        router.push(loginRes.url)
+      if (loginRes.ok) {
+        router.push(loginRes.url);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -256,14 +253,17 @@ export default function HealthQuestionnaireForm() {
     if (step === 0) {
       return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[ 
+          {[
             { label: "First Name", name: "firstName", type: "text" },
             { label: "Last Name", name: "lastName", type: "text" },
             { label: "Phone", name: "phone", type: "tel" },
             { label: "Email", name: "email", type: "email" },
           ].map(({ label, name, type }) => (
             <div key={name}>
-              <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+              <label
+                htmlFor={name}
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
                 {label}
               </label>
               <input
@@ -277,7 +277,10 @@ export default function HealthQuestionnaireForm() {
           ))}
 
           <div>
-            <label htmlFor="date" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="date"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Date
             </label>
             <input
@@ -290,7 +293,10 @@ export default function HealthQuestionnaireForm() {
           </div>
 
           <div>
-            <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="gender"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Gender
             </label>
             <select
@@ -313,76 +319,169 @@ export default function HealthQuestionnaireForm() {
     // Define questions for each section
     const sectionQuestions = {
       general: [
-        { question: "Would you say you are in good general health?", key: "goodHealth" },
+        {
+          question: "Would you say you are in good general health?",
+          key: "goodHealth",
+        },
         { question: "Any severe fatigue or tiredness?", key: "fatigue" },
         { question: "Any recent significant weight gain?", key: "weightGain" },
         { question: "Any recent significant weight loss?", key: "weightLoss" },
-        { question: "Any history of serious medical conditions in your immediate family?", key: "familyMedicalHistory" },
+        {
+          question:
+            "Any history of serious medical conditions in your immediate family?",
+          key: "familyMedicalHistory",
+        },
       ],
       headachesAndBalance: [
-        { question: "Do you get severe headaches or migraines?", key: "severeHeadaches" },
-        { question: "Any numbness or pins and needle in your arms or legs?", key: "numbness" },
-        { question: "Any episodes of dizziness or balance problems?", key: "dizziness" },
+        {
+          question: "Do you get severe headaches or migraines?",
+          key: "severeHeadaches",
+        },
+        {
+          question: "Any numbness or pins and needle in your arms or legs?",
+          key: "numbness",
+        },
+        {
+          question: "Any episodes of dizziness or balance problems?",
+          key: "dizziness",
+        },
       ],
       vision: [
-        { question: "Have you had any recent changes in your vision?", key: "visionChanges" },
+        {
+          question: "Have you had any recent changes in your vision?",
+          key: "visionChanges",
+        },
         { question: "Any episodes of double vision?", key: "doubleVision" },
         { question: "Any recent eye infections?", key: "eyeInfections" },
-        { question: "Any eye irritation or dryness or watering?", key: "eyeIrritation" },
+        {
+          question: "Any eye irritation or dryness or watering?",
+          key: "eyeIrritation",
+        },
       ],
       ent: [
-        { question: "Have you had any hearing problems?", key: "hearingProblems" },
+        {
+          question: "Have you had any hearing problems?",
+          key: "hearingProblems",
+        },
         { question: "Any ringing or buzzing in your ears?", key: "earBuzzing" },
-        { question: "Any ear infections or discharge from your ears?", key: "earInfections" },
+        {
+          question: "Any ear infections or discharge from your ears?",
+          key: "earInfections",
+        },
         { question: "Any sinus or nasal problems?", key: "sinusProblems" },
         { question: "Any recent dental problems?", key: "dentalProblems" },
         { question: "Any mouth ulcers or sores?", key: "mouthSores" },
-        { question: "Any difficulty chewing or eating?", key: "chewingDifficulty" },
+        {
+          question: "Any difficulty chewing or eating?",
+          key: "chewingDifficulty",
+        },
       ],
       heart: [
         { question: "Do you ever get chest pain?", key: "chestPain" },
-        { question: "Any palpitations or episodes of your heart racing?", key: "palpitations" },
-        { question: "Any swelling in your legs or ankles?", key: "legSwelling" },
+        {
+          question: "Any palpitations or episodes of your heart racing?",
+          key: "palpitations",
+        },
+        {
+          question: "Any swelling in your legs or ankles?",
+          key: "legSwelling",
+        },
       ],
       respiratory: [
-        { question: "Have you been getting more short of breath than usual?", key: "breathShortness" },
+        {
+          question: "Have you been getting more short of breath than usual?",
+          key: "breathShortness",
+        },
         { question: "Any cough?", key: "cough" },
         { question: "Any wheezing?", key: "wheezing" },
         { question: "Any mucous or sputum?", key: "mucus" },
       ],
       stomachAndBowel: [
-        { question: "Do you get frequent episodes of nausea or vomiting?", key: "nausea" },
-        { question: "Any indigestion, heartburn or acid reflux?", key: "indigestion" },
-        { question: "Any problems swallowing - does food ever get stuck?", key: "swallowingProblem" },
-        { question: "Any severe stomach or abdominal pains?", key: "stomachPain" },
+        {
+          question: "Do you get frequent episodes of nausea or vomiting?",
+          key: "nausea",
+        },
+        {
+          question: "Any indigestion, heartburn or acid reflux?",
+          key: "indigestion",
+        },
+        {
+          question: "Any problems swallowing - does food ever get stuck?",
+          key: "swallowingProblem",
+        },
+        {
+          question: "Any severe stomach or abdominal pains?",
+          key: "stomachPain",
+        },
         { question: "Any regular problem with diarrhoea?", key: "diarrhoea" },
-        { question: "Any regular problem with constipation?", key: "constipation" },
-        { question: "Any recent changes in your bowel movement (frequency etc)?", key: "bowelChange" },
-        { question: "Any persistent change in stool colour?", key: "stoolColorChange" },
+        {
+          question: "Any regular problem with constipation?",
+          key: "constipation",
+        },
+        {
+          question:
+            "Any recent changes in your bowel movement (frequency etc)?",
+          key: "bowelChange",
+        },
+        {
+          question: "Any persistent change in stool colour?",
+          key: "stoolColorChange",
+        },
         { question: "Any blood or mucous in the stool?", key: "bloodInStool" },
       ],
       urinary: [
         { question: "Do you have any urinary problems?", key: "urineProblems" },
-        { question: "Do you frequently need to urinate?", key: "frequentUrination" },
-        { question: "Do you experience pain or burning during urination?", key: "painUrination" },
+        {
+          question: "Do you frequently need to urinate?",
+          key: "frequentUrination",
+        },
+        {
+          question: "Do you experience pain or burning during urination?",
+          key: "painUrination",
+        },
         { question: "Any blood in the urine?", key: "bloodInUrine" },
-        { question: "Do you have any urinary incontinence (inability to hold urine)?", key: "incontinence" },
-        { question: "Do you often feel an urgency to urinate?", key: "urgency" },
-        { question: "Do you frequently wake up at night to urinate?", key: "nightUrination" },
+        {
+          question:
+            "Do you have any urinary incontinence (inability to hold urine)?",
+          key: "incontinence",
+        },
+        {
+          question: "Do you often feel an urgency to urinate?",
+          key: "urgency",
+        },
+        {
+          question: "Do you frequently wake up at night to urinate?",
+          key: "nightUrination",
+        },
       ],
       backAndJoints: [
-        { question: "Do you suffer from any back or neck problems?", key: "backNeckProblems" },
-        { question: "Do you have pain or stiffness in your joints?", key: "jointProblems" },
+        {
+          question: "Do you suffer from any back or neck problems?",
+          key: "backNeckProblems",
+        },
+        {
+          question: "Do you have pain or stiffness in your joints?",
+          key: "jointProblems",
+        },
         { question: "Do you have any joint swelling?", key: "jointSwelling" },
       ],
       skin: [
         { question: "Do you have any skin issues?", key: "skinProblems" },
-        { question: "Do you have any moles or growths that concern you?", key: "moleConcerns" },
+        {
+          question: "Do you have any moles or growths that concern you?",
+          key: "moleConcerns",
+        },
       ],
       mentalHealth: [
-        { question: "Do you feel depressed or sad for extended periods?", key: "depression" },
+        {
+          question: "Do you feel depressed or sad for extended periods?",
+          key: "depression",
+        },
         { question: "Do you feel anxious or nervous often?", key: "anxiety" },
-        { question: "Do you have trouble sleeping or suffer from insomnia?", key: "sleepProblems" },
+        {
+          question: "Do you have trouble sleeping or suffer from insomnia?",
+          key: "sleepProblems",
+        },
       ],
     };
 
@@ -390,7 +489,9 @@ export default function HealthQuestionnaireForm() {
       <div>
         {sectionQuestions[sectionKey].map(({ question, key }) => (
           <div key={key} className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">{question}</label>
+            <label className="block text-sm font-medium text-gray-700">
+              {question}
+            </label>
             <div className="mt-2">
               <label className="inline-flex items-center">
                 <input
@@ -417,62 +518,62 @@ export default function HealthQuestionnaireForm() {
         ))}
       </div>
     );
-    
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow rounded-lg mt-20 mb-20">
-        <div className="text-sm text-gray-700 mt-5 mb-10 font-semibold">
-            Kindly complete the health questionnaire to continue accessing your dashboard. Your responses enable us to deliver personalized and high-quality healthcare services tailored to your needs.
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
-            <div
-                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
-            />
-        </div>
+      <div className="text-sm text-gray-700 mt-5 mb-10 font-semibold">
+        Kindly complete the health questionnaire to continue accessing your
+        dashboard. Your responses enable us to deliver personalized and
+        high-quality healthcare services tailored to your needs.
+      </div>
+      <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
+        <div
+          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+          style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
+        />
+      </div>
 
-
-        <form>
+      <form>
         <div className="mb-6">
-            <div className="text-lg font-semibold">{steps[step]}</div>
+          <div className="text-lg font-semibold">{steps[step]}</div>
         </div>
 
         {renderStep()}
 
         <div className="mt-8 flex justify-between">
-            {step > 0 && (
+          {step > 0 && (
             <button
-                type="button"
-                onClick={handleBack}
-                className="py-2 px-4 bg-gray-300 rounded-md"
+              type="button"
+              onClick={handleBack}
+              className="py-2 px-4 bg-gray-300 rounded-md"
             >
-                Back
+              Back
             </button>
-            )}
-            <p className="text-sm text-gray-600 mb-2 text-center">
-                Step {step + 1} of {steps.length}
-            </p>
-            {step < steps.length - 1 ? (
+          )}
+          <p className="text-sm text-gray-600 mb-2 text-center">
+            Step {step + 1} of {steps.length}
+          </p>
+          {step < steps.length - 1 ? (
             <button
-                type="button"
-                onClick={handleNext}
-                className="py-2 px-4 bg-blue-500 text-white rounded-md"
+              type="button"
+              onClick={handleNext}
+              className="py-2 px-4 bg-blue-500 text-white rounded-md"
             >
-                Next
+              Next
             </button>
-            ) : (
+          ) : (
             <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className={`py-2 px-4 ${isSubmitting ? "bg-gray-400" : "bg-blue-500"} text-white rounded-md`}
+              type="button"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className={`py-2 px-4 ${isSubmitting ? "bg-gray-400" : "bg-blue-500"} text-white rounded-md`}
             >
-                {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? "Submitting..." : "Submit"}
             </button>
-            )}
+          )}
         </div>
-        </form>
+      </form>
     </div>
   );
 }

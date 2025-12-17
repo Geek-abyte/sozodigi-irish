@@ -31,28 +31,21 @@ export { default as medicalDevicesHero } from "./medicalDevicesHero.jpg";
 export { default as labServicesHero } from "./labServicesHero.jpg";
 export { default as aidoc } from "./recial2.png";
 
-
-export { default as Cardiologist} from './Cardiologist.jpg';
-export { default as Dentist} from './Dentist.jpg';
-export { default as Dermatologist} from './Dermatologist.jpg';
-export { default as Endocrinologist} from './Endocrinologist.jpg';
-export { default as ENTSpecialist} from './ENT Specialist.jpg';
-export { default as Gastroenterologist} from './Gastroenterologist.jpg';
-export { default as GeneralPractitioner} from './General Practitioner.jpg';
-export { default as Gynecologist} from './Gynecologist.jpg';
-export { default as Neurologist} from './Neurologist.jpg';
-export { default as Oncologist} from './Oncologist.jpg';
-export { default as OrthopedicSurgeon} from './Orthopedic Surgeon.jpg';
-export { default as Pediatrician} from './Pediatrician.jpg';
-export { default as Psychiatrist} from './Psychiatrist.jpg';
-export { default as Surgeon} from './Surgeon.jpg';
-export { default as Urologist} from './Urologist.jpg';
-export { default as Allergist} from './Allergist.jpg';
-export { default as PreventiveMedicineSpecialist} from './Preventive Medicine Specialist.jpg';
-export { default as Hematologist} from './Hematologist.jpg';
-
-
-
-
-
-
+export { default as Cardiologist } from "./Cardiologist.jpg";
+export { default as Dentist } from "./Dentist.jpg";
+export { default as Dermatologist } from "./Dermatologist.jpg";
+export { default as Endocrinologist } from "./Endocrinologist.jpg";
+export { default as ENTSpecialist } from "./ENT Specialist.jpg";
+export { default as Gastroenterologist } from "./Gastroenterologist.jpg";
+export { default as GeneralPractitioner } from "./General Practitioner.jpg";
+export { default as Gynecologist } from "./Gynecologist.jpg";
+export { default as Neurologist } from "./Neurologist.jpg";
+export { default as Oncologist } from "./Oncologist.jpg";
+export { default as OrthopedicSurgeon } from "./Orthopedic Surgeon.jpg";
+export { default as Pediatrician } from "./Pediatrician.jpg";
+export { default as Psychiatrist } from "./Psychiatrist.jpg";
+export { default as Surgeon } from "./Surgeon.jpg";
+export { default as Urologist } from "./Urologist.jpg";
+export { default as Allergist } from "./Allergist.jpg";
+export { default as PreventiveMedicineSpecialist } from "./Preventive Medicine Specialist.jpg";
+export { default as Hematologist } from "./Hematologist.jpg";

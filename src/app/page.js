@@ -1,45 +1,44 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react';
-import Swiper from 'swiper';
-import { fetchData } from '@/utils/api';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import LottieImage from '@/components/LottieBackground';
+import { useEffect, useState } from "react";
+import Swiper from "swiper";
+import { fetchData } from "@/utils/api";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import LottieImage from "@/components/LottieBackground";
 import SpecialistCategories from "@/components/specialistCategories";
-import DoctorsPage from '@/components/Doctors';
-import { 
-  FaArrowRight, 
-  FaChevronDown, 
-  FaChevronUp, 
-  FaHeartbeat,  
-  FaComments, 
+import DoctorsPage from "@/components/Doctors";
+import {
+  FaArrowRight,
+  FaChevronDown,
+  FaChevronUp,
+  FaHeartbeat,
+  FaComments,
   FaFileMedicalAlt,
-  FaPlaneDeparture, 
-  FaPrescriptionBottleAlt, 
-  FaFlask  } from 'react-icons/fa';
+  FaPlaneDeparture,
+  FaPrescriptionBottleAlt,
+  FaFlask,
+} from "react-icons/fa";
 
-
-import { aidoc } from '@/assets';
-import SimpleCarousel from '@/components/gabriel/SimpleCarousel';
-import Button from '@/components/gabriel/Button';
-import { cards } from '@/data/cards';
+import { aidoc } from "@/assets";
+import SimpleCarousel from "@/components/gabriel/SimpleCarousel";
+import Button from "@/components/gabriel/Button";
+import { cards } from "@/data/cards";
 // import { blogs } from '@/data/blogs';
-import FaqSection from '@/components/FAQs';
-import { useMediaQuery } from 'react-responsive'; 
-import TypewriterEffect from '@/components/gabriel/TypewriterEffect';
-import { useRouter } from 'next/navigation';
-import { openChatBot, triggerChatbotAttention } from '@/store/popUpSlice';
-import Illnesses from '@/components/Illnesses'
-import { useDispatch } from 'react-redux';
-import WhyChooseSozo from '@/components/WhySozo';
-import BookAppointment from '@/components/BookAppointmnetBtn';
-import CertificateList from '@/components/CertificateList';
-
+import FaqSection from "@/components/FAQs";
+import { useMediaQuery } from "react-responsive";
+import TypewriterEffect from "@/components/gabriel/TypewriterEffect";
+import { useRouter } from "next/navigation";
+import { openChatBot, triggerChatbotAttention } from "@/store/popUpSlice";
+import Illnesses from "@/components/Illnesses";
+import { useDispatch } from "react-redux";
+import WhyChooseSozo from "@/components/WhySozo";
+import BookAppointment from "@/components/BookAppointmnetBtn";
+import CertificateList from "@/components/CertificateList";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function HomePage() {
@@ -50,17 +49,21 @@ export default function HomePage() {
   const [specialists, setSpecialists] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs] = useState([]);
   const [blogsLoading, setBlogsLoading] = useState(false);
   const [blogsError, setBlogsError] = useState(null);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const [selectedService, setSelectedService] = useState(null);
   // const iconlist = ['Medical Tourism Solutions', 'Medical Equipment', 'Air Ambulance Services'];
-  const iconlist = ['Medical Tourism Solutions', 'Medical Equipment', 'Air Ambulance Services'];
+  const iconlist = [
+    "Medical Tourism Solutions",
+    "Medical Equipment",
+    "Air Ambulance Services",
+  ];
 
   const services = [
     // {
@@ -73,23 +76,28 @@ export default function HomePage() {
     {
       icon: <FaComments className="text-5xl text-[var(--color-primary-6)]" />,
       title: "Online Medical Consultation",
-      description: "Connect instantly with licensed healthcare professionals through secure video or chat, receiving expert medical advice, diagnosis, and personalized treatment recommendations anytime, anywhere.",
+      description:
+        "Connect instantly with licensed healthcare professionals through secure video or chat, receiving expert medical advice, diagnosis, and personalized treatment recommendations anytime, anywhere.",
       animation: "M10 50 Q50 10 90 50 Q50 90 10 50",
-      link: "/gp-consultation"    
+      link: "/gp-consultation",
     },
     {
       icon: <FaComments className="text-5xl text-[var(--color-primary-6)]" />,
       title: "Online Prescription",
-      description: "Getting your prescription is simple. We’ll prepare one tailored to your needs and send it straight to your preferred pharmacy, so all you need to do is stop by and collect your medication.",
+      description:
+        "Getting your prescription is simple. We’ll prepare one tailored to your needs and send it straight to your preferred pharmacy, so all you need to do is stop by and collect your medication.",
       animation: "M10 50 Q50 10 90 50 Q50 90 10 50",
-      link: "/gp-consultation"
+      link: "/gp-consultation",
     },
     {
-      icon: <FaFileMedicalAlt className="text-5xl text-[var(--color-primary-6)]" />,
+      icon: (
+        <FaFileMedicalAlt className="text-5xl text-[var(--color-primary-6)]" />
+      ),
       title: "Medical Certificates and Referral Letters",
-      description: "Easily obtain official medical certificates, referral letters, and other important documentation from certified doctors to support your health, employment, or insurance needs without unnecessary delays.",
+      description:
+        "Easily obtain official medical certificates, referral letters, and other important documentation from certified doctors to support your health, employment, or insurance needs without unnecessary delays.",
       animation: "M10 30 Q50 60 90 30 Q50 0 10 30",
-      link: "/cert"
+      link: "/cert",
     },
     // {
     //   icon: <FaPlaneDeparture className="text-5xl text-[var(--color-primary-6)]" />,
@@ -120,22 +128,21 @@ export default function HomePage() {
     setHasMounted(true);
   }, []);
 
-
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
     async function fetchGalleries() {
       try {
-        const data = await fetchData('galleries/get-all/no-pagination');
+        const data = await fetchData("galleries/get-all/no-pagination");
         setGalleries(data || []);
-        console.log(data)
+        console.log(data);
       } catch (error) {
-        console.error('Failed to fetch galleries:', error);
+        console.error("Failed to fetch galleries:", error);
       }
     }
 
@@ -143,13 +150,13 @@ export default function HomePage() {
       try {
         setBlogsLoading(true);
         setBlogsError(null);
-        const data = await fetchData('blogs');
-        console.log('Raw blogs response:', data);
+        const data = await fetchData("blogs");
+        console.log("Raw blogs response:", data);
         setBlogs(data.data || []);
-        console.log('Processed blogs:', data.data || []);
+        console.log("Processed blogs:", data.data || []);
       } catch (error) {
-        console.error('Failed to fetch blogs:', error);
-        setBlogsError(error.message || 'Failed to fetch blogs');
+        console.error("Failed to fetch blogs:", error);
+        setBlogsError(error.message || "Failed to fetch blogs");
       } finally {
         setBlogsLoading(false);
       }
@@ -157,31 +164,31 @@ export default function HomePage() {
 
     async function fetchHospitals() {
       try {
-        const data = await fetchData('hospitals');
+        const data = await fetchData("hospitals");
         setHospitals(data.data || []);
-        console.log(data.data)
+        console.log(data.data);
       } catch (error) {
-        console.error('Failed to fetch hospitals:', error);
+        console.error("Failed to fetch hospitals:", error);
       }
     }
 
     async function fetchDoctors() {
       try {
-        const data = await fetchData('users/get-all/doctors/no-pagination');
+        const data = await fetchData("users/get-all/doctors/no-pagination");
         setSpecialists(data || []);
-        console.log("doctors", data)
+        console.log("doctors", data);
       } catch (error) {
-        console.error('Failed to fetch doctors:', error);
+        console.error("Failed to fetch doctors:", error);
       }
     }
 
     async function fetchPackages() {
       try {
-        const data = await fetchData('tour/get-all/no-pagination');
+        const data = await fetchData("tour/get-all/no-pagination");
         setPackages(data);
-        console.log(data)
+        console.log(data);
       } catch (error) {
-        console.error('Failed to fetch packages:', error);
+        console.error("Failed to fetch packages:", error);
       }
     }
 
@@ -196,14 +203,13 @@ export default function HomePage() {
     dispatch(triggerChatbotAttention());
     dispatch(openChatBot(true));
   };
-  
+
   const stripHtml = (html) => {
-    if (!html) return '';
-    return html.replace(/<[^>]*>?/gm, '');
-  }
+    if (!html) return "";
+    return html.replace(/<[^>]*>?/gm, "");
+  };
 
   const FAQ = () => {
-  
     return (
       <section className="relative faq-section py-20 bg-white rounded-3xl mx-4 mt-8 mb-8">
         <FaqSection />
@@ -212,9 +218,16 @@ export default function HomePage() {
   };
 
   const renderServiceCard = (card) => (
-    <div key={card.id} className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
+    <div
+      key={card.id}
+      className="bg-white rounded-2xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105"
+    >
       <div className="relative h-48">
-        <img src={card.image.src} alt={card.content} className="w-full h-full object-cover" />
+        <img
+          src={card.image.src}
+          alt={card.content}
+          className="w-full h-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
           <h3 className="text-white font-bold text-xl p-4">{card.content}</h3>
         </div>
@@ -225,11 +238,22 @@ export default function HomePage() {
   const renderBlogPost = (blog) => (
     <div key={blog._id} className="w-full">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-[320px] flex flex-col">
-        <img src={ process.env.NEXT_PUBLIC_NODE_BASE_URL+"/"+blog.featuredImage} alt={blog.title} className="w-full h-40 object-cover" />
+        <img
+          src={process.env.NEXT_PUBLIC_NODE_BASE_URL + "/" + blog.featuredImage}
+          alt={blog.title}
+          className="w-full h-40 object-cover"
+        />
         <div className="p-4 flex flex-col flex-grow">
-          <h3 className="font-bold text-lg mb-2 text-primary-10 line-clamp-2">{blog.title}</h3>
-          <p className="text-gray-600 text-sm mb-2 flex-grow overflow-hidden line-clamp-2">{stripHtml(blog.content)}</p>
-          <Link href={ `blog/${blog._id}` } className="text-secondary-6 font-semibold hover:underline inline-flex items-center mt-auto">
+          <h3 className="font-bold text-lg mb-2 text-primary-10 line-clamp-2">
+            {blog.title}
+          </h3>
+          <p className="text-gray-600 text-sm mb-2 flex-grow overflow-hidden line-clamp-2">
+            {stripHtml(blog.content)}
+          </p>
+          <Link
+            href={`blog/${blog._id}`}
+            className="text-secondary-6 font-semibold hover:underline inline-flex items-center mt-auto"
+          >
             Read More <FaArrowRight className="ml-2" />
           </Link>
         </div>
@@ -237,7 +261,7 @@ export default function HomePage() {
     </div>
   );
 
-  const serviceTitles = [...services.map(service => service.title)];
+  const serviceTitles = [...services.map((service) => service.title)];
 
   const handleServiceClick = (service) => {
     setSelectedService(service);
@@ -246,30 +270,43 @@ export default function HomePage() {
   };
 
   return (
-    <div className='px-4'>
+    <div className="px-4">
       {/* <ChatBot /> */}
       <section className="Hero relative min-h-screen bg-gradient-to-b from-[var(--color-primary-6)] to-white transition-colors overflow-hidden flex items-center rounded-3xl">
         <div className="intro-text p-6 sm:p-10 md:pl-20 flex flex-col justify-center items-start text-left w-full max-w-4xl z-10">
           <h2 className="font-extrabold text-4xl md:text-5xl lg:text-6xl  mb-6">
-            <span className="bg-gradient-to-r from-white to-[var(--color-secondary-1)] text-transparent bg-clip-text">Step into the next generation</span>
+            <span className="bg-gradient-to-r from-white to-[var(--color-secondary-1)] text-transparent bg-clip-text">
+              Step into the next generation
+            </span>
             <span className="text-white block mt-2">Healthcare Services</span>
-            <span className="text-[var(--color-secondary-1)] block mt-2">with our</span>
+            <span className="text-[var(--color-secondary-1)] block mt-2">
+              with our
+            </span>
           </h2>
           <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-8">
-            <TypewriterEffect words={serviceTitles} typingSpeed={100} erasingSpeed={50} delayBetweenWords={2000} />
+            <TypewriterEffect
+              words={serviceTitles}
+              typingSpeed={100}
+              erasingSpeed={50}
+              delayBetweenWords={2000}
+            />
           </div>
           <Button
             className="transition-all py-8 px-8 duration-300 hover:scale-105 hover:shadow-xl mt-4 text-lg sm:text-xl font-bold relative overflow-hidden group flex items-center justify-center"
-            borderRadius='rounded-small'
+            borderRadius="rounded-small"
             border="border-2 border-white rounded-lg"
-            background='bg-gradient-to-r from-[var(--color-primary-6)] to-[var(--color-primary-8)]'
-            textColor='text-white'
-            onClick={() => router.push('/auth/sign-up')}
+            background="bg-gradient-to-r from-[var(--color-primary-6)] to-[var(--color-primary-8)]"
+            textColor="text-white"
+            onClick={() => router.push("/auth/sign-up")}
           >
             <span className="relative z-10">Sign Up for Free</span>
-          </Button> 
+          </Button>
         </div>
-        <img src={aidoc.src} alt="robo doctor" className="absolute right-[-35px] bottom-0 w-[35rem] max-w-3xl opacity-30 md:opacity-100" />
+        <img
+          src={aidoc.src}
+          alt="robo doctor"
+          className="absolute right-[-35px] bottom-0 w-[35rem] max-w-3xl opacity-30 md:opacity-100"
+        />
       </section>
 
       {/* how it works */}
@@ -284,18 +321,40 @@ export default function HomePage() {
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-15">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">SIMPLE STEPS TO ONLINE CONSULTATION</h2>
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            SIMPLE STEPS TO ONLINE CONSULTATION
+          </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-12">
-            Sozo DigiCare has designed a streamlined, user-friendly and secure process for your Video or Phone Consultation. Here’s how it works, simplified into three easy steps:
+            Sozo DigiCare has designed a streamlined, user-friendly and secure
+            process for your Video or Phone Consultation. Here’s how it works,
+            simplified into three easy steps:
           </p>
 
           <div className="relative max-w-6xl mx-auto z-10">
             {/* Arrows between steps */}
             <div className="hidden md:block absolute top-5 left-[20%] w-[25%] pointer-events-none z-0">
-              <svg className="w-full h-10" viewBox="0 0 100 20" preserveAspectRatio="none">
-                <path d="M0,10 C30,0 70,20 100,10" stroke="#F59E0B" strokeWidth="2" fill="none" strokeDasharray="4,4" markerEnd="url(#arrowhead1)" />
+              <svg
+                className="w-full h-10"
+                viewBox="0 0 100 20"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M0,10 C30,0 70,20 100,10"
+                  stroke="#F59E0B"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeDasharray="4,4"
+                  markerEnd="url(#arrowhead1)"
+                />
                 <defs>
-                  <marker id="arrowhead1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <marker
+                    id="arrowhead1"
+                    markerWidth="6"
+                    markerHeight="6"
+                    refX="5"
+                    refY="3"
+                    orient="auto"
+                  >
                     <polygon points="0 0, 6 3, 0 6" fill="#F59E0B" />
                   </marker>
                 </defs>
@@ -303,10 +362,28 @@ export default function HomePage() {
             </div>
 
             <div className="hidden md:block absolute top-5 left-[55%] w-[25%] pointer-events-none z-0">
-              <svg className="w-full h-10" viewBox="0 0 100 20" preserveAspectRatio="none">
-                <path d="M0,10 C30,0 70,20 100,10" stroke="#F59E0B" strokeWidth="2" fill="none" strokeDasharray="4,4" markerEnd="url(#arrowhead2)" />
+              <svg
+                className="w-full h-10"
+                viewBox="0 0 100 20"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M0,10 C30,0 70,20 100,10"
+                  stroke="#F59E0B"
+                  strokeWidth="2"
+                  fill="none"
+                  strokeDasharray="4,4"
+                  markerEnd="url(#arrowhead2)"
+                />
                 <defs>
-                  <marker id="arrowhead2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                  <marker
+                    id="arrowhead2"
+                    markerWidth="6"
+                    markerHeight="6"
+                    refX="5"
+                    refY="3"
+                    orient="auto"
+                  >
                     <polygon points="0 0, 6 3, 0 6" fill="#F59E0B" />
                   </marker>
                 </defs>
@@ -320,8 +397,13 @@ export default function HomePage() {
                 <div className="bg-blue-900 text-orange-500 rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold shadow-lg">
                   1
                 </div>
-                <h3 className="text-xl text-gray-600 font-semibold mt-4">Register</h3>
-                <p className="text-gray-600 mt-2"> fill in your details and log in to the dashboard.</p>
+                <h3 className="text-xl text-gray-600 font-semibold mt-4">
+                  Register
+                </h3>
+                <p className="text-gray-600 mt-2">
+                  {" "}
+                  fill in your details and log in to the dashboard.
+                </p>
               </div>
 
               {/* Step 2 */}
@@ -329,8 +411,13 @@ export default function HomePage() {
                 <div className="bg-blue-900 text-orange-500 rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold shadow-lg">
                   2
                 </div>
-                <h3 className="text-xl text-gray-600 font-semibold mt-4">Consult a GP</h3>
-                <p className="text-gray-600 mt-2">from dashboard click consult a GP now, select your session, and pay </p>
+                <h3 className="text-xl text-gray-600 font-semibold mt-4">
+                  Consult a GP
+                </h3>
+                <p className="text-gray-600 mt-2">
+                  from dashboard click consult a GP now, select your session,
+                  and pay{" "}
+                </p>
               </div>
 
               {/* Step 3 */}
@@ -338,13 +425,13 @@ export default function HomePage() {
                 <div className="bg-blue-900 text-orange-500 rounded-full w-20 h-20 flex items-center justify-center text-3xl font-bold shadow-lg">
                   3
                 </div>
-                <h3 className="text-xl text-gray-600 font-semibold mt-4">Consult with a GP</h3>
+                <h3 className="text-xl text-gray-600 font-semibold mt-4">
+                  Consult with a GP
+                </h3>
                 <p className="text-gray-600 mt-2">you are live with the GP</p>
               </div>
             </div>
           </div>
-
-          
 
           {/* CTA Button */}
           <div className="mt-12">
@@ -359,7 +446,7 @@ export default function HomePage() {
         <div className="absolute inset-0 w-full opacity-5 h-full z-15">
           <LottieImage
             src="/background.json"
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: "100%", height: "100%" }}
           />
         </div>
 
@@ -378,24 +465,25 @@ export default function HomePage() {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <div>
-                  <div className="flex justify-center mb-4">
-                    {service.icon}
-                  </div>
+                  <div className="flex justify-center mb-4">{service.icon}</div>
                   <h3 className="text-xl font-semibold text-[var(--color-primary-10)] text-center mb-2">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 text-center">{service.description}</p>
+                  <p className="text-gray-600 text-center">
+                    {service.description}
+                  </p>
                 </div>
 
                 <button
                   onClick={() =>
-                    service.link === "ai" ? handleChat() : router.push(service.link)
+                    service.link === "ai"
+                      ? handleChat()
+                      : router.push(service.link)
                   }
                   className="mt-6 w-full py-3 px-4 bg-[var(--color-primary-6)] text-white rounded-xl hover:bg-[var(--color-primary-7)] transition text-center block"
                 >
                   Get Started
                 </button>
-
 
                 <motion.svg
                   className="absolute bottom-0 left-0 w-full h-12 text-primary-1 opacity-10"
@@ -409,7 +497,12 @@ export default function HomePage() {
                     strokeWidth="2"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      ease: "easeInOut",
+                    }}
                   />
                 </motion.svg>
               </motion.div>
@@ -441,11 +534,11 @@ export default function HomePage() {
 
       {/* Certificates */}
       <section className="max-w-7xl mx-auto px-4 py-10">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
-          transition={{ duration: 0.4 }} 
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
           className="text-2xl font-bold text-gray-800 mb-8 text-center"
         >
           <div>
@@ -453,27 +546,26 @@ export default function HomePage() {
               Medical Certificates and Referral Letters
             </h2>
           </div>
-          
         </motion.h2>
-        
+
         <CertificateList max={3} />
 
         <div className="mt-12 text-center">
-            <Link href="/cert">
-              <button className="bg-[var(--color-primary-6)] hover:bg-[var(--color-primary-7)] text-white px-6 py-3 rounded-lg shadow-sm transition">
-                MORE
-              </button>
-            </Link>
-          </div>
+          <Link href="/cert">
+            <button className="bg-[var(--color-primary-6)] hover:bg-[var(--color-primary-7)] text-white px-6 py-3 rounded-lg shadow-sm transition">
+              MORE
+            </button>
+          </Link>
+        </div>
       </section>
 
       {/* Doctors */}
       <section className="max-w-7xl mx-auto px-4 py-10">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }} 
-          whileInView={{ opacity: 1, y: 0 }} 
-          viewport={{ once: true }} 
-          transition={{ duration: 0.4 }} 
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
           className="text-2xl font-bold text-gray-800 mb-8 text-center"
         >
           <div>
@@ -481,34 +573,35 @@ export default function HomePage() {
               Our Doctors
             </h2>
           </div>
-          
         </motion.h2>
-        
-        <DoctorsPage limit={6}  />
+
+        <DoctorsPage limit={6} />
       </section>
 
       {/* Why Choose Sozo Digicare */}
       <WhyChooseSozo />
 
-      
-      
-
       {/* Become One of Our Specialists */}
       <section className="relative become-specialist py-20 bg-[var(--color-primary-9)] text-white rounded-3xl mx-4 mt-8 mb-8">
         <Image
-            src="/images/health.gif"
-            alt="Background Overlay"
-            fill
-            className="object-cover opacity-10 pointer-events-none z-0"
-          />
+          src="/images/health.gif"
+          alt="Background Overlay"
+          fill
+          className="object-cover opacity-10 pointer-events-none z-0"
+        />
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">JOIN US AS A DOCTOR</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">Join our team of expert specialists and help us deliver cutting-edge healthcare services.</p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            JOIN US AS A DOCTOR
+          </h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto">
+            Join our team of expert specialists and help us deliver cutting-edge
+            healthcare services.
+          </p>
           <Button
             className="py-3 px-8 text-lg hover:shadow-lg mx-auto transition-all duration-300"
-            borderRadius='rounded-full'
-            background={'bg-[var(--color-secondary-6)]'}
-            textColor='text-white'
+            borderRadius="rounded-full"
+            background={"bg-[var(--color-secondary-6)]"}
+            textColor="text-white"
             onClick={() => router.push("/auth/sign-up?role=specialist")}
           >
             Apply Now
@@ -516,11 +609,11 @@ export default function HomePage() {
         </div>
       </section>
 
-
-
-      <section className='py-20 bg-gray-50 rounded-3xl mx-4 mt-8'>
+      <section className="py-20 bg-gray-50 rounded-3xl mx-4 mt-8">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-primary-10">Latest Blog Posts</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-primary-10">
+            Latest Blog Posts
+          </h2>
           {blogsLoading ? (
             <div className="text-center py-12">
               <div className="w-16 h-16 border-4 border-[var(--color-primary-6)] border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -531,10 +624,16 @@ export default function HomePage() {
               <p className="text-red-500">Error: {blogsError}</p>
             </div>
           ) : blogs && blogs.length > 0 ? (
-            <SimpleCarousel items={blogs.map(renderBlogPost)} autoplay={true} autoplayInterval={7000} />
+            <SimpleCarousel
+              items={blogs.map(renderBlogPost)}
+              autoplay={true}
+              autoplayInterval={7000}
+            />
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500">No blog posts available at the moment.</p>
+              <p className="text-gray-500">
+                No blog posts available at the moment.
+              </p>
             </div>
           )}
           <div className="text-center mt-12">
@@ -549,8 +648,6 @@ export default function HomePage() {
       </section>
 
       <FAQ />
-
-      
     </div>
   );
 }

@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
-import MedicalCertificatesContent from './MedicalCertificatesContent';
+import { Suspense } from "react";
+import MedicalCertificatesContent from "./MedicalCertificatesContent";
 
 export default function MedicalCertificatesPage() {
   return (
@@ -8,4 +8,3 @@ export default function MedicalCertificatesPage() {
     </Suspense>
   );
 }
-

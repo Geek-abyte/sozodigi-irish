@@ -8,7 +8,7 @@ const EditCategory = () => {
   const params = useParams();
   const id = params?.id;
   const router = useRouter();
-  
+
   const [brand, setBrand] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -135,7 +135,9 @@ const EditCategory = () => {
             {/* New Image Preview */}
             {imagePreview && (
               <div>
-                <p className="text-sm text-gray-500 mb-2">New Selected Image:</p>
+                <p className="text-sm text-gray-500 mb-2">
+                  New Selected Image:
+                </p>
                 <img
                   src={imagePreview}
                   alt="New Preview"

@@ -53,12 +53,14 @@ const LabServicesPage = () => {
       // API call to delete the lab service
       await deleteData(`lab-services/${itemToDelete._id}`, token);
       // Update the state after deletion by filtering out the deleted service
-      setLabServices(labServices.filter((service) => service._id !== itemToDelete._id));
-      alertSuccess("Laboratory service successfully deleted")
+      setLabServices(
+        labServices.filter((service) => service._id !== itemToDelete._id),
+      );
+      alertSuccess("Laboratory service successfully deleted");
       setIsDialogOpen(false);
     } catch (error) {
       console.error("Error deleting lab service:", error);
-      alertError("Failed to delete service!")
+      alertError("Failed to delete service!");
     }
   };
 
@@ -111,10 +113,18 @@ const LabServicesPage = () => {
 
                     {/* Actions (Edit & Delete) */}
                     <TableCell className="px-5 py-4 text-start flex gap-3">
-                      <Link href={`/admin/laboratories/services/edit/${labService._id}`} className="text-blue-500">
+                      <Link
+                        href={`/admin/laboratories/services/edit/${labService._id}`}
+                        className="text-blue-500"
+                      >
                         <PencilSquareIcon className="w-5 h-5 inline-block" />
                       </Link>
-                      <button className="text-red-500" onClick={() => { setIsDialogOpen(true), setItemToDelete(labService)}}>
+                      <button
+                        className="text-red-500"
+                        onClick={() => {
+                          setIsDialogOpen(true), setItemToDelete(labService);
+                        }}
+                      >
                         <TrashIcon className="w-5 h-5 inline-block" />
                       </button>
                     </TableCell>
@@ -126,16 +136,16 @@ const LabServicesPage = () => {
         </div>
       </div>
 
-        {/* Confirmation Dialog */}
-        <ConfirmationDialog
-            isOpen={isDialogOpen}
-            onClose={() => setIsDialogOpen(false)}
-            onConfirm={deleteLabService}
-            title="Delete Item"
-            message={`Are you sure you want to delete "${itemToDelete?.name}"? This action cannot be undone.`}
-            confirmText="Yes, Delete"
-            cancelText="No, Keep"
-        />
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={deleteLabService}
+        title="Delete Item"
+        message={`Are you sure you want to delete "${itemToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Yes, Delete"
+        cancelText="No, Keep"
+      />
     </div>
   );
 };

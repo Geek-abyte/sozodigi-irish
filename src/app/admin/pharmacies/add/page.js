@@ -9,18 +9,18 @@ const CreatePharmacy = () => {
   const [users, setUsers] = useState([]); // State to hold users
 
   const [formState, setFormState] = useState({
-    name: '',
+    name: "",
     licenseFile: null,
-    contactNumber: '',
-    contactEmail: '', // Added contactEmail to state
+    contactNumber: "",
+    contactEmail: "", // Added contactEmail to state
     address: {
-      street: '',
-      city: '',
-      state: '',
-      country: '',
+      street: "",
+      city: "",
+      state: "",
+      country: "",
     },
-    pharmacyAdmin: '',
-    status: 'unverified', // Default value for status
+    pharmacyAdmin: "",
+    status: "unverified", // Default value for status
   });
 
   const { data: session } = useSession();
@@ -80,7 +80,12 @@ const CreatePharmacy = () => {
         }
       }
 
-      const response = await postData(`pharmacies/custom/create`, formData, token, true);
+      const response = await postData(
+        `pharmacies/custom/create`,
+        formData,
+        token,
+        true,
+      );
       console.log(response);
       alertSuccess("Pharmacy created successfully!");
       // optionally redirect or clear form
@@ -92,12 +97,16 @@ const CreatePharmacy = () => {
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-white/[0.05]">
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Create Pharmacy</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+        Create Pharmacy
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Pharmacy Name</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Pharmacy Name
+          </label>
           <input
             type="text"
             name="name"
@@ -109,7 +118,9 @@ const CreatePharmacy = () => {
 
         {/* License Upload */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">License Image</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            License Image
+          </label>
           <input
             type="file"
             name="licenseFile"
@@ -124,7 +135,9 @@ const CreatePharmacy = () => {
 
         {/* Contact Number */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Contact Number</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Contact Number
+          </label>
           <input
             type="text"
             name="contactNumber"
@@ -136,7 +149,9 @@ const CreatePharmacy = () => {
 
         {/* Contact Email */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Contact Email</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Contact Email
+          </label>
           <input
             type="email"
             name="contactEmail"
@@ -166,7 +181,9 @@ const CreatePharmacy = () => {
 
         {/* Pharmacy Admin */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Pharmacy Admin</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Pharmacy Admin
+          </label>
           <select
             name="pharmacyAdmin"
             value={formState.pharmacyAdmin || ""}
@@ -184,7 +201,9 @@ const CreatePharmacy = () => {
 
         {/* Status */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Status</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Status
+          </label>
           <select
             name="status"
             value={formState.status || "unverified"}

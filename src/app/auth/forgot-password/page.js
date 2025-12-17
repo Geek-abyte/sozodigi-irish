@@ -1,38 +1,40 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { postData } from '@/utils/api';
-import { useToast } from '@/context/ToastContext';
+import { useState } from "react";
+import { postData } from "@/utils/api";
+import { useToast } from "@/context/ToastContext";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const { addToast } = useToast();
-  const alertSuccess = (msg) => addToast(msg, 'success');
-  const alertError = (msg) => addToast(msg, 'error');
+  const alertSuccess = (msg) => addToast(msg, "success");
+  const alertError = (msg) => addToast(msg, "error");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email) {
-      setError('Please enter your email address');
+      setError("Please enter your email address");
       return;
     }
 
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
-      const response = await postData('users/auth/forgot-password', { email });
-      setMessage(response.message || 'Password reset instructions sent to your email.');
-      alertSuccess('Password reset email sent');
+      const response = await postData("users/auth/forgot-password", { email });
+      setMessage(
+        response.message || "Password reset instructions sent to your email.",
+      );
+      alertSuccess("Password reset email sent");
     } catch (err) {
-      setError(err.message || 'An error occurred');
-      alertError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
+      alertError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -43,9 +45,9 @@ export default function ForgotPasswordPage() {
       className="relative px-6 lg:px-8"
       style={{
         backgroundImage: "url('/images/Medical-tourism.jpg')",
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
     >
       <div className="min-h-screen flex items-center justify-center px-4">
@@ -57,8 +59,12 @@ export default function ForgotPasswordPage() {
             </p>
           </div>
 
-          {message && <div className="text-green-500 mb-4 text-center">{message}</div>}
-          {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
+          {message && (
+            <div className="text-green-500 mb-4 text-center">{message}</div>
+          )}
+          {error && (
+            <div className="text-red-500 mb-4 text-center">{error}</div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <input
@@ -74,10 +80,12 @@ export default function ForgotPasswordPage() {
               type="submit"
               disabled={loading}
               className={`w-full py-3 rounded-md text-white ${
-                loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                loading
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
-              {loading ? 'Sending...' : 'Send Reset Email'}
+              {loading ? "Sending..." : "Send Reset Email"}
             </button>
           </form>
         </div>

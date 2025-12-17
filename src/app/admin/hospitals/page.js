@@ -74,13 +74,22 @@ const HospitalsPage = () => {
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400"
+                  >
                     Name
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400"
+                  >
                     Status
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400"
+                  >
                     Actions
                   </TableCell>
                 </TableRow>
@@ -91,9 +100,7 @@ const HospitalsPage = () => {
                   <TableRow key={hospital._id}>
                     <TableCell className="px-5 py-4">{hospital.name}</TableCell>
                     <TableCell className="px-5 py-4">
-                      <Badge
-                        color={hospital.isVerified ? "success" : "error"}
-                      >
+                      <Badge color={hospital.isVerified ? "success" : "error"}>
                         {hospital.isVerified ? "Verified" : "Unverified"}
                       </Badge>
                     </TableCell>

@@ -5,10 +5,7 @@ import { fetchData, deleteData } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/context/ToastContext";
 import Link from "next/link";
-import {
-  TrashIcon,
-  PencilSquareIcon,
-} from "@heroicons/react/24/outline";
+import { TrashIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 
 const ShippingAddressPage = () => {
@@ -29,7 +26,10 @@ const ShippingAddressPage = () => {
   const loadAddresses = async () => {
     setLoading(true);
     try {
-      const data = await fetchData(`shipping-addresses/custom/get?page=${page}`, token);
+      const data = await fetchData(
+        `shipping-addresses/custom/get?page=${page}`,
+        token,
+      );
       setAddresses(data.data);
       setTotalPages(data.pages);
       setNoResults(data.data.length === 0);
@@ -77,7 +77,9 @@ const ShippingAddressPage = () => {
       </div>
 
       {noResults && !loading && searchQuery.trim() && (
-        <p className="text-gray-500">No shipping addresses found for "{searchQuery}"</p>
+        <p className="text-gray-500">
+          No shipping addresses found for "{searchQuery}"
+        </p>
       )}
 
       <div className="space-y-6">
@@ -92,13 +94,17 @@ const ShippingAddressPage = () => {
               >
                 <div className="mb-2">
                   <h3 className="font-semibold">{address.address.name}</h3>
-                  <p className="text-sm text-gray-500">{address.address.line1}</p>
                   <p className="text-sm text-gray-500">
-                    {address.address.city}, {address.address.state}, {address.address.zip}
+                    {address.address.line1}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {address.address.city}, {address.address.state},{" "}
+                    {address.address.zip}
                   </p>
                 </div>
                 <p className="text-sm text-gray-700 font-medium mb-2">
-                  Belongs to: <span className="text-indigo-600">
+                  Belongs to:{" "}
+                  <span className="text-indigo-600">
                     {address.user?.firstName + " " + address.user?.lastName ||
                       address.user?.email ||
                       "Unknown User"}

@@ -34,7 +34,8 @@ const AddShippingAddress = () => {
     if (isAdmin) {
       fetchData("users/get-all/no-pagination", token)
         .then((res) => {
-            console.log(res); setUsers(res || [])
+          console.log(res);
+          setUsers(res || []);
         })
         .catch(() => alertError("Failed to load users"));
     }
@@ -84,7 +85,7 @@ const AddShippingAddress = () => {
               <option value="">-- Select User --</option>
               {users.map((user) => (
                 <option key={user._id} value={user._id}>
-                  {user.firstName+" "+user.lastName || user.email}
+                  {user.firstName + " " + user.lastName || user.email}
                 </option>
               ))}
             </select>

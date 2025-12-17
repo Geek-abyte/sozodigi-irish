@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-const TypewriterEffect = ({ words, typingSpeed = 150, erasingSpeed = 100, delayBetweenWords = 2000 }) => {
+const TypewriterEffect = ({
+  words,
+  typingSpeed = 150,
+  erasingSpeed = 100,
+  delayBetweenWords = 2000,
+}) => {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [currentText, setCurrentText] = useState('');
+  const [currentText, setCurrentText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
 
@@ -10,7 +15,7 @@ const TypewriterEffect = ({ words, typingSpeed = 150, erasingSpeed = 100, delayB
     const word = words[currentWordIndex];
 
     if (isDeleting) {
-      if (currentText === '') {
+      if (currentText === "") {
         setIsDeleting(false);
         setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
       } else {
@@ -32,7 +37,15 @@ const TypewriterEffect = ({ words, typingSpeed = 150, erasingSpeed = 100, delayB
         return () => clearTimeout(timeoutId);
       }
     }
-  }, [currentText, isDeleting, currentWordIndex, words, typingSpeed, erasingSpeed, delayBetweenWords]);
+  }, [
+    currentText,
+    isDeleting,
+    currentWordIndex,
+    words,
+    typingSpeed,
+    erasingSpeed,
+    delayBetweenWords,
+  ]);
 
   // Blinking cursor effect
   useEffect(() => {
@@ -46,7 +59,9 @@ const TypewriterEffect = ({ words, typingSpeed = 150, erasingSpeed = 100, delayB
   return (
     <span className="text-[var(--color-primary-9)]">
       {currentText}
-      <span className={`cursor ${showCursor ? 'opacity-100' : 'opacity-0'}`}>|</span>
+      <span className={`cursor ${showCursor ? "opacity-100" : "opacity-0"}`}>
+        |
+      </span>
     </span>
   );
 };

@@ -49,7 +49,11 @@ const DoctorSignatureInput = ({ onSignature }) => {
       {trimmedDataURL && (
         <div className="mt-3">
           <p className="text-sm text-gray-600">Saved Preview:</p>
-          <img src={trimmedDataURL} alt="Saved Signature" className="border mt-1 h-20" />
+          <img
+            src={trimmedDataURL}
+            alt="Saved Signature"
+            className="border mt-1 h-20"
+          />
         </div>
       )}
     </div>

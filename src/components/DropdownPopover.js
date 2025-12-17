@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { Fragment } from 'react'
-import { Popover, Transition } from '@headlessui/react'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
+import { Fragment } from "react";
+import { Popover, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 
 export default function DropdownPopover({
-  title = 'Menu',
+  title = "Menu",
   items = [],
   callsToAction = [],
-  buttonStyle = '',
+  buttonStyle = "",
 }) {
   return (
     <Popover className="relative">
@@ -47,7 +47,10 @@ export default function DropdownPopover({
                         <item.icon className="size-6 text-gray-600 group-hover:text-indigo-600" />
                       </div>
                       <div>
-                        <Link href={item.href} className="font-semibold text-gray-900">
+                        <Link
+                          href={item.href}
+                          className="font-semibold text-gray-900"
+                        >
                           {item.name}
                           <span className="absolute inset-0" />
                         </Link>
@@ -78,5 +81,5 @@ export default function DropdownPopover({
         </>
       )}
     </Popover>
-  )
+  );
 }

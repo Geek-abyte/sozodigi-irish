@@ -15,7 +15,7 @@ const SignInForm = ({ specialist, client }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated, error, loading, user } = useSelector(
-    (state) => state.auth
+    (state) => state.auth,
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -117,7 +117,10 @@ const SignInForm = ({ specialist, client }) => {
           </div>
           <div>
             Forgot your password?{" "}
-            <Link to={PATH.general.forgotPassword} className="underline text-primary-5">
+            <Link
+              to={PATH.general.forgotPassword}
+              className="underline text-primary-5"
+            >
               Click here
             </Link>
             .

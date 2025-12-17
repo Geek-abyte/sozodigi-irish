@@ -75,7 +75,9 @@ export default function CertificateList({ max }) {
     setSelectedCert(null);
   };
 
-  const displayedItems = max ? certificateItems.slice(0, max) : certificateItems;
+  const displayedItems = max
+    ? certificateItems.slice(0, max)
+    : certificateItems;
 
   return (
     <>
@@ -97,7 +99,9 @@ export default function CertificateList({ max }) {
             <h3 className="text-lg font-semibold text-center text-gray-800">
               {cert.title}
             </h3>
-            <p className="text-sm text-gray-600 text-center">{cert.description}</p>
+            <p className="text-sm text-gray-600 text-center">
+              {cert.description}
+            </p>
             <p className="text-lg font-bold text-center text-[var(--color-primary-7)] mt-4">
               €{cert.price}
             </p>

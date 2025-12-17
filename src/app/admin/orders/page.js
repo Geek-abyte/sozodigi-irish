@@ -1,6 +1,6 @@
 // app/admin/orders/page.js
-import { Suspense } from 'react';
-import OrdersPageContent from './OrdersPageContent';
+import { Suspense } from "react";
+import OrdersPageContent from "./OrdersPageContent";
 
 export default function OrdersPage() {
   return (

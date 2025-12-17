@@ -17,25 +17,25 @@ const LabReferralsList = () => {
   const isDoctor = user?.role === "specialist";
   const isUser = user?.role === "user";
   const isAdmin = user?.role === "admin";
-  const isLabAdmin = user?.role === "labAdmin"
+  const isLabAdmin = user?.role === "labAdmin";
 
   useEffect(() => {
     const loadLabReferrals = async () => {
       setLoading(true);
-      let endpoint
+      let endpoint;
       try {
-        if(isUser){
+        if (isUser) {
           endpoint = `lab-results/by-user/${user._id}/referrals`;
-        }else if(isDoctor || isLabAdmin){
+        } else if (isDoctor || isLabAdmin) {
           endpoint = `lab-results/referrals/get-all/no-pagination`;
-        }else if(isAdmin){
+        } else if (isAdmin) {
           endpoint = `lab-results/referrals/get-all/no-pagination`;
         }
 
-        console.log(endpoint)
+        console.log(endpoint);
 
         const res = await fetchData(endpoint, token);
-        console.log(res.sessions || res || [])
+        console.log(res.sessions || res || []);
         setSessions(res.sessions || res || []);
       } catch (error) {
         console.error(error);
@@ -50,7 +50,8 @@ const LabReferralsList = () => {
     }
   }, [user, token]);
 
-  if (loading) return <p className="text-center mt-8">Loading lab referrals...</p>;
+  if (loading)
+    return <p className="text-center mt-8">Loading lab referrals...</p>;
 
   if (sessions.length === 0) {
     return <p className="text-center mt-8">No lab referrals found.</p>;

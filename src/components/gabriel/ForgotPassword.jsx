@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
@@ -14,13 +14,15 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const { data } = await axios.post(`${apiUrl}/api/users/forgot-password`, { email });
+      const { data } = await axios.post(`${apiUrl}/api/users/forgot-password`, {
+        email,
+      });
       toast.success(data.message);
-      console.log("it is sent")
+      console.log("it is sent");
       setEmailSent(true);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Something went wrong');
-      console.log(error)
+      toast.error(error.response?.data?.message || "Something went wrong");
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -29,20 +31,36 @@ const ForgotPassword = () => {
   if (emailSent) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      {console.log("it is sent!")}
+        {console.log("it is sent!")}
 
         <div className="max-w-md w-full text-center space-y-6">
           <div className="mx-auto w-16 h-16 flex items-center justify-center rounded-full bg-green-100">
-            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-8 h-8 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
           </div>
-          <h2 className="text-3xl font-extrabold text-gray-900">Check your email</h2>
+          <h2 className="text-3xl font-extrabold text-gray-900">
+            Check your email
+          </h2>
           <p className="text-lg text-gray-600">
-            We've sent a password reset link to <span className="font-medium text-indigo-600">{email}</span>
+            We've sent a password reset link to{" "}
+            <span className="font-medium text-indigo-600">{email}</span>
           </p>
           <p className="text-sm text-gray-500">
-            Please check your email inbox and follow the instructions to reset your password. If you don't see the email, please check your spam folder.
+            Please check your email inbox and follow the instructions to reset
+            your password. If you don't see the email, please check your spam
+            folder.
           </p>
         </div>
       </div>
@@ -57,7 +75,8 @@ const ForgotPassword = () => {
             Forgot Password
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your email address and we'll send you a link to reset your password.
+            Enter your email address and we'll send you a link to reset your
+            password.
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -88,14 +107,30 @@ const ForgotPassword = () => {
             >
               {loading ? (
                 <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Processing...
                 </span>
               ) : (
-                'Send Reset Link'
+                "Send Reset Link"
               )}
             </button>
           </div>

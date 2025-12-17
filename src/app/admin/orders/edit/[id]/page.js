@@ -39,7 +39,7 @@ const EditOrderPage = () => {
         // Fetch user shipping addresses
         const addressRes = await fetchData(
           `shipping-addresses/user/${orderData.user?._id}`,
-          token
+          token,
         );
         const addresses = addressRes.addresses || [];
         setShippingAddresses(addresses);
@@ -106,7 +106,9 @@ const EditOrderPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Payment Status</label>
+          <label className="block text-sm font-medium mb-1">
+            Payment Status
+          </label>
           <select
             name="paymentStatus"
             value={formData.paymentStatus}
@@ -121,7 +123,9 @@ const EditOrderPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Payment Reference</label>
+          <label className="block text-sm font-medium mb-1">
+            Payment Reference
+          </label>
           <input
             type="text"
             name="paymentReference"
@@ -132,7 +136,9 @@ const EditOrderPage = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Shipping Address</label>
+          <label className="block text-sm font-medium mb-1">
+            Shipping Address
+          </label>
           <select
             name="shippingAddress"
             value={formData.shippingAddress}
@@ -142,7 +148,8 @@ const EditOrderPage = () => {
             <option value="">Select Address</option>
             {shippingAddresses.map((address) => (
               <option key={address._id} value={address._id}>
-                {address.address.street} – {address.address.city} - {address.address.state}
+                {address.address.street} – {address.address.city} -{" "}
+                {address.address.state}
                 {address.address.isDefault ? " (Default)" : ""}
               </option>
             ))}

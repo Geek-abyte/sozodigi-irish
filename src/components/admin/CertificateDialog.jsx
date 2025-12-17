@@ -10,7 +10,9 @@ const CertificateDialog = ({
 }) => {
   const [diagnosis, setDiagnosis] = useState("");
   const [comment, setComment] = useState("");
-  const [validFrom, setValidFrom] = useState(new Date().toISOString().split('T')[0]);
+  const [validFrom, setValidFrom] = useState(
+    new Date().toISOString().split("T")[0],
+  );
   const [validTo, setValidTo] = useState("");
 
   const handleCreate = async () => {
@@ -20,11 +22,11 @@ const CertificateDialog = ({
     }
 
     await onCreateCertificate({ diagnosis, comment, validFrom, validTo });
-    
+
     // Reset form
     setDiagnosis("");
     setComment("");
-    setValidFrom(new Date().toISOString().split('T')[0]);
+    setValidFrom(new Date().toISOString().split("T")[0]);
     setValidTo("");
   };
 
@@ -130,4 +132,3 @@ const CertificateDialog = ({
 };
 
 export default CertificateDialog;
-

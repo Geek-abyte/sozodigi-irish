@@ -1,24 +1,24 @@
-"use client"
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Plus } from 'lucide-react';
-import { postData } from '@/utils/api';
-import { useToast } from '@/context/ToastContext';
-import { useSession } from 'next-auth/react';
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Plus } from "lucide-react";
+import { postData } from "@/utils/api";
+import { useToast } from "@/context/ToastContext";
+import { useSession } from "next-auth/react";
 
 export default function CreateGalleryPage() {
   const router = useRouter();
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
-  const { addToast  } = useToast()
+  const { addToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,19 +26,24 @@ export default function CreateGalleryPage() {
     setError(null);
 
     const formData = new FormData();
-    formData.append('title', title);
-    formData.append('photo', image);
-    formData.append('description', description);
-    formData.append('isActive', isActive);
+    formData.append("title", title);
+    formData.append("photo", image);
+    formData.append("description", description);
+    formData.append("isActive", isActive);
 
     try {
-        // console.log("@@@@@@@@@@@@@@@@@@@@")
-        const res = await postData('galleries/custom/create', formData, token, true);
-        addToast("Gallery added successfully", "success");
-        router.push('/admin/galleries'); // Redirect to gallery list page after creation
+      // console.log("@@@@@@@@@@@@@@@@@@@@")
+      const res = await postData(
+        "galleries/custom/create",
+        formData,
+        token,
+        true,
+      );
+      addToast("Gallery added successfully", "success");
+      router.push("/admin/galleries"); // Redirect to gallery list page after creation
     } catch (err) {
-        addToast("Gallery failed to create", "error");
-        setError('Error creating gallery item. Please try again.');
+      addToast("Gallery failed to create", "error");
+      setError("Error creating gallery item. Please try again.");
     }
 
     setLoading(false);
@@ -53,7 +58,12 @@ export default function CreateGalleryPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Title Field */}
         <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+          <label
+            htmlFor="title"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Title
+          </label>
           <input
             id="title"
             type="text"
@@ -66,7 +76,12 @@ export default function CreateGalleryPage() {
 
         {/* Image Field */}
         <div>
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+          <label
+            htmlFor="image"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Image
+          </label>
           <input
             id="image"
             type="file"
@@ -79,7 +94,12 @@ export default function CreateGalleryPage() {
 
         {/* Description Field */}
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+          <label
+            htmlFor="description"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Description
+          </label>
           <textarea
             id="description"
             value={description}
@@ -98,7 +118,9 @@ export default function CreateGalleryPage() {
             onChange={(e) => setIsActive(e.target.checked)}
             className="h-5 w-5"
           />
-          <label htmlFor="isActive" className="text-sm">Active</label>
+          <label htmlFor="isActive" className="text-sm">
+            Active
+          </label>
         </div>
 
         {/* Submit Button */}
@@ -107,7 +129,7 @@ export default function CreateGalleryPage() {
           disabled={loading}
           className="mt-6 w-full bg-blue-600 text-white py-2 rounded flex items-center justify-center gap-2"
         >
-          {loading ? 'Creating...' : 'Create Gallery Item'} <Plus size={16} />
+          {loading ? "Creating..." : "Create Gallery Item"} <Plus size={16} />
         </button>
       </form>
     </div>

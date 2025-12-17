@@ -99,7 +99,7 @@ const LogoutModal = ({ show, setShow, onDecision }) => {
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

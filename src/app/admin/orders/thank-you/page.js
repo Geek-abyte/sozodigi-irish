@@ -23,24 +23,38 @@ const ThankYouPage = () => {
   };
 
   const calculateTotalPrice = () => {
-    return orderDetails?.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
+    return orderDetails?.reduce(
+      (total, item) => total + item.price * (item.quantity || 1),
+      0,
+    );
   };
 
   return (
     <div className="p-4 sm:p-6 space-y-6">
-      <h2 className="text-xl sm:text-2xl font-bold">Thank You for Your Order!</h2>
+      <h2 className="text-xl sm:text-2xl font-bold">
+        Thank You for Your Order!
+      </h2>
 
       {orderDetails ? (
         <>
-          <p className="text-lg">Your order has been successfully submitted. Below are the details:</p>
+          <p className="text-lg">
+            Your order has been successfully submitted. Below are the details:
+          </p>
 
           <ul className="space-y-4 mt-4">
             {orderDetails.map((item) => (
-              <li key={item._id} className="flex justify-between items-center border-b pb-4">
+              <li
+                key={item._id}
+                className="flex justify-between items-center border-b pb-4"
+              >
                 <div>
                   <p className="font-medium text-sm">{item.name}</p>
-                  <p className="text-xs text-gray-500">Price: ${item.price.toFixed(2)}</p>
-                  <p className="text-xs text-gray-500">Quantity: {(item.quantity || 1)}</p>
+                  <p className="text-xs text-gray-500">
+                    Price: ${item.price.toFixed(2)}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    Quantity: {item.quantity || 1}
+                  </p>
                 </div>
                 <p className="text-sm text-gray-900">
                   ${(item.price * (item.quantity || 1)).toFixed(2)}

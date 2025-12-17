@@ -29,7 +29,7 @@ const ViewConsultationDocumentation = () => {
   const loadDocumentation = async () => {
     const docRes = await fetchData(
       `consultation-documents/get/custom/${id}`,
-      token
+      token,
     );
     setDocumentation(docRes);
   };
@@ -55,7 +55,7 @@ const ViewConsultationDocumentation = () => {
         `consultation-documents/add/file/custom/${id}`,
         formData,
         token,
-        true
+        true,
       );
       addToast("File added successfully", "success");
       setNewFile(null);
@@ -79,7 +79,7 @@ const ViewConsultationDocumentation = () => {
       await postData(
         `consultation-documents/delete/file/custom/${id}`,
         { filePath: selectedFilePath },
-        token
+        token,
       );
       addToast("File deleted successfully", "success");
       await loadDocumentation();
@@ -93,7 +93,10 @@ const ViewConsultationDocumentation = () => {
   };
 
   const handleViewFile = (filePath) => {
-    window.open(`${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${filePath}`, "_blank");
+    window.open(
+      `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${filePath}`,
+      "_blank",
+    );
   };
 
   return (
@@ -188,7 +191,9 @@ const ViewConsultationDocumentation = () => {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-gray-400 italic">No files uploaded yet.</p>
+              <p className="text-sm text-gray-400 italic">
+                No files uploaded yet.
+              </p>
             )}
           </div>
 
@@ -208,14 +213,18 @@ const ViewConsultationDocumentation = () => {
                 className="px-4 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition flex items-center gap-2"
                 disabled={loading}
               >
-                {loading ? <ArrowPathIcon className="w-4 h-4 animate-spin" /> : null}
+                {loading ? (
+                  <ArrowPathIcon className="w-4 h-4 animate-spin" />
+                ) : null}
                 Upload
               </button>
             </div>
           </div>
         </>
       ) : (
-        <p className="text-gray-600 dark:text-gray-300">Loading documentation...</p>
+        <p className="text-gray-600 dark:text-gray-300">
+          Loading documentation...
+        </p>
       )}
 
       {/* Shared-style Confirmation Dialog */}

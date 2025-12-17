@@ -4,9 +4,8 @@ import { MoreDotIcon } from "@/icons";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { fetchData } from "@/utils/api"
+import { fetchData } from "@/utils/api";
 import { useSession } from "next-auth/react";
-
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -17,9 +16,8 @@ export default function MonthlySalesChart() {
   const [revenueData, setRevenueData] = useState(new Array(12).fill(0));
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
-  
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
   useEffect(() => {
     async function fetchPayments() {
@@ -40,7 +38,7 @@ export default function MonthlySalesChart() {
       }
     }
 
-    if(token) fetchPayments();
+    if (token) fetchPayments();
   }, [token]);
 
   const options = {
@@ -71,8 +69,18 @@ export default function MonthlySalesChart() {
     },
     xaxis: {
       categories: [
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
       ],
       axisBorder: { show: false },
       axisTicks: { show: false },
@@ -122,11 +130,21 @@ export default function MonthlySalesChart() {
           <button onClick={toggleDropdown} className="dropdown-toggle">
             <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
           </button>
-          <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
-            <DropdownItem onItemClick={closeDropdown} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+          <Dropdown
+            isOpen={isOpen}
+            onClose={closeDropdown}
+            className="w-40 p-2"
+          >
+            <DropdownItem
+              onItemClick={closeDropdown}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            >
               View More
             </DropdownItem>
-            <DropdownItem onItemClick={closeDropdown} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+            <DropdownItem
+              onItemClick={closeDropdown}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            >
               Delete
             </DropdownItem>
           </Dropdown>

@@ -1,61 +1,61 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { postData } from '@/utils/api';
-import { useToast } from '@/context/ToastContext';
+import { useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { postData } from "@/utils/api";
+import { useToast } from "@/context/ToastContext";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const email = searchParams.get('email');
-  const token = searchParams.get('token');
+  const email = searchParams.get("email");
+  const token = searchParams.get("token");
 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const { addToast } = useToast();
-  const alertSuccess = (msg) => addToast(msg, 'success');
-  const alertError = (msg) => addToast(msg, 'error');
+  const alertSuccess = (msg) => addToast(msg, "success");
+  const alertError = (msg) => addToast(msg, "error");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!password || !confirmPassword) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     setLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
-      const response = await postData('users/auth/reset-password', {
+      const response = await postData("users/auth/reset-password", {
         email,
         token,
         password,
       });
 
-      setMessage(response.message || 'Password reset successfully.');
-      alertSuccess('Password reset successfully.');
+      setMessage(response.message || "Password reset successfully.");
+      alertSuccess("Password reset successfully.");
 
       // Redirect to login after success
       setTimeout(() => {
-        router.push('/login');
+        router.push("/login");
       }, 2000);
     } catch (err) {
-      setError(err.message || 'An error occurred');
-      alertError(err.message || 'An error occurred');
+      setError(err.message || "An error occurred");
+      alertError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,9 @@ export default function ResetPasswordPage() {
   if (!email || !token) {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <p className="text-center text-red-500">Invalid or missing password reset link.</p>
+        <p className="text-center text-red-500">
+          Invalid or missing password reset link.
+        </p>
       </div>
     );
   }
@@ -74,22 +76,24 @@ export default function ResetPasswordPage() {
       className="relative px-6 lg:px-8"
       style={{
         backgroundImage: "url('/images/Medical-tourism.jpg')",
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
       }}
     >
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold">Reset Password</h1>
-            <p className="text-gray-500 mt-2">
-              Enter your new password below
-            </p>
+            <p className="text-gray-500 mt-2">Enter your new password below</p>
           </div>
 
-          {message && <div className="text-green-500 mb-4 text-center">{message}</div>}
-          {error && <div className="text-red-500 mb-4 text-center">{error}</div>}
+          {message && (
+            <div className="text-green-500 mb-4 text-center">{message}</div>
+          )}
+          {error && (
+            <div className="text-red-500 mb-4 text-center">{error}</div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <input
@@ -115,10 +119,12 @@ export default function ResetPasswordPage() {
               type="submit"
               disabled={loading}
               className={`w-full py-3 rounded-md text-white ${
-                loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                loading
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
               }`}
             >
-              {loading ? 'Resetting...' : 'Reset Password'}
+              {loading ? "Resetting..." : "Reset Password"}
             </button>
           </form>
         </div>

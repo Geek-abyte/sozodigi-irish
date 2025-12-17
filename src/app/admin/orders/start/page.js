@@ -37,13 +37,13 @@ const StartOrderPage = () => {
 
     // Persist selections in sessionStorage
     sessionStorage.setItem("newOrderUser", selectedUser); // Save selected user
-    sessionStorage.setItem("newOrderType", orderType);    // Save order type
+    sessionStorage.setItem("newOrderType", orderType); // Save order type
 
     // Navigate to next step based on the order type
     router.push(
       orderType === "Medication"
         ? "/admin/orders/create/medication"
-        : "/admin/orders/create/lab"
+        : "/admin/orders/create/lab",
     );
   };
 

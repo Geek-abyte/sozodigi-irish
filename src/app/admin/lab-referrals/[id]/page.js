@@ -99,7 +99,7 @@ const LabReferralReceipt = () => {
         `lab-results/referrals/${appointmentSession.id}`,
         formData,
         token,
-        true
+        true,
       );
 
       if (result.success) {
@@ -120,7 +120,7 @@ const LabReferralReceipt = () => {
       const res = await postData(
         "video-sessions/send-to-lab",
         { sessionId: id, labId },
-        token
+        token,
       );
       if (res.success) {
         addToast("Referral sent to lab successfully", "success");
@@ -140,7 +140,10 @@ const LabReferralReceipt = () => {
 
   return (
     <div className="relative p-6 max-w-3xl mx-auto shadow-xl rounded-lg mt-8 bg-white dark:bg-gray-900 dark:text-gray-300 border border-gray-200">
-      <div ref={receiptRef} className="relative bg-white dark:bg-gray-900 dark:text-gray-300 p-6 rounded-lg">
+      <div
+        ref={receiptRef}
+        className="relative bg-white dark:bg-gray-900 dark:text-gray-300 p-6 rounded-lg"
+      >
         <div className="text-center mb-4">
           <Image
             src="/images/logo/logo.png"
@@ -268,7 +271,6 @@ const LabReferralReceipt = () => {
             )}
           </div>
         )}
-
       </div>
 
       <LabSelectionModal

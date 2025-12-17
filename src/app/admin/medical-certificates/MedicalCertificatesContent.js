@@ -21,7 +21,7 @@ const MedicalCertificatesContent = () => {
 
       try {
         setLoading(true);
-        
+
         // Fetch certificates based on user role
         let endpoint = "";
         if (userRole === "user") {
@@ -58,7 +58,9 @@ const MedicalCertificatesContent = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading certificates...</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Loading certificates...
+          </p>
         </div>
       </div>
     );
@@ -84,8 +86,8 @@ const MedicalCertificatesContent = () => {
           {userRole === "user"
             ? "View and download your medical certificates"
             : userRole === "specialist" || userRole === "consultant"
-            ? "Certificates you have issued"
-            : "All medical certificates in the system"}
+              ? "Certificates you have issued"
+              : "All medical certificates in the system"}
         </p>
       </div>
 
@@ -133,18 +135,24 @@ const MedicalCertificatesContent = () => {
                 <div className="space-y-2 text-sm">
                   {userRole !== "user" && certificate.patient && (
                     <div className="flex items-start">
-                      <span className="text-gray-500 dark:text-gray-400 w-20">Patient:</span>
+                      <span className="text-gray-500 dark:text-gray-400 w-20">
+                        Patient:
+                      </span>
                       <span className="text-gray-900 dark:text-white font-medium">
-                        {certificate.patient.firstName} {certificate.patient.lastName}
+                        {certificate.patient.firstName}{" "}
+                        {certificate.patient.lastName}
                       </span>
                     </div>
                   )}
-                  
+
                   {userRole === "user" && certificate.doctor && (
                     <div className="flex items-start">
-                      <span className="text-gray-500 dark:text-gray-400 w-20">Doctor:</span>
+                      <span className="text-gray-500 dark:text-gray-400 w-20">
+                        Doctor:
+                      </span>
                       <span className="text-gray-900 dark:text-white font-medium">
-                        {certificate.doctor.firstName} {certificate.doctor.lastName}
+                        {certificate.doctor.firstName}{" "}
+                        {certificate.doctor.lastName}
                       </span>
                     </div>
                   )}
@@ -152,7 +160,8 @@ const MedicalCertificatesContent = () => {
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-gray-400" />
                     <span className="text-gray-600 dark:text-gray-400">
-                      {formatDate(certificate.validFrom)} - {formatDate(certificate.validTo)}
+                      {formatDate(certificate.validFrom)} -{" "}
+                      {formatDate(certificate.validTo)}
                     </span>
                   </div>
 
@@ -171,7 +180,10 @@ const MedicalCertificatesContent = () => {
                   </Link>
                   <button
                     onClick={() => {
-                      window.open(`/admin/medical-certificates/${certificate._id}`, '_blank');
+                      window.open(
+                        `/admin/medical-certificates/${certificate._id}`,
+                        "_blank",
+                      );
                       setTimeout(() => window.print(), 500);
                     }}
                     className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-medium"
@@ -190,4 +202,3 @@ const MedicalCertificatesContent = () => {
 };
 
 export default MedicalCertificatesContent;
-

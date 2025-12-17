@@ -20,8 +20,8 @@ const EditPharmacy = () => {
 
   const { addToast } = useToast();
 
-  const alertSuccess = (msg) => addToast(msg, 'success');
-  const alertError = (msg) => addToast(msg, 'error');
+  const alertSuccess = (msg) => addToast(msg, "success");
+  const alertError = (msg) => addToast(msg, "error");
 
   useEffect(() => {
     if (sessionStatus === "loading") return;
@@ -82,7 +82,12 @@ const EditPharmacy = () => {
         }
       }
 
-      const response = await updateData(`pharmacies/custom/update/${pharmacyId}`, formData, token, true); // true = formData mode
+      const response = await updateData(
+        `pharmacies/custom/update/${pharmacyId}`,
+        formData,
+        token,
+        true,
+      ); // true = formData mode
       console.log(response);
       alertSuccess("Pharmacy record updated successfully!");
     } catch (err) {
@@ -96,12 +101,16 @@ const EditPharmacy = () => {
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-white/[0.05]">
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Edit Pharmacy</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+        Edit Pharmacy
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Pharmacy Name */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Pharmacy Name</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Pharmacy Name
+          </label>
           <input
             type="text"
             name="name"
@@ -113,7 +122,9 @@ const EditPharmacy = () => {
 
         {/* License Image Upload */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">License Image</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            License Image
+          </label>
           <input
             type="file"
             name="licenseFile"
@@ -128,7 +139,9 @@ const EditPharmacy = () => {
 
         {/* Contact Number */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Contact Number</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Contact Number
+          </label>
           <input
             type="text"
             name="contactNumber"
@@ -140,7 +153,9 @@ const EditPharmacy = () => {
 
         {/* Contact Email */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Contact Email</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Contact Email
+          </label>
           <input
             type="email"
             name="contactEmail"
@@ -153,7 +168,9 @@ const EditPharmacy = () => {
         {/* Address */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Street</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+              Street
+            </label>
             <input
               type="text"
               name="address.street"
@@ -163,7 +180,9 @@ const EditPharmacy = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">City</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+              City
+            </label>
             <input
               type="text"
               name="address.city"
@@ -173,7 +192,9 @@ const EditPharmacy = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">State</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+              State
+            </label>
             <input
               type="text"
               name="address.state"
@@ -183,7 +204,9 @@ const EditPharmacy = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Country</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+              Country
+            </label>
             <input
               type="text"
               name="address.country"
@@ -196,7 +219,9 @@ const EditPharmacy = () => {
 
         {/* Status */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Status</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Status
+          </label>
           <select
             name="status"
             value={formState.status || "unverified"}
@@ -213,7 +238,9 @@ const EditPharmacy = () => {
         {/* License Image Preview */}
         {pharmacy?.licenseFile && (
           <div className="mt-4">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">License Image Preview</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
+              License Image Preview
+            </p>
             <div className="w-[220px] border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
               <Image
                 src={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${pharmacy.licenseFile}`}

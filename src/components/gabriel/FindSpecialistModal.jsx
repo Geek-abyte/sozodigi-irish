@@ -2,13 +2,21 @@
 
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
-import { FaUserMd, FaCalendarAlt, FaStar, FaTimes, FaRegSadTear } from "react-icons/fa";
+import {
+  FaUserMd,
+  FaCalendarAlt,
+  FaStar,
+  FaTimes,
+  FaRegSadTear,
+} from "react-icons/fa";
 import { motion } from "framer-motion";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
-import ConsultationBookingPageContent from "@/components/BookingPageSelectedCategory"
+import ConsultationBookingPageContent from "@/components/BookingPageSelectedCategory";
 
-const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, { transports: ["websocket"] });
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+  transports: ["websocket"],
+});
 
 const FindSpecialistModal = ({ category, closeModal, setTheSpecialist }) => {
   const [specialist, setSpecialist] = useState(null);
@@ -50,11 +58,12 @@ const FindSpecialistModal = ({ category, closeModal, setTheSpecialist }) => {
     setModalContent(null);
   };
 
-  if (loading) return (
-    <div className="flex items-center justify-center h-64">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
 
   if (!specialist) {
     return (
@@ -75,15 +84,15 @@ const FindSpecialistModal = ({ category, closeModal, setTheSpecialist }) => {
             <FaRegSadTear className="text-6xl text-blue-500 mx-auto" />
             <h2 className="text-3xl font-bold text-gray-800">We're Sorry</h2>
             <p className="text-lg text-gray-600">
-              No specialists in <strong>{category}</strong> are online at the moment.
+              No specialists in <strong>{category}</strong> are online at the
+              moment.
             </p>
 
             {/* Book Appointment Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={
-                  openDialog}
+              onClick={openDialog}
               className="bg-blue-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-600 transition duration-300 ease-in-out w-full"
             >
               Book Appointment
@@ -114,13 +123,15 @@ const FindSpecialistModal = ({ category, closeModal, setTheSpecialist }) => {
               <X size={20} />
             </button>
             <div className="w-full">
-              <ConsultationBookingPageContent showSpecialistCategories={false} selectedCategory={category} />
+              <ConsultationBookingPageContent
+                showSpecialistCategories={false}
+                selectedCategory={category}
+              />
             </div>
           </div>
         </Dialog>
       </>
     );
-
   }
 
   return (
@@ -136,7 +147,9 @@ const FindSpecialistModal = ({ category, closeModal, setTheSpecialist }) => {
       >
         <FaTimes className="text-xl" />
       </button>
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Available Specialist</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        Available Specialist
+      </h2>
       <div className="space-y-6">
         <div className="flex items-center justify-center">
           <img
@@ -147,23 +160,32 @@ const FindSpecialistModal = ({ category, closeModal, setTheSpecialist }) => {
         </div>
         <div className="text-center">
           <h3 className="text-2xl font-semibold text-gray-800">{`${specialist.firstName} ${specialist.lastName}`}</h3>
-          <p className="text-blue-600 font-medium">{specialist.specialistCategory}</p>
+          <p className="text-blue-600 font-medium">
+            {specialist.specialistCategory}
+          </p>
         </div>
         <div className="space-y-2">
           {specialist.yearsOfExperience && (
             <div className="flex items-center">
               <FaUserMd className="text-blue-500 mr-2" />
-              <p><strong>Experience:</strong> {specialist.yearsOfExperience} years</p>
+              <p>
+                <strong>Experience:</strong> {specialist.yearsOfExperience}{" "}
+                years
+              </p>
             </div>
           )}
           <div className="flex items-center">
             <FaCalendarAlt className="text-blue-500 mr-2" />
-            <p><strong>Availability:</strong> Now</p>
+            <p>
+              <strong>Availability:</strong> Now
+            </p>
           </div>
           {specialist.rating && (
             <div className="flex items-center">
               <FaStar className="text-yellow-400 mr-2" />
-              <p><strong>Rating:</strong> {specialist.rating}/5</p>
+              <p>
+                <strong>Rating:</strong> {specialist.rating}/5
+              </p>
             </div>
           )}
         </div>

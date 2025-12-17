@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import { fetchData, postData } from "@/utils/api";
 import { useToast } from "@/context/ToastContext";
 
-const LabSelectionModal = ({ isOpen, onClose, token, sessionId, user, onSuccess }) => {
+const LabSelectionModal = ({
+  isOpen,
+  onClose,
+  token,
+  sessionId,
+  user,
+  onSuccess,
+}) => {
   const { addToast } = useToast();
   const [labs, setLabs] = useState([]);
   const [filters, setFilters] = useState({ country: "", state: "", city: "" });
@@ -20,7 +27,10 @@ const LabSelectionModal = ({ isOpen, onClose, token, sessionId, user, onSuccess 
     setLoading(true);
     try {
       const query = new URLSearchParams(filters).toString();
-      const res = await fetchData(`laboratories/get-all/no-pagination?${query}`, token);
+      const res = await fetchData(
+        `laboratories/get-all/no-pagination?${query}`,
+        token,
+      );
       setLabs(res.labs || []);
     } catch (err) {
       console.error("Failed to load labs", err);
@@ -42,7 +52,7 @@ const LabSelectionModal = ({ isOpen, onClose, token, sessionId, user, onSuccess 
           patient: user._id,
           lab: selectedLab?._id,
         },
-        token
+        token,
       );
 
       addToast("Referral sent to lab and patient", "success");
@@ -69,7 +79,9 @@ const LabSelectionModal = ({ isOpen, onClose, token, sessionId, user, onSuccess 
             type="text"
             placeholder="Country"
             value={filters.country}
-            onChange={(e) => setFilters({ ...filters, country: e.target.value })}
+            onChange={(e) =>
+              setFilters({ ...filters, country: e.target.value })
+            }
             className="border p-2 rounded w-1/3"
           />
           <input
@@ -103,7 +115,8 @@ const LabSelectionModal = ({ isOpen, onClose, token, sessionId, user, onSuccess 
               >
                 <p className="font-medium">{lab.name}</p>
                 <p className="text-sm text-gray-600">
-                  {lab.address?.city || "—"}, {lab.address?.state || "—"}, {lab.address?.country || "—"}
+                  {lab.address?.city || "—"}, {lab.address?.state || "—"},{" "}
+                  {lab.address?.country || "—"}
                 </p>
               </div>
             ))
@@ -114,13 +127,15 @@ const LabSelectionModal = ({ isOpen, onClose, token, sessionId, user, onSuccess 
 
         {/* Action buttons */}
         <div className="flex justify-end gap-3">
-          <button onClick={onClose} className="px-4 py-2 rounded bg-gray-200">Cancel</button>
+          <button onClick={onClose} className="px-4 py-2 rounded bg-gray-200">
+            Cancel
+          </button>
           <button
             onClick={handleSubmit}
             className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
             disabled={!selectedLab || sending}
           >
-            {sending ? "Sending..." : "Send to Lab" }
+            {sending ? "Sending..." : "Send to Lab"}
           </button>
         </div>
       </div>

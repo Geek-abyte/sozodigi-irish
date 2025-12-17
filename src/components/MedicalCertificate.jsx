@@ -1,5 +1,5 @@
-"use client"
-import React from "react"
+"use client";
+import React from "react";
 
 const MedicalCertificate = ({
   patientName = "Emma Davis",
@@ -14,7 +14,11 @@ const MedicalCertificate = ({
     <div className="w-full px-2 sm:px-4 md:px-6 py-10 print:p-0 flex justify-center print:bg-white">
       <div className="bg-white w-full max-w-[794px] border shadow print:shadow-none print:border-none p-6 sm:p-10 text-gray-900 relative">
         {/* Watermark example (optional) */}
-        <img src="/images/logo/icon.png" className="absolute inset-0 w-full h-full opacity-2 pointer-events-none object-contain" alt="Watermark" />
+        <img
+          src="/images/logo/icon.png"
+          className="absolute inset-0 w-full h-full opacity-2 pointer-events-none object-contain"
+          alt="Watermark"
+        />
 
         <div className="border-6 border-[#9bb5b4] p-4 sm:p-6 md:p-10 text-center">
           {/* Header */}
@@ -38,9 +42,9 @@ const MedicalCertificate = ({
           {/* Body */}
           <div className="leading-8 mb-10 text-sm sm:text-base">
             <p>
-              This certifies that <strong>{patientName}</strong> underwent a medical
-              evaluation at <strong>Saint Mary’s Medical Center</strong> on{" "}
-              <strong>{issueDate}</strong> and is currently experiencing{" "}
+              This certifies that <strong>{patientName}</strong> underwent a
+              medical evaluation at <strong>Saint Mary’s Medical Center</strong>{" "}
+              on <strong>{issueDate}</strong> and is currently experiencing{" "}
               <strong>{diagnosis}</strong>.
             </p>
 
@@ -77,14 +81,18 @@ const MedicalCertificate = ({
 
             {/* Patient & Cert IDs */}
             <div className="mt-6 text-sm text-center">
-              <p>Patient’s ID Number: <strong>{patientID}</strong></p>
-              <p>Certificate ID: <strong>{certID}</strong></p>
+              <p>
+                Patient’s ID Number: <strong>{patientID}</strong>
+              </p>
+              <p>
+                Certificate ID: <strong>{certID}</strong>
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MedicalCertificate
+export default MedicalCertificate;

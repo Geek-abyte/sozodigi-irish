@@ -2,7 +2,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
-import { EyeIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  EyeIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import {
   Table,
   TableBody,
@@ -20,11 +24,15 @@ const OrdersPage = () => {
   const [loading, setLoading] = useState(true);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [filters, setFilters] = useState({ status: "", paymentStatus: "", category: "" });
+  const [filters, setFilters] = useState({
+    status: "",
+    paymentStatus: "",
+    category: "",
+  });
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
-  
+
   const { addToast } = useToast();
   const alertSuccess = (msg) => addToast(msg, "success");
   const alertError = (msg) => addToast(msg, "error");
@@ -60,7 +68,10 @@ const OrdersPage = () => {
 
     const loadOrders = async () => {
       try {
-        const data = await fetchData(`orders/filter/by?${query.toString()}`, token);
+        const data = await fetchData(
+          `orders/filter/by?${query.toString()}`,
+          token,
+        );
         setOrders(data.orders);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -103,7 +114,12 @@ const OrdersPage = () => {
       {/* Filter Controls */}
       <div className="flex flex-wrap gap-6 mb-6">
         <div className="flex flex-col">
-          <label htmlFor="status" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Order Status</label>
+          <label
+            htmlFor="status"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
+            Order Status
+          </label>
           <select
             id="status"
             name="status"
@@ -121,7 +137,12 @@ const OrdersPage = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="paymentStatus" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Payment Status</label>
+          <label
+            htmlFor="paymentStatus"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
+            Payment Status
+          </label>
           <select
             id="paymentStatus"
             name="paymentStatus"
@@ -138,7 +159,12 @@ const OrdersPage = () => {
         </div>
 
         <div className="flex flex-col">
-          <label htmlFor="category" className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+          <label
+            htmlFor="category"
+            className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >
+            Category
+          </label>
           <select
             id="category"
             name="category"
@@ -161,28 +187,73 @@ const OrdersPage = () => {
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400">Order ID</TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400">User</TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400">Status</TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400">Total Amount</TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400">Actions</TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400"
+                  >
+                    Order ID
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400"
+                  >
+                    User
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400"
+                  >
+                    Total Amount
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start dark:text-gray-400"
+                  >
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {orders.map((order) => (
                   <TableRow key={order._id}>
-                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">{order._id}</TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">{order.user?.firstName} {order.user?.lastName}</TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">{order.status}</TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">${order.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">
+                      {order._id}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">
+                      {order.user?.firstName} {order.user?.lastName}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">
+                      {order.status}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">
+                      ${order.totalAmount.toFixed(2)}
+                    </TableCell>
                     <TableCell className="px-5 py-4 text-start flex gap-3">
-                      <Link href={`/admin/orders/view/${order._id}`} className="text-indigo-500">
+                      <Link
+                        href={`/admin/orders/view/${order._id}`}
+                        className="text-indigo-500"
+                      >
                         <EyeIcon className="w-5 h-5 inline-block" />
                       </Link>
-                      <Link href={`/admin/orders/edit/${order._id}`} className="text-blue-500">
+                      <Link
+                        href={`/admin/orders/edit/${order._id}`}
+                        className="text-blue-500"
+                      >
                         <PencilSquareIcon className="w-5 h-5 inline-block" />
                       </Link>
-                      <button className="text-red-500" onClick={() => { setIsDialogOpen(true); setItemToDelete(order); }}>
+                      <button
+                        className="text-red-500"
+                        onClick={() => {
+                          setIsDialogOpen(true);
+                          setItemToDelete(order);
+                        }}
+                      >
                         <TrashIcon className="w-5 h-5 inline-block" />
                       </button>
                     </TableCell>

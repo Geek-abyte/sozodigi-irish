@@ -51,17 +51,17 @@ import HorizontaLDots from "./horizontal-dots.svg";
 import ChatIcon from "./chat.svg";
 import MoreDotIcon from "./more-dot.svg";
 import BellIcon from "./bell.svg";
-import ShoppingBagIcon  from "./shopping-bag.svg";
+import ShoppingBagIcon from "./shopping-bag.svg";
 import BeakerIcon from "./beaker.svg";
 import OrderIcon from "./order.svg";
 import ShippingIcon from "./shipping.svg";
 import PlaneIcon from "./plane.svg";
-import PillIcon from "./pill.svg"
-import CallSessionIcon from "./call-session.svg"
-import FeedbackIcon from "./feedback.svg"
-import GalleryIcon from "./gallery.svg"
+import PillIcon from "./pill.svg";
+import CallSessionIcon from "./call-session.svg";
+import FeedbackIcon from "./feedback.svg";
+import GalleryIcon from "./gallery.svg";
 import HospitalIcon from "./hospital.svg";
-import BlogIcon from "./blog.svg"
+import BlogIcon from "./blog.svg";
 
 export {
   DownloadIcon,
@@ -127,5 +127,5 @@ export {
   FeedbackIcon,
   GalleryIcon,
   HospitalIcon,
-  BlogIcon
+  BlogIcon,
 };

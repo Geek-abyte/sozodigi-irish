@@ -23,7 +23,10 @@ const AddLabServicePage = () => {
   useEffect(() => {
     const loadLabs = async () => {
       try {
-        const labs = await fetchData("/laboratories/get-all/no-pagination", token);
+        const labs = await fetchData(
+          "/laboratories/get-all/no-pagination",
+          token,
+        );
         setLaboratories(labs);
       } catch (err) {
         console.error("Error loading labs:", err);
@@ -49,9 +52,9 @@ const AddLabServicePage = () => {
           laboratory,
           status,
         },
-        token
+        token,
       );
-      alertSuccess("Laboratory service created successfully!")
+      alertSuccess("Laboratory service created successfully!");
       // reset only selected fields
       setName("");
       setDescription("");
@@ -60,7 +63,7 @@ const AddLabServicePage = () => {
       // keep lab selection intact so operator doesn't lose context
     } catch (error) {
       console.error("Failed to add lab service:", error);
-      alertError("Laboratory service failed to create!")
+      alertError("Laboratory service failed to create!");
     } finally {
       setLoading(false);
     }

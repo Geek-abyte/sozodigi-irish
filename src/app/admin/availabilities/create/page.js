@@ -39,15 +39,15 @@ const CreateConsultantAvailabilityPage = () => {
   // Calculate end time based on start time and duration
   const calculateEndTime = (startTime, durationMinutes) => {
     if (!startTime || !durationMinutes) return "";
-    
+
     const [hours, minutes] = startTime.split(":").map(Number);
     const startDate = new Date();
     startDate.setHours(hours, minutes, 0, 0);
-    
+
     const endDate = new Date(startDate.getTime() + durationMinutes * 60 * 1000);
     const endHours = String(endDate.getHours()).padStart(2, "0");
     const endMinutes = String(endDate.getMinutes()).padStart(2, "0");
-    
+
     return `${endHours}:${endMinutes}`;
   };
 
@@ -84,9 +84,14 @@ const CreateConsultantAvailabilityPage = () => {
 
     // Validate duration is one of the allowed tiers
     const durationNum = parseInt(form.duration);
-    const isValidTier = PRICING_TIERS.some(tier => tier.duration === durationNum);
+    const isValidTier = PRICING_TIERS.some(
+      (tier) => tier.duration === durationNum,
+    );
     if (!isValidTier) {
-      addToast("Please select a valid duration tier (15, 45, or 60 minutes).", "error");
+      addToast(
+        "Please select a valid duration tier (15, 45, or 60 minutes).",
+        "error",
+      );
       setSubmitting(false);
       return;
     }
@@ -94,7 +99,10 @@ const CreateConsultantAvailabilityPage = () => {
     // Calculate end time
     const endTime = calculateEndTime(form.startTime, durationNum);
     if (!endTime) {
-      addToast("Error calculating end time. Please check your start time.", "error");
+      addToast(
+        "Error calculating end time. Please check your start time.",
+        "error",
+      );
       setSubmitting(false);
       return;
     }
@@ -151,7 +159,14 @@ const CreateConsultantAvailabilityPage = () => {
 
         {/* Type Selector */}
         <div>
-          <label className="block mb-1 font-medium">Consultation Reason <br/> (<small className="text-red-500">Note: No action required if consultation is not for medical certificate</small>)</label>
+          <label className="block mb-1 font-medium">
+            Consultation Reason <br /> (
+            <small className="text-red-500">
+              Note: No action required if consultation is not for medical
+              certificate
+            </small>
+            )
+          </label>
           <select
             name="category"
             value={form.category}
@@ -175,13 +190,19 @@ const CreateConsultantAvailabilityPage = () => {
               className="w-full rounded border px-3 py-2 bg-white dark:bg-gray-800 dark:text-gray-200"
             >
               <option value="">Select Day</option>
-              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
-                (day) => (
-                  <option key={day} value={day}>
-                    {day}
-                  </option>
-                )
-              )}
+              {[
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+              ].map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
             </select>
           </div>
         ) : (
@@ -218,7 +239,7 @@ const CreateConsultantAvailabilityPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {PRICING_TIERS.map((tier) => {
               const isSelected = form.duration === tier.duration.toString();
-              
+
               return (
                 <div
                   key={tier.duration}
@@ -251,7 +272,9 @@ const CreateConsultantAvailabilityPage = () => {
           type="submit"
           disabled={submitting}
           className={`w-full ${
-            submitting ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"
+            submitting
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
           } text-white py-2 rounded font-medium transition`}
         >
           {submitting ? "Creating..." : "Create Availability"}

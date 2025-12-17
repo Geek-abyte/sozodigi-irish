@@ -66,44 +66,60 @@ const VideoSessionsPage = () => {
                   <TableCell isHeader>Start Time</TableCell>
                   <TableCell isHeader>End Time</TableCell>
                   <TableCell isHeader>Duration</TableCell>
-                  { session?.user?.role !== "user" && <TableCell isHeader>Action</TableCell>}
+                  {session?.user?.role !== "user" && (
+                    <TableCell isHeader>Action</TableCell>
+                  )}
                 </TableRow>
               </TableHeader>
 
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {sessions.map((videoSession) => (
                   <TableRow key={videoSession._id}>
-                    <TableCell>{videoSession.user?.firstName} {videoSession.user?.lastName}</TableCell>
-                    <TableCell>{videoSession.specialist?.firstName} {videoSession.specialist?.lastName}</TableCell>
                     <TableCell>
-                      {videoSession.startTime ? new Date(videoSession.startTime).toLocaleString() : "N/A"}
+                      {videoSession.user?.firstName}{" "}
+                      {videoSession.user?.lastName}
                     </TableCell>
                     <TableCell>
-                      {videoSession.endTime ? new Date(videoSession.endTime).toLocaleString() : "N/A"}
+                      {videoSession.specialist?.firstName}{" "}
+                      {videoSession.specialist?.lastName}
                     </TableCell>
-                    <TableCell>{videoSession.durationInMinutes || "N/A"}</TableCell>
-                    { session?.user?.role !== "user" && <TableCell className="relative">
-                      <button
-                        onClick={() => toggleDropdown(videoSession._id)}
-                        className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
-                      >
-                        <MoreVertical size={18} />
-                      </button>
-                      {openDropdown === videoSession._id && (
-                        <div className="absolute right-4 top-10 z-50 bg-white dark:bg-gray-800 shadow-lg border rounded w-48">
-                          <ul className="text-sm py-2">
-                            <li>
-                              <Link
-                                href={`/admin/call-sessions/${videoSession._id}`}
-                                className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                              >
-                                View &amp; Manage
-                              </Link>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </TableCell>}
+                    <TableCell>
+                      {videoSession.startTime
+                        ? new Date(videoSession.startTime).toLocaleString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {videoSession.endTime
+                        ? new Date(videoSession.endTime).toLocaleString()
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {videoSession.durationInMinutes || "N/A"}
+                    </TableCell>
+                    {session?.user?.role !== "user" && (
+                      <TableCell className="relative">
+                        <button
+                          onClick={() => toggleDropdown(videoSession._id)}
+                          className="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+                        >
+                          <MoreVertical size={18} />
+                        </button>
+                        {openDropdown === videoSession._id && (
+                          <div className="absolute right-4 top-10 z-50 bg-white dark:bg-gray-800 shadow-lg border rounded w-48">
+                            <ul className="text-sm py-2">
+                              <li>
+                                <Link
+                                  href={`/admin/call-sessions/${videoSession._id}`}
+                                  className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                >
+                                  View &amp; Manage
+                                </Link>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
@@ -120,7 +136,9 @@ const VideoSessionsPage = () => {
         >
           Previous
         </button>
-        <span className="px-3 py-1">{page} / {totalPages}</span>
+        <span className="px-3 py-1">
+          {page} / {totalPages}
+        </span>
         <button
           onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
           disabled={page === totalPages}

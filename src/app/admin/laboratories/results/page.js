@@ -22,7 +22,7 @@ import { useToast } from "@/context/ToastContext";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import Badge from "@/components/admin/ui/badge/Badge";
 
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 
 export default function LabResultsPage() {
   const [results, setResults] = useState([]);
@@ -58,7 +58,7 @@ export default function LabResultsPage() {
     try {
       await deleteData(`/lab-results/${itemToDelete._id}`, token);
       setResults((prev) =>
-        prev.filter((result) => result._id !== itemToDelete._id)
+        prev.filter((result) => result._id !== itemToDelete._id),
       );
       alertSuccess("Lab result deleted successfully");
     } catch (error) {
@@ -73,8 +73,6 @@ export default function LabResultsPage() {
     const url = `${process.env.NEXT_PUBLIC_NODE_BASE_URL}${filePath}`;
     saveAs(url); // Automatically triggers a download
   };
-  
-  
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900 dark:text-gray-300 p-6">
@@ -96,19 +94,50 @@ export default function LabResultsPage() {
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
-                  <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">Patient</TableCell>
-                  <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">Date</TableCell>
-                  <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">Order ID</TableCell>
-                  <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">Status</TableCell>
-                  <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">Result</TableCell>
-                  <TableCell isHeader className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400">Actions</TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  >
+                    Patient
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  >
+                    Date
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  >
+                    Order ID
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  >
+                    Result
+                  </TableCell>
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 text-start text-theme-xs text-gray-500 dark:text-gray-400"
+                  >
+                    Actions
+                  </TableCell>
                 </TableRow>
               </TableHeader>
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {results.map((result) => (
                   <TableRow key={result._id}>
                     <TableCell className="px-5 py-4 text-start">
-                      {result.user?.firstName + " " + result.user?.lastName || "N/A"}
+                      {result.user?.firstName + " " + result.user?.lastName ||
+                        "N/A"}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
                       {new Date(result.createdAt).toLocaleDateString()}
@@ -123,8 +152,8 @@ export default function LabResultsPage() {
                           result.status === "completed"
                             ? "success"
                             : result.status === "pending"
-                            ? "warning"
-                            : "primary"
+                              ? "warning"
+                              : "primary"
                         }
                       >
                         {result.status || "N/A"}
@@ -143,13 +172,15 @@ export default function LabResultsPage() {
                       </div>
                     </TableCell>
                     <TableCell className="px-5 py-4 flex gap-3">
-                        <button
-                          onClick={() => handleDownload(result.resultFile)}
-                          className="flex items-center gap-1 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
-                        >
-                          <ArrowDownTrayIcon className="w-4 h-4 text-sm" />
-                        </button>
-                      <Link href={`/admin/laboratories/results/edit/${result._id}`}>
+                      <button
+                        onClick={() => handleDownload(result.resultFile)}
+                        className="flex items-center gap-1 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white"
+                      >
+                        <ArrowDownTrayIcon className="w-4 h-4 text-sm" />
+                      </button>
+                      <Link
+                        href={`/admin/laboratories/results/edit/${result._id}`}
+                      >
                         <PencilIcon className="w-5 h-5 text-indigo-500 hover:text-indigo-700" />
                       </Link>
                       <button

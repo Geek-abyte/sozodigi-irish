@@ -46,7 +46,7 @@ const SpecialistSignUpForm = () => {
   const [uploadedCertificate, setUploadedCertificate] = useState(null);
   const [userValues, setUserValues] = useState();
   const { isAuthenticated, error, isLoading, user } = useSelector(
-    (state) => state.auth
+    (state) => state.auth,
   );
 
   const handleOpenModal = (values) => {
@@ -164,7 +164,7 @@ const SpecialistSignUpForm = () => {
             if (values.currentPracticingLicense) {
               formData.append(
                 "currentPracticingLicense",
-                values.currentPracticingLicense
+                values.currentPracticingLicense,
               );
             }
 
@@ -183,7 +183,7 @@ const SpecialistSignUpForm = () => {
                     showToast({
                       status: "success",
                       message: "Signup successful!",
-                    })
+                    }),
                   );
                   setStatus({ success: true });
                   handleOpenModal(values);
@@ -196,7 +196,7 @@ const SpecialistSignUpForm = () => {
                 if (error.response) {
                   if (
                     error.response?.data?.includes(
-                      "reCAPTCHA validation failed"
+                      "reCAPTCHA validation failed",
                     )
                   ) {
                     errorMessage =

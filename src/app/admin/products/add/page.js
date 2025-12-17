@@ -90,11 +90,15 @@ const AddProduct = () => {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900 dark:text-gray-300 p-6">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Add New Medication</h2>
+      <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">
+        Add New Medication
+      </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div>
-          <label className="block text-gray-700 font-medium">Medication Name</label>
+          <label className="block text-gray-700 font-medium">
+            Medication Name
+          </label>
           <input
             type="text"
             name="name"
@@ -185,7 +189,9 @@ const AddProduct = () => {
               onChange={handleChange}
               className="mr-2"
             />
-            <span className="text-gray-700 font-medium">Prescription Required</span>
+            <span className="text-gray-700 font-medium">
+              Prescription Required
+            </span>
           </label>
           <div>
             <label className="block text-gray-700 font-medium">Status</label>
@@ -204,7 +210,9 @@ const AddProduct = () => {
 
         {/* Photo Upload */}
         <div>
-          <label className="block text-gray-700 font-medium">Product Image</label>
+          <label className="block text-gray-700 font-medium">
+            Product Image
+          </label>
           <input
             type="file"
             name="photo"
@@ -214,7 +222,11 @@ const AddProduct = () => {
             required
           />
           {imagePreview && (
-            <img src={imagePreview} alt="Preview" className="mt-3 w-32 h-32 object-cover rounded-lg shadow-md" />
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="mt-3 w-32 h-32 object-cover rounded-lg shadow-md"
+            />
           )}
         </div>
 

@@ -2,11 +2,11 @@ import { createSlice, createAction } from "@reduxjs/toolkit";
 
 // Add these new actions
 export const triggerChatbotAttention = createAction(
-  "popUp/triggerChatbotAttention"
+  "popUp/triggerChatbotAttention",
 );
 
 export const resetChatbotAttention = createAction(
-  "popUp/resetChatbotAttention"
+  "popUp/resetChatbotAttention",
 );
 
 const initialState = {

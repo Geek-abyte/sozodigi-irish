@@ -20,13 +20,22 @@ const MedicationOrderPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [noResults, setNoResults] = useState(false);
 
-  const selectedUser = typeof window !== "undefined" ? sessionStorage.getItem("newOrderUser") : null;
-  const userId = typeof window !== "undefined" ? sessionStorage.getItem("newOrderUser") : null;
+  const selectedUser =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("newOrderUser")
+      : null;
+  const userId =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("newOrderUser")
+      : null;
 
   const loadProducts = async (query = "") => {
     setLoading(true);
     try {
-      const data = await fetchData(`products?page=${page}&search=${query}`, token);
+      const data = await fetchData(
+        `products?page=${page}&search=${query}`,
+        token,
+      );
       setProducts(data.data);
       setTotalPages(data.pages);
       setNoResults(data.data.length === 0); // Check if no records are found
@@ -40,7 +49,10 @@ const MedicationOrderPage = () => {
   useEffect(() => {
     if (!selectedUser) {
       // If no user is selected, redirect to the start page
-      addToast("No user selected. Please select a user to place the order.", "error");
+      addToast(
+        "No user selected. Please select a user to place the order.",
+        "error",
+      );
       router.push("/admin/orders/start");
     } else {
       // Proceed with the page logic (filter products based on selected user's location)
@@ -70,8 +82,8 @@ const MedicationOrderPage = () => {
         prev.map((item) =>
           item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+            : item,
+        ),
       );
       addToast(`${product.name} quantity increased`, "info");
     } else {
@@ -98,7 +110,10 @@ const MedicationOrderPage = () => {
   };
 
   const calculateTotalPrice = () => {
-    return basket.reduce((total, item) => total + item.price * item.quantity, 0);
+    return basket.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0,
+    );
   };
 
   return (
@@ -203,8 +218,12 @@ const MedicationOrderPage = () => {
                 >
                   <div>
                     <p className="font-medium text-sm">{item.name}</p>
-                    <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                    <p className="text-xs text-gray-500">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">
+                      Qty: {item.quantity}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </p>
                   </div>
                   <button onClick={() => removeFromBasket(item._id)}>
                     <TrashIcon className="w-4 h-4 text-red-500" />

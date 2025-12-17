@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
+import { useEffect, useState } from "react";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 const SessionTimer = ({
   appointment,
@@ -9,7 +9,7 @@ const SessionTimer = ({
   setSessionEnded,
   handleEndSession,
   handleEndCall,
-  addToast
+  addToast,
 }) => {
   const [localRemainingTime, setLocalRemainingTime] = useState(0);
   const [totalDurationSeconds, setTotalDurationSeconds] = useState(1); // Prevent divide-by-zero
@@ -27,13 +27,17 @@ const SessionTimer = ({
     }
 
     let startTime = parseInt(localStorage.getItem(sessionKey), 10);
-    if ((!startTime || isNaN(startTime)) && appointment.session.appointment.status === "pending") {
+    if (
+      (!startTime || isNaN(startTime)) &&
+      appointment.session.appointment.status === "pending"
+    ) {
       startTime = Date.now();
       localStorage.setItem(sessionKey, startTime);
     }
 
     const sessionStartTime = parseInt(startTime, 10) + 2 * 60 * 1000;
-    const sessionDurationMs = (appointment.session.appointment.duration * 60 * 1000) / 60;
+    const sessionDurationMs =
+      (appointment.session.appointment.duration * 60 * 1000) / 60;
     const sessionEndTime = sessionStartTime + sessionDurationMs;
 
     setTotalDurationSeconds(Math.ceil(sessionDurationMs / 1000));
@@ -55,16 +59,32 @@ const SessionTimer = ({
 
       if (elapsedPercentage >= 70 && !notified[70]) {
         notified[70] = true;
-        addToast(`Only ${remainingMinutes} minute(s) left in your session`, 'error', 10000);
+        addToast(
+          `Only ${remainingMinutes} minute(s) left in your session`,
+          "error",
+          10000,
+        );
       } else if (elapsedPercentage >= 80 && !notified[80]) {
         notified[80] = true;
-        addToast(`Only ${remainingMinutes} minute(s) left in your session`, 'error', 10000);
+        addToast(
+          `Only ${remainingMinutes} minute(s) left in your session`,
+          "error",
+          10000,
+        );
       } else if (elapsedPercentage >= 90 && !notified[90]) {
         notified[90] = true;
-        addToast(`Only ${remainingMinutes} minute(s) left in your session`, 'error', 10000);
+        addToast(
+          `Only ${remainingMinutes} minute(s) left in your session`,
+          "error",
+          10000,
+        );
       } else if (elapsedPercentage >= 95 && !notified[95]) {
         notified[95] = true;
-        addToast(`Only ${remainingMinutes} minute(s) left in your session`, 'error', 10000);
+        addToast(
+          `Only ${remainingMinutes} minute(s) left in your session`,
+          "error",
+          10000,
+        );
       }
 
       if (remainingTimeMs <= 0) {
@@ -86,10 +106,11 @@ const SessionTimer = ({
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    return `${minutes}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const percentage = ((totalDurationSeconds - localRemainingTime) / totalDurationSeconds) * 100;
+  const percentage =
+    ((totalDurationSeconds - localRemainingTime) / totalDurationSeconds) * 100;
 
   return (
     <div style={{ width: 70, height: 70 }}>

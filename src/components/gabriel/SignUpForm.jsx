@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Link } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
-import PhoneInput from 'react-phone-input-2';
-import 'react-phone-input-2/lib/style.css';
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import axios from "../utils/axiosConfig"; // Import the configured Axios instance
 import Button from "./Button";
 import { LoadingSpinner } from "./"; // Import the loading spinner
@@ -26,7 +26,7 @@ const SignUpForm = () => {
   const isModalOpen = useSelector((state) => state.popUp.showModal);
   const [userValues, setUserValues] = useState();
   const { isAuthenticated, error, isLoading, user } = useSelector(
-    (state) => state.auth
+    (state) => state.auth,
   );
 
   const handleOpenModal = (values) => {
@@ -128,7 +128,7 @@ const SignUpForm = () => {
         }}
         onSubmit={(values, { setSubmitting, setStatus }) => {
           axiosInstance
-            .post(`${apiUrl}/api/users/register`, {...values, role: "user"})
+            .post(`${apiUrl}/api/users/register`, { ...values, role: "user" })
             .then((response) => {
               if (response.status === 201) {
                 // Check if response status is 201 Created
@@ -136,7 +136,7 @@ const SignUpForm = () => {
                   showToast({
                     status: "success",
                     message: "Signup successful!",
-                  })
+                  }),
                 );
                 setStatus({ success: true });
                 handleOpenModal(values);
@@ -217,11 +217,7 @@ const SignUpForm = () => {
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </Field>
-                <ErrorMessage
-                  name="gender"
-                  component="div"
-                  className="error"
-                />
+                <ErrorMessage name="gender" component="div" className="error" />
               </div>
             </div>
             <div className={`block w-full`}>
@@ -237,28 +233,30 @@ const SignUpForm = () => {
               <Field as="select" name="country" className={formInput}>
                 <option value="">Country</option>
                 {countries.map((country, index) => (
-                  <option key={index} value={country}>{country}</option>
+                  <option key={index} value={country}>
+                    {country}
+                  </option>
                 ))}
               </Field>
               <ErrorMessage name="country" component="div" className="error" />
             </div>
             <div className="block w-full">
               <PhoneInput
-                country={'us'}
+                country={"us"}
                 placeholder="Phone Number"
                 value=""
-                onChange={phone => setFieldValue('phone', phone)}
+                onChange={(phone) => setFieldValue("phone", phone)}
                 inputClass="custom-phone-input"
                 containerClass="custom-phone-container"
                 inputStyle={{
-                  width: '100%',
-                  height: '40px',
-                  borderRadius: '20px',
-                  border: '3px solid #4478c7',
+                  width: "100%",
+                  height: "40px",
+                  borderRadius: "20px",
+                  border: "3px solid #4478c7",
                 }}
                 buttonStyle={{
-                  borderRadius: '20px 0 0 20px',
-                  border: '3px solid #4478c7',
+                  borderRadius: "20px 0 0 20px",
+                  border: "3px solid #4478c7",
                 }}
               />
               <ErrorMessage name="phone" component="div" className="error" />
@@ -321,13 +319,12 @@ const SignUpForm = () => {
               </div>
             </div>
             <div className="block w-full flex justify-start items-center">
-              <Field
-                type="checkbox"
-                name="agreeTerms"
-                className="mr-2"
-              />
+              <Field type="checkbox" name="agreeTerms" className="mr-2" />
               <label htmlFor="agreeTerms" className="text-primary-2">
-                I agree to the <Link to="/terms" className="text-primary-5 underline">Terms and Conditions</Link>
+                I agree to the{" "}
+                <Link to="/terms" className="text-primary-5 underline">
+                  Terms and Conditions
+                </Link>
               </label>
               <ErrorMessage
                 name="agreeTerms"
@@ -350,7 +347,12 @@ const SignUpForm = () => {
               {isSubmitting ? <LoadingSpinner /> : "Sign Up"}
             </Button>
             {isModalOpen && (
-              <OTPModal isOpen userInfo={userValues} email={userValues.email} onClose={handleCloseModal} />
+              <OTPModal
+                isOpen
+                userInfo={userValues}
+                email={userValues.email}
+                onClose={handleCloseModal}
+              />
             )}
           </Form>
         )}

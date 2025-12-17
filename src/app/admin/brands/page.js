@@ -25,7 +25,7 @@ const BrandsPage = () => {
     const loadBrands = async () => {
       try {
         const data = await fetchData("/brands/get-all/no-pagination");
-        console.log(data)
+        console.log(data);
         setBrands(data);
       } catch (error) {
         console.error("Error fetching brands:", error);
@@ -39,7 +39,7 @@ const BrandsPage = () => {
 
   const deleteBrand = async (brandId) => {
     if (!confirm("Are you sure you want to delete this brand?")) return;
-    console.log(`/brands${brandId}`)
+    console.log(`/brands${brandId}`);
 
     try {
       await deleteData(`/brands/${brandId}`, token);
@@ -123,10 +123,16 @@ const BrandsPage = () => {
 
                     {/* Actions */}
                     <TableCell className="px-5 py-4 text-start flex gap-3">
-                      <Link href={`/admin/brands/edit/${brand._id}`} className="text-blue-500">
+                      <Link
+                        href={`/admin/brands/edit/${brand._id}`}
+                        className="text-blue-500"
+                      >
                         <PencilSquareIcon className="w-5 h-5 inline-block" />
                       </Link>
-                      <button className="text-red-500" onClick={() => deleteBrand(brand._id)}>
+                      <button
+                        className="text-red-500"
+                        onClick={() => deleteBrand(brand._id)}
+                      >
                         <TrashIcon className="w-5 h-5 inline-block" />
                       </button>
                     </TableCell>

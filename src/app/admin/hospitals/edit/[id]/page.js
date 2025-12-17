@@ -31,8 +31,8 @@ const EditHospital = () => {
     close: "",
     emergencyServices: false,
     isVerified: false,
-    photo: null,           // New
-    existingPhotoUrl: "",  // For preview
+    photo: null, // New
+    existingPhotoUrl: "", // For preview
   });
 
   useEffect(() => {
@@ -41,26 +41,26 @@ const EditHospital = () => {
         const res = await fetchData(`/hospitals/${id}`, token);
         const hospital = res;
 
-        if(hospital){
-            setFormData({
-                name: hospital.name,
-                address: hospital.location?.address || "",
-                city: hospital.location?.city || "",
-                state: hospital.location?.state || "",
-                country: hospital.location?.country || "",
-                postalCode: hospital.location?.postalCode || "",
-                lat: hospital.location?.coordinates?.lat || "",
-                lng: hospital.location?.coordinates?.lng || "",
-                phone: hospital.contact?.phone || "",
-                email: hospital.contact?.email || "",
-                website: hospital.contact?.website || "",
-                accreditation: hospital.accreditation || "",
-                open: hospital.operatingHours?.open || "",
-                close: hospital.operatingHours?.close || "",
-                emergencyServices: hospital.emergencyServices || false,
-                isVerified: hospital.isVerified,
-                existingPhotoUrl: hospital.photo || "",
-            });
+        if (hospital) {
+          setFormData({
+            name: hospital.name,
+            address: hospital.location?.address || "",
+            city: hospital.location?.city || "",
+            state: hospital.location?.state || "",
+            country: hospital.location?.country || "",
+            postalCode: hospital.location?.postalCode || "",
+            lat: hospital.location?.coordinates?.lat || "",
+            lng: hospital.location?.coordinates?.lng || "",
+            phone: hospital.contact?.phone || "",
+            email: hospital.contact?.email || "",
+            website: hospital.contact?.website || "",
+            accreditation: hospital.accreditation || "",
+            open: hospital.operatingHours?.open || "",
+            close: hospital.operatingHours?.close || "",
+            emergencyServices: hospital.emergencyServices || false,
+            isVerified: hospital.isVerified,
+            existingPhotoUrl: hospital.photo || "",
+          });
         }
       } catch (err) {
         console.error("Failed to fetch hospital:", err);
@@ -76,16 +76,14 @@ const EditHospital = () => {
     setFormData((prev) => ({
       ...prev,
       [name]:
-        type === "checkbox" ? checked :
-        type === "file" ? files[0] :
-        value,
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     const form = new FormData();
     form.append("name", formData.name);
     form.append("accreditation", formData.accreditation);
@@ -106,7 +104,7 @@ const EditHospital = () => {
     if (formData.photo) {
       form.append("photo", formData.photo);
     }
-  
+
     try {
       await updateData(`/hospitals/custom/update/${id}`, form, token, true); // Set last arg to true for multipart
       addToast("Hospital updated successfully!", "success");
@@ -118,60 +116,92 @@ const EditHospital = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 dark:text-gray-300 p-6 rounded-xl shadow-md">
       <h2 className="text-2xl font-semibold text-center mb-4">Edit Hospital</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
         {/* Form inputs exactly same as AddHospital */}
-        {["name", "accreditation", "phone", "email", "website", "address", "city", "state", "country", "postalCode", "lat", "lng", "open", "close"].map((field) => (
+        {[
+          "name",
+          "accreditation",
+          "phone",
+          "email",
+          "website",
+          "address",
+          "city",
+          "state",
+          "country",
+          "postalCode",
+          "lat",
+          "lng",
+          "open",
+          "close",
+        ].map((field) => (
           <input
             key={field}
             name={field}
-            placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, " $1")}
+            placeholder={
+              field.charAt(0).toUpperCase() +
+              field.slice(1).replace(/([A-Z])/g, " $1")
+            }
             value={formData[field]}
             onChange={handleChange}
-            required={["name", "phone", "address", "city", "state", "country"].includes(field)}
+            required={[
+              "name",
+              "phone",
+              "address",
+              "city",
+              "state",
+              "country",
+            ].includes(field)}
             className="p-3 border rounded-lg"
           />
         ))}
 
         <select
-        name="isVerified"
-        value={String(formData.isVerified)}
-        onChange={(e) => setFormData(prev => ({
-            ...prev,
-            isVerified: e.target.value === "true"
-        }))}
-        className="p-3 border rounded-lg col-span-2"
+          name="isVerified"
+          value={String(formData.isVerified)}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              isVerified: e.target.value === "true",
+            }))
+          }
+          className="p-3 border rounded-lg col-span-2"
         >
-            <option value="true">Verified</option>
-            <option value="false">Not Verified</option>
+          <option value="true">Verified</option>
+          <option value="false">Not Verified</option>
         </select>
 
-
         <label className="col-span-2 flex items-center space-x-2">
-          <input type="checkbox" name="emergencyServices" checked={formData.emergencyServices} onChange={handleChange} />
+          <input
+            type="checkbox"
+            name="emergencyServices"
+            checked={formData.emergencyServices}
+            onChange={handleChange}
+          />
           <span>Provides Emergency Services</span>
         </label>
 
         {formData.existingPhotoUrl && (
-            <img
-                src={formData.existingPhotoUrl}
-                alt="Hospital Photo"
-                className="col-span-2 max-h-40 object-contain rounded-md"
-            />
-            )}
+          <img
+            src={formData.existingPhotoUrl}
+            alt="Hospital Photo"
+            className="col-span-2 max-h-40 object-contain rounded-md"
+          />
+        )}
 
-            <input
-            type="file"
-            accept="image/*"
-            name="photo"
-            onChange={handleChange}
-            className="col-span-2 p-3 border rounded-lg"
+        <input
+          type="file"
+          accept="image/*"
+          name="photo"
+          onChange={handleChange}
+          className="col-span-2 p-3 border rounded-lg"
         />
-
 
         <button
           type="submit"

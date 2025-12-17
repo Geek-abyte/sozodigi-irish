@@ -13,9 +13,9 @@ const EditBlog = () => {
   const token = session?.user?.jwt;
   const { addToast } = useToast();
 
-  const params = useParams()
+  const params = useParams();
 
-  const blogId = params.id
+  const blogId = params.id;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -31,7 +31,7 @@ const EditBlog = () => {
     const fetchBlog = async () => {
       try {
         const blog = await fetchData(`blogs/${blogId}`, token);
-        console.log(blog)
+        console.log(blog);
         setFormData({
           title: blog.title,
           content: blog.content,
@@ -54,7 +54,8 @@ const EditBlog = () => {
     const { name, value, type, checked, files } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+      [name]:
+        type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
   };
 
@@ -82,7 +83,12 @@ const EditBlog = () => {
     }
 
     try {
-      const res = await updateData(`blogs/custom/update/${blogId}`, form, token, true); // Use PUT for updating
+      const res = await updateData(
+        `blogs/custom/update/${blogId}`,
+        form,
+        token,
+        true,
+      ); // Use PUT for updating
       addToast("Blog updated successfully!", "success");
       router.push("/admin/blogs");
     } catch (error) {
@@ -116,7 +122,11 @@ const EditBlog = () => {
   return (
     <div className="max-w-3xl mx-auto bg-white dark:bg-gray-900 dark:text-gray-300 p-6 rounded-xl shadow-md">
       <h2 className="text-2xl font-semibold text-center mb-4">Edit Blog</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4" encType="multipart/form-data">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 gap-4"
+        encType="multipart/form-data"
+      >
         <input
           name="title"
           placeholder="Blog Title"

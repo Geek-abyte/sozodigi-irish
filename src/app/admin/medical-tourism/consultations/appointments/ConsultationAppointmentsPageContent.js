@@ -16,10 +16,17 @@ import {
   TableRow,
 } from "@/components/admin/ui/table";
 
-const ConsultationAppointmentsPageContent  = () => {
+const ConsultationAppointmentsPageContent = () => {
   const [appointments, setAppointments] = useState([]);
-  const [pagination, setPagination] = useState({ totalPages: 1, currentPage: 1 });
-  const [filters, setFilters] = useState({ status: "", dateFrom: "", dateTo: "" });
+  const [pagination, setPagination] = useState({
+    totalPages: 1,
+    currentPage: 1,
+  });
+  const [filters, setFilters] = useState({
+    status: "",
+    dateFrom: "",
+    dateTo: "",
+  });
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -29,7 +36,7 @@ const ConsultationAppointmentsPageContent  = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const userRole = session?.user?.role
+  const userRole = session?.user?.role;
 
   const page = parseInt(searchParams.get("page") || "1", 10);
 
@@ -40,9 +47,15 @@ const ConsultationAppointmentsPageContent  = () => {
         ...filters,
       }).toString();
 
-      const res = await fetchData(`consultation-appointments/all/paginated?${query}`, token);
+      const res = await fetchData(
+        `consultation-appointments/all/paginated?${query}`,
+        token,
+      );
       setAppointments(res.data || []);
-      setPagination({ totalPages: res.totalPages, currentPage: res.currentPage });
+      setPagination({
+        totalPages: res.totalPages,
+        currentPage: res.currentPage,
+      });
     } catch (err) {
       console.error("Failed to load appointments", err);
     }
@@ -89,18 +102,22 @@ const ConsultationAppointmentsPageContent  = () => {
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900 dark:text-gray-300 p-6">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Consultation Appointments</h1>
-        { userRole === "user" && <Link
-          href='/admin/consultation/book'
-          className="bg-indigo-600 text-white px-4 py-2 rounded-full border border-indigo-400 shadow-lg shadow-indigo-500/50 ring-2 ring-indigo-300 hover:ring-4 transition-all duration-300"
-        >
-          + Book Appointment
-        </Link>}
+        {userRole === "user" && (
+          <Link
+            href="/admin/consultation/book"
+            className="bg-indigo-600 text-white px-4 py-2 rounded-full border border-indigo-400 shadow-lg shadow-indigo-500/50 ring-2 ring-indigo-300 hover:ring-4 transition-all duration-300"
+          >
+            + Book Appointment
+          </Link>
+        )}
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap items-end gap-4 mb-6">
         <div>
-          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">Status</label>
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">
+            Status
+          </label>
           <select
             name="status"
             value={filters.status}
@@ -115,7 +132,9 @@ const ConsultationAppointmentsPageContent  = () => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">Date From</label>
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">
+            Date From
+          </label>
           <input
             type="date"
             name="dateFrom"
@@ -125,7 +144,9 @@ const ConsultationAppointmentsPageContent  = () => {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">Date To</label>
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">
+            Date To
+          </label>
           <input
             type="date"
             name="dateTo"
@@ -156,12 +177,42 @@ const ConsultationAppointmentsPageContent  = () => {
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Patient</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Consultant</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Date</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Status</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Payment</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Actions</TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Patient
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Consultant
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Date
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Status
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Payment
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
@@ -169,13 +220,17 @@ const ConsultationAppointmentsPageContent  = () => {
                 appointments.map((appointment) => (
                   <TableRow key={appointment._id}>
                     <TableCell className="px-5 py-4">
-                      {appointment.patient?.firstName} {appointment.patient?.lastName}
+                      {appointment.patient?.firstName}{" "}
+                      {appointment.patient?.lastName}
                     </TableCell>
                     <TableCell className="px-5 py-4">
-                      {appointment.consultant?.firstName} {appointment.consultant?.lastName}
+                      {appointment.consultant?.firstName}{" "}
+                      {appointment.consultant?.lastName}
                     </TableCell>
                     <TableCell className="px-5 py-4">
-                      {appointment.date ? format(new Date(appointment.date), "PPPp") : "-"}
+                      {appointment.date
+                        ? format(new Date(appointment.date), "PPPp")
+                        : "-"}
                     </TableCell>
                     <TableCell className="px-5 py-4 capitalize">
                       {appointment.status}
@@ -184,10 +239,19 @@ const ConsultationAppointmentsPageContent  = () => {
                       {appointment.paymentStatus}
                     </TableCell>
                     <TableCell className="px-5 py-4 flex gap-3">
-                      <Link href={`/admin/medical-tourism/consultations/appointments/edit/${appointment._id}`} className="text-blue-500">
+                      <Link
+                        href={`/admin/medical-tourism/consultations/appointments/edit/${appointment._id}`}
+                        className="text-blue-500"
+                      >
                         <PencilSquareIcon className="w-5 h-5" />
                       </Link>
-                      <button className="text-red-500" onClick={() => { setItemToDelete(appointment); setIsDialogOpen(true); }}>
+                      <button
+                        className="text-red-500"
+                        onClick={() => {
+                          setItemToDelete(appointment);
+                          setIsDialogOpen(true);
+                        }}
+                      >
                         <TrashIcon className="w-5 h-5" />
                       </button>
                     </TableCell>
@@ -195,7 +259,10 @@ const ConsultationAppointmentsPageContent  = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-4 text-gray-500">
+                  <TableCell
+                    colSpan={6}
+                    className="text-center py-4 text-gray-500"
+                  >
                     No appointments found.
                   </TableCell>
                 </TableRow>
@@ -240,4 +307,4 @@ const ConsultationAppointmentsPageContent  = () => {
   );
 };
 
-export default ConsultationAppointmentsPageContent ;
+export default ConsultationAppointmentsPageContent;

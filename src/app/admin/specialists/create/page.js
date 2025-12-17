@@ -52,7 +52,9 @@ export default function CreateSpecialistPage() {
 
       if (res?.userId || /otp|successful/i.test(res?.message || "")) {
         alertSuccess("Specialist created. OTP sent to email.");
-        router.push(`/auth/verify-otp?email=${encodeURIComponent(formData.email)}`);
+        router.push(
+          `/auth/verify-otp?email=${encodeURIComponent(formData.email)}`,
+        );
       } else {
         alertError(res?.message || "Failed to create specialist");
       }
@@ -96,10 +98,7 @@ export default function CreateSpecialistPage() {
         />
 
         {RECAPTCHA_SITE_KEY && (
-          <ReCAPTCHA
-            sitekey={RECAPTCHA_SITE_KEY}
-            onChange={setCaptchaToken}
-          />
+          <ReCAPTCHA sitekey={RECAPTCHA_SITE_KEY} onChange={setCaptchaToken} />
         )}
 
         <button
@@ -115,5 +114,3 @@ export default function CreateSpecialistPage() {
     </div>
   );
 }
-
-

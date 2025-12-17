@@ -1,28 +1,29 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react'
-import dynamic from 'next/dynamic'
-import { fetchData, postData } from '@/utils/api'
-import { useUser } from '@/context/UserContext'
-import { useSession } from 'next-auth/react'
-import { useSearchParams, usePathname, useRouter } from 'next/navigation'
-import { useToast } from '@/context/ToastContext'
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { fetchData, postData } from "@/utils/api";
+import { useUser } from "@/context/UserContext";
+import { useSession } from "next-auth/react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useToast } from "@/context/ToastContext";
 
 import { useSelector, useDispatch } from "react-redux";
 import ModalContainer from "@/components/gabriel/ModalContainer";
 
-import { DayPicker } from 'react-day-picker'
-import 'react-day-picker/dist/style.css'
-import BookingInstructions from '@/components/BookingInstructions'
-import getMinutesDifference from '@/utils/getMinutesDifference'
-import { 
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
+import BookingInstructions from "@/components/BookingInstructions";
+import getMinutesDifference from "@/utils/getMinutesDifference";
+import {
   setPrice,
   setSpecialist,
   setDuration,
   setConsultMode,
   setSlot,
-  resetBooking, 
-  setAppointmentDate} from '@/store/specialistSlice'
+  resetBooking,
+  setAppointmentDate,
+} from "@/store/specialistSlice";
 
 import {
   PricingModal,
@@ -30,133 +31,152 @@ import {
   FindSpecialistModal,
 } from "@/components/gabriel";
 
-import { Elements } from '@stripe/react-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
-import { routerActions } from 'react-router-redux'
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { routerActions } from "react-router-redux";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
-
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+);
 
 const ConsultationBookingPageContent = () => {
   const dispatch = useDispatch();
-  
+
   const specialist = useSelector((state) => state.specialist.specialist);
   const price = useSelector((state) => state.specialist.price);
   const duration = useSelector((state) => state.specialist.duration);
 
   const appointmentDate = useSelector(
-    (state) => state.specialist.appointmentDate
+    (state) => state.specialist.appointmentDate,
   );
-  
-  const router = useRouter()
+
+  const router = useRouter();
 
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
-  const startOfToday = new Date()
-  startOfToday.setHours(0, 0, 0, 0)
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
 
-  const [mounted, setMounted] = useState(false)
-  const { user } = useUser()
-  const { addToast } = useToast()
-  const { data: session } = useSession()
-  const searchParams = useSearchParams()
-  const token = session?.user?.jwt
+  const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
+  const { addToast } = useToast();
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const token = session?.user?.jwt;
 
-  const [selectedDate, setSelectedDate] = useState(startOfToday)
-  const [availableSlots, setAvailableSlots] = useState([])
-  const [selectedSlot, setSelectedSlot] = useState(null)
-  const [reason, setReason] = useState('')
-  const [loadingSlots, setLoadingSlots] = useState(false)
-  const [loadingBooking, setLoadingBooking] = useState(false)
-  const [loadingCategories, setLoadingCategories] = useState(true)
+  const [selectedDate, setSelectedDate] = useState(startOfToday);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [reason, setReason] = useState("");
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [loadingBooking, setLoadingBooking] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
-  const [categories, setCategories] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState(null)
-  const [specialistsByCategory, setSpecialistsByCategory] = useState([])
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [specialistsByCategory, setSpecialistsByCategory] = useState([]);
 
-  const COST_PER_MINUTE = 2
+  const COST_PER_MINUTE = 2;
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (token && selectedDate) {
-      fetchAvailableSlots()
+      fetchAvailableSlots();
     }
-  }, [selectedDate, specialistsByCategory, token])
-  
+  }, [selectedDate, specialistsByCategory, token]);
+
   const fetchAvailableSlots = async () => {
     setLoadingSlots(true);
     setAvailableSlots([]);
-  
+
     try {
-      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
       const selectedDayName = weekdays[selectedDate.getDay()];
-      const selectedDateString = selectedDate.toISOString().split('T')[0];
-  
+      const selectedDateString = selectedDate.toISOString().split("T")[0];
+
       const allSlots = [];
-  
+
       // 1. Fetch appointments for selected date
       const appointmentRes = await fetchData(
         `consultation-appointments/all/no/pagination/?dateFrom=${selectedDateString}&dateTo=${selectedDateString}`,
-        token
+        token,
       );
       const bookedAppointments = appointmentRes || [];
-  
+
       // 2. Create a set of booked slot IDs for fast lookup
       const bookedSlotIds = new Set(
-        bookedAppointments.map((appointment) => appointment.slot?._id)
+        bookedAppointments.map((appointment) => appointment.slot?._id),
       );
-  
+
       // 3. Loop through all specialists in the selected category
-        const res = await fetchData(
-            `availabilities/slots/by?userRole=specialist&consultantId=${specialist._id}&isBooked=false`,
-            token
-        );
+      const res = await fetchData(
+        `availabilities/slots/by?userRole=specialist&consultantId=${specialist._id}&isBooked=false`,
+        token,
+      );
 
-        const filtered = res.data.filter((slot) => {
-            const slotId = slot._id;
-            if (bookedSlotIds.has(slotId)) return false; // Exclude already booked slots
+      const filtered = res.data.filter((slot) => {
+        const slotId = slot._id;
+        if (bookedSlotIds.has(slotId)) return false; // Exclude already booked slots
 
-            if (slot.type === 'recurring') {
-                return slot.dayOfWeek === selectedDayName;
-            } else if (slot.type === 'one-time') {
-                return new Date(slot.date).toISOString().split('T')[0] === selectedDateString;
-            }
+        if (slot.type === "recurring") {
+          return slot.dayOfWeek === selectedDayName;
+        } else if (slot.type === "one-time") {
+          return (
+            new Date(slot.date).toISOString().split("T")[0] ===
+            selectedDateString
+          );
+        }
 
-            return false;
-        });
+        return false;
+      });
 
-        filtered.forEach((slot) => {
-            allSlots.push({ ...slot, consultant: specialist });
-        });
+      filtered.forEach((slot) => {
+        allSlots.push({ ...slot, consultant: specialist });
+      });
 
-        setAvailableSlots(allSlots);
+      setAvailableSlots(allSlots);
     } catch (err) {
-      console.error('Error fetching slots:', err);
-      addToast('Failed to load slots', 'error');
+      console.error("Error fetching slots:", err);
+      addToast("Failed to load slots", "error");
     } finally {
       setLoadingSlots(false);
     }
   };
-  
 
-  if (!mounted) return null
+  if (!mounted) return null;
 
-  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  const selectedDayName = weekdays[selectedDate.getDay()]
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const selectedDayName = weekdays[selectedDate.getDay()];
 
   const openCheckoutModal = (price, duration) => {
-    console.log(price)
+    console.log(price);
     dispatch(setPrice(price));
     dispatch(setDuration(duration));
     setModalContent("checkoutModal");
     dispatch(setConsultMode("appointment"));
-    dispatch(setSpecialist(selectedSlot.consultant))
-    dispatch(setAppointmentDate(selectedDate.toISOString()))
-    dispatch(setSlot(selectedSlot))
+    dispatch(setSpecialist(selectedSlot.consultant));
+    dispatch(setAppointmentDate(selectedDate.toISOString()));
+    dispatch(setSlot(selectedSlot));
     setShowModal(true);
   };
 
@@ -166,8 +186,8 @@ const ConsultationBookingPageContent = () => {
     dispatch(resetBooking());
   };
 
-  if(!session){
-    router.push("/login")
+  if (!session) {
+    router.push("/login");
   }
 
   return (
@@ -187,14 +207,14 @@ const ConsultationBookingPageContent = () => {
             mode="single"
             selected={selectedDate}
             onSelect={(date) => {
-              if (date) setSelectedDate(date)
+              if (date) setSelectedDate(date);
             }}
             disabled={{ before: startOfToday }}
             weekStartsOn={1}
             className="rounded-lg shadow-md bg-white p-2"
             styles={{
-              caption: { textAlign: 'center' },
-              day_selected: { backgroundColor: '#4f46e5', color: 'white' },
+              caption: { textAlign: "center" },
+              day_selected: { backgroundColor: "#4f46e5", color: "white" },
             }}
           />
         </div>
@@ -207,7 +227,8 @@ const ConsultationBookingPageContent = () => {
           ) : availableSlots.length > 0 ? (
             <>
               <h3 className="text-lg font-medium mb-4">
-                Available Time Slots for {selectedDayName}, {selectedDate.toLocaleDateString()}
+                Available Time Slots for {selectedDayName},{" "}
+                {selectedDate.toLocaleDateString()}
               </h3>
               <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
                 {availableSlots.map((slot) => (
@@ -215,26 +236,32 @@ const ConsultationBookingPageContent = () => {
                     key={slot._id}
                     onClick={() => setSelectedSlot(slot)}
                     className={`p-4 border rounded-md cursor-pointer transition-colors ${
-                      selectedSlot?._id === slot._id ? 'border-indigo-600 bg-indigo-50' : 'hover:border-indigo-300'
+                      selectedSlot?._id === slot._id
+                        ? "border-indigo-600 bg-indigo-50"
+                        : "hover:border-indigo-300"
                     }`}
                   >
                     <div className="font-medium">
                       {slot.startTime} - {slot.endTime}
                     </div>
                     <div className="text-sm text-gray-600">
-                      Specialist: {slot.consultant.firstName} {slot.consultant.lastName}
+                      Specialist: {slot.consultant.firstName}{" "}
+                      {slot.consultant.lastName}
                     </div>
                     <div className="text-sm text-indigo-700 font-semibold mt-1">
-                      Appointment Fee: £{ getMinutesDifference(slot.startTime, slot.endTime) * COST_PER_MINUTE}
+                      Appointment Fee: £
+                      {getMinutesDifference(slot.startTime, slot.endTime) *
+                        COST_PER_MINUTE}
                     </div>
                   </div>
                 ))}
               </div>
 
-
               {selectedSlot && (
                 <div className="mt-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Reason
+                  </label>
                   <textarea
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
@@ -245,55 +272,65 @@ const ConsultationBookingPageContent = () => {
                 </div>
               )}
 
-              { selectedSlot && 
+              {selectedSlot && (
                 <button
-                  onClick={() => openCheckoutModal(
-                    getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime) * COST_PER_MINUTE,
-                    getMinutesDifference(selectedSlot.startTime, selectedSlot.endTime)
-                  )}
+                  onClick={() =>
+                    openCheckoutModal(
+                      getMinutesDifference(
+                        selectedSlot.startTime,
+                        selectedSlot.endTime,
+                      ) * COST_PER_MINUTE,
+                      getMinutesDifference(
+                        selectedSlot.startTime,
+                        selectedSlot.endTime,
+                      ),
+                    )
+                  }
                   disabled={!selectedSlot || !reason || loadingBooking}
                   className="mt-6 w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loadingBooking && (
                     <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
                   )}
-                  {loadingBooking ? 'Processing...' : 'Book Appointment'}
+                  {loadingBooking ? "Processing..." : "Book Appointment"}
                 </button>
-              }
+              )}
             </>
           ) : (
             <div className="text-center text-gray-500">
               <p>No available slots for the selected date.</p>
               <p className="mt-2">
-                Please contact us at{' '}
+                Please contact us at{" "}
                 <a href="tel:+1234567890" className="text-indigo-600">
                   +1 (234) 567-890
-                </a>{' '}
+                </a>{" "}
                 if you need help.
               </p>
             </div>
           )}
         </div>
 
-        {showModal && modalContent === "checkoutModal" && selectedSlot.consultant && (
-          <ModalContainer
-            modal={
-              <Elements stripe={stripePromise}>
-                <CheckoutModal
-                  closeModal={closeModal}
-                  amount={price}
-                  currency="GBP"
-                  duration={duration}
-                  date={new Date(selectedSlot.date)}
-                  consultMode="appointment"
-                />
-              </Elements>
-            }
-          />
-        )}
+        {showModal &&
+          modalContent === "checkoutModal" &&
+          selectedSlot.consultant && (
+            <ModalContainer
+              modal={
+                <Elements stripe={stripePromise}>
+                  <CheckoutModal
+                    closeModal={closeModal}
+                    amount={price}
+                    currency="GBP"
+                    duration={duration}
+                    date={new Date(selectedSlot.date)}
+                    consultMode="appointment"
+                  />
+                </Elements>
+              }
+            />
+          )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ConsultationBookingPageContent
+export default ConsultationBookingPageContent;

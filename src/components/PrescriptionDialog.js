@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from "@headlessui/react";
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from "@headlessui/react";
 import { XMarkIcon, LinkIcon } from "@heroicons/react/24/outline";
 import { fetchData } from "@/utils/api";
 import { useSession } from "next-auth/react";
 
-
-const PrescriptionDialog = ({ isOpen, onClose, selectedItem, onLinkPrescription }) => {
+const PrescriptionDialog = ({
+  isOpen,
+  onClose,
+  selectedItem,
+  onLinkPrescription,
+}) => {
   const [prescriptions, setPrescriptions] = useState([]);
   const [fullscreenImage, setFullscreenImage] = useState(null); // For fullscreen view
   const { data: session } = useSession();
@@ -16,7 +25,7 @@ const PrescriptionDialog = ({ isOpen, onClose, selectedItem, onLinkPrescription 
       const fetchPrescriptions = async () => {
         try {
           const response = await fetchData("prescriptions/user/all", token);
-          console.log(response)
+          console.log(response);
           setPrescriptions(response.prescriptions || []); // Ensure we have an array
         } catch (error) {
           console.error("Error fetching prescriptions:", error);
@@ -52,18 +61,28 @@ const PrescriptionDialog = ({ isOpen, onClose, selectedItem, onLinkPrescription 
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <DialogPanel className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
             <div className="flex justify-between items-center">
-              <DialogTitle className="text-lg font-medium text-gray-900">Link a Prescription</DialogTitle>
-              <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              <DialogTitle className="text-lg font-medium text-gray-900">
+                Link a Prescription
+              </DialogTitle>
+              <button
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <XMarkIcon className="h-5 w-5" />
               </button>
             </div>
-            <p className="mt-2 text-sm text-gray-600">Select a prescription to link with this item.</p>
+            <p className="mt-2 text-sm text-gray-600">
+              Select a prescription to link with this item.
+            </p>
 
             {/* Display fetched prescriptions as thumbnails */}
             {prescriptions.length > 0 ? (
               <ul className="mt-4 grid grid-cols-2 gap-4">
                 {prescriptions.map((prescription) => (
-                  <li key={prescription._id} className="flex flex-col items-center justify-between">
+                  <li
+                    key={prescription._id}
+                    className="flex flex-col items-center justify-between"
+                  >
                     <img
                       src={
                         prescription.fileUrl.startsWith("http")
@@ -72,14 +91,22 @@ const PrescriptionDialog = ({ isOpen, onClose, selectedItem, onLinkPrescription 
                       }
                       alt={`Prescription #${prescription._id}`}
                       className="w-24 h-24 object-cover border rounded-md cursor-pointer mb-2"
-                      onClick={() => setFullscreenImage(prescription.fileUrl.startsWith("http")
-                        ? prescription.fileUrl
-                        : `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${prescription.fileUrl}`)}
+                      onClick={() =>
+                        setFullscreenImage(
+                          prescription.fileUrl.startsWith("http")
+                            ? prescription.fileUrl
+                            : `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${prescription.fileUrl}`,
+                        )
+                      }
                     />
                     <div className="flex justify-between w-full">
-                      <span className="text-gray-700 text-xs">#{prescription._id.slice(-4)}</span>
+                      <span className="text-gray-700 text-xs">
+                        #{prescription._id.slice(-4)}
+                      </span>
                       <button
-                        onClick={() => onLinkPrescription(selectedItem, prescription._id)}
+                        onClick={() =>
+                          onLinkPrescription(selectedItem, prescription._id)
+                        }
                         className="px-2 py-1 bg-indigo-600 text-white text-xs rounded-md hover:bg-indigo-700"
                       >
                         Link
@@ -89,7 +116,10 @@ const PrescriptionDialog = ({ isOpen, onClose, selectedItem, onLinkPrescription 
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 text-gray-500 text-sm">No prescriptions available Or prescriptions expired. Please upload a prescription.</p>
+              <p className="mt-4 text-gray-500 text-sm">
+                No prescriptions available Or prescriptions expired. Please
+                upload a prescription.
+              </p>
             )}
 
             <div className="mt-4 flex justify-end">

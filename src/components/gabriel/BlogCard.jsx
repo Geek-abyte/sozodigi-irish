@@ -1,12 +1,12 @@
 // src/components/BlogCard.js
-import React from 'react';
+import React from "react";
 import Link from "next/link";
 
 const BlogCard = ({ blog, fixedHeight }) => {
   return (
     <div
       className={`bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform duration-500 hover:scale-105 ${
-        fixedHeight ? 'h-full' : ''
+        fixedHeight ? "h-full" : ""
       }`}
       style={{
         animationDelay: `${Math.random() * 0.5}s`,
@@ -14,9 +14,7 @@ const BlogCard = ({ blog, fixedHeight }) => {
     >
       <Link to={`/blog/${blog.id}`}>
         <img
-          className={`w-full ${
-            fixedHeight ? 'h-48' : 'h-auto'
-          } object-cover`}
+          className={`w-full ${fixedHeight ? "h-48" : "h-auto"} object-cover`}
           src={blog.image}
           alt={blog.title}
         />

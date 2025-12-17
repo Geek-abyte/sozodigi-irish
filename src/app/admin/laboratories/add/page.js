@@ -21,20 +21,20 @@ const CreatePharmacy = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { user } = useUser()
+  const { user } = useUser();
 
   const [formState, setFormState] = useState({
-    name: '',
+    name: "",
     licenseFile: null,
-    contactNumber: '',
+    contactNumber: "",
     address: {
-      street: '',
-      city: '',
-      state: '',
-      country: '',
+      street: "",
+      city: "",
+      state: "",
+      country: "",
     },
-    labAdmin: userRole === "labAdmin" ? userId : '',
-    status: 'unverified',
+    labAdmin: userRole === "labAdmin" ? userId : "",
+    status: "unverified",
   });
 
   // Fetch users if not labAdmin
@@ -54,8 +54,13 @@ const CreatePharmacy = () => {
     const checkLabAdminLab = async () => {
       if (token && userRole === "labAdmin" && userId) {
         try {
-          const labs = await fetchData(`laboratories/get-all/no-pagination`, token);
-          const existingLab = labs?.labs?.find((lab) => lab.labAdmin === userId);
+          const labs = await fetchData(
+            `laboratories/get-all/no-pagination`,
+            token,
+          );
+          const existingLab = labs?.labs?.find(
+            (lab) => lab.labAdmin === userId,
+          );
 
           if (existingLab) {
             alertSuccess("You already have a laboratory created.");
@@ -99,7 +104,10 @@ const CreatePharmacy = () => {
       const formData = new FormData();
       formData.append("name", formState.name);
       formData.append("contactNumber", formState.contactNumber);
-      formData.append("labAdmin", userRole === "labAdmin" ? user._id : formState.labAdmin);
+      formData.append(
+        "labAdmin",
+        userRole === "labAdmin" ? user._id : formState.labAdmin,
+      );
 
       if (userRole !== "labAdmin") {
         formData.append("status", formState.status);
@@ -122,15 +130,20 @@ const CreatePharmacy = () => {
     }
   };
 
-  if (loading) return <p className="p-4 text-gray-500">Checking lab admin status...</p>;
+  if (loading)
+    return <p className="p-4 text-gray-500">Checking lab admin status...</p>;
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-white/[0.05]">
-      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Create Laboratory</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6">
+        Create Laboratory
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Laboratory Name</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Laboratory Name
+          </label>
           <input
             type="text"
             name="name"
@@ -141,20 +154,27 @@ const CreatePharmacy = () => {
         </div>
 
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">License Image</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            License Image
+          </label>
           <input
             type="file"
             name="licenseFile"
             accept="application/pdf,image/png,image/jpeg,image/jpg"
             onChange={(e) =>
-              setFormState((prev) => ({ ...prev, licenseFile: e.target.files[0] }))
+              setFormState((prev) => ({
+                ...prev,
+                licenseFile: e.target.files[0],
+              }))
             }
             className="w-full text-gray-800 dark:text-gray-100"
           />
         </div>
 
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Contact Number</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Contact Number
+          </label>
           <input
             type="text"
             name="contactNumber"
@@ -183,7 +203,9 @@ const CreatePharmacy = () => {
 
         {/* LabAdmin - Always visible */}
         <div>
-          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Laboratory Admin</label>
+          <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+            Laboratory Admin
+          </label>
           <select
             name="labAdmin"
             value={formState.labAdmin}
@@ -209,13 +231,17 @@ const CreatePharmacy = () => {
           </select>
 
           {userRole === "labAdmin" && (
-            <p className="text-sm text-gray-500 mt-1">Automatically set to your account</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Automatically set to your account
+            </p>
           )}
         </div>
 
         {userRole !== "labAdmin" && (
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">Status</label>
+            <label className="block mb-1 text-sm font-medium text-gray-600 dark:text-gray-300">
+              Status
+            </label>
             <select
               name="status"
               value={formState.status}

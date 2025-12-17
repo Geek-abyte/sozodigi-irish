@@ -22,7 +22,7 @@ export default function EditLabResultPage() {
   const router = useRouter();
   const { addToast } = useToast();
 
-  const params = useParams();  // Use useParams to access dynamic route params
+  const params = useParams(); // Use useParams to access dynamic route params
 
   // Fetch lab result to edit based on the passed ID (from params)
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function EditLabResultPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const {file, status, comments } = form;
+    const { file, status, comments } = form;
 
     const formData = new FormData();
     formData.append("status", status);
@@ -64,7 +64,12 @@ export default function EditLabResultPage() {
     if (file) formData.append("resultFile", file); // Append file if it's updated
 
     try {
-      await updateData(`lab-results/custom/update/${params.id}`, formData, token, true); // multipart/form-data
+      await updateData(
+        `lab-results/custom/update/${params.id}`,
+        formData,
+        token,
+        true,
+      ); // multipart/form-data
       addToast("Lab result updated successfully", "success");
       router.push("/admin/laboratories/results");
     } catch (err) {
@@ -81,7 +86,12 @@ export default function EditLabResultPage() {
           <label className="block font-medium mb-1">Result File</label>
           {form.resultFileUrl && (
             <div>
-              <a href={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}${form.resultFileUrl}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">
+              <a
+                href={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}${form.resultFileUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline"
+              >
                 View Current File
               </a>
             </div>

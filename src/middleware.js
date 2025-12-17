@@ -4,7 +4,16 @@ import { getToken } from "next-auth/jwt";
 const protectedRoutes = [
   {
     pathPrefix: "/admin",
-    requiredRoles: ["admin", "user", "pharmacyAdmin", "pharmacyEmployee", "labAdmin", "specialist", "consultant", "superAdmin"],
+    requiredRoles: [
+      "admin",
+      "user",
+      "pharmacyAdmin",
+      "pharmacyEmployee",
+      "labAdmin",
+      "specialist",
+      "consultant",
+      "superAdmin",
+    ],
   },
   {
     pathPrefix: "/admin/products",
@@ -12,7 +21,13 @@ const protectedRoutes = [
   },
   {
     pathPrefix: "/admin/orders",
-    requiredRoles: ["admin", "pharmacyAdmin", "pharmacyEmployee", "user", "superAdmin"],
+    requiredRoles: [
+      "admin",
+      "pharmacyAdmin",
+      "pharmacyEmployee",
+      "user",
+      "superAdmin",
+    ],
   },
   {
     pathPrefix: "/admin/medical-tourism",

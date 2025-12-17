@@ -13,7 +13,7 @@ const EditConsultationAppointmentPage = () => {
     date: "",
     duration: "",
     type: "medicalTourism",
-    status: "pending"
+    status: "pending",
   });
 
   const [patients, setPatients] = useState([]);
@@ -33,8 +33,15 @@ const EditConsultationAppointmentPage = () => {
           fetchData(`consultation-appointments/get/custom/${id}`, token),
         ]);
 
-        const patientsList = usersRes.filter((user) => (user.role === "user" || user.role === "patient"));
-        const consultantsList = usersRes.filter((user) => (user.role === "consultant" || user.role === "specialist" || user.role === "admin"));
+        const patientsList = usersRes.filter(
+          (user) => user.role === "user" || user.role === "patient",
+        );
+        const consultantsList = usersRes.filter(
+          (user) =>
+            user.role === "consultant" ||
+            user.role === "specialist" ||
+            user.role === "admin",
+        );
 
         setPatients(patientsList);
         setConsultants(consultantsList);
@@ -188,7 +195,6 @@ const EditConsultationAppointmentPage = () => {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-
 
         <button
           type="submit"

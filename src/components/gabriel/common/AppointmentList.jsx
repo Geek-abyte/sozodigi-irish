@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useSession } from 'next-auth/react';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
-import ModalContainer from '@/components/gabriel/ModalContainer';
-import RescheduleDialog from './RescheduleDialog.jsx';
+import ModalContainer from "@/components/gabriel/ModalContainer";
+import RescheduleDialog from "./RescheduleDialog.jsx";
 
 const AppointmentList = ({ userRole }) => {
   const [appointments, setAppointments] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] = useState("upcoming");
   const [rescheduleTarget, setRescheduleTarget] = useState(null);
 
   const { data: session } = useSession();
@@ -24,45 +24,47 @@ const AppointmentList = ({ userRole }) => {
   const fetchAppointments = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/appointments/my-appointments', {
+      const response = await axios.get("/api/appointments/my-appointments", {
         params: {
-          upcoming: activeTab === 'upcoming',
-          status: activeTab === 'upcoming' ? 'scheduled' : undefined,
+          upcoming: activeTab === "upcoming",
+          status: activeTab === "upcoming" ? "scheduled" : undefined,
         },
       });
       setAppointments(response.data.data);
     } catch (error) {
-      toast.error('Error fetching appointments');
+      toast.error("Error fetching appointments");
     }
     setLoading(false);
   };
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get('/api/notifications');
+      const response = await axios.get("/api/notifications");
       setNotifications(response.data.data);
     } catch (error) {
-      toast.error('Error fetching notifications');
+      toast.error("Error fetching notifications");
     }
   };
 
   const handleCancelAppointment = async (appointmentId) => {
-    if (!window.confirm('Are you sure you want to cancel this appointment?')) {
+    if (!window.confirm("Are you sure you want to cancel this appointment?")) {
       return;
     }
 
     try {
-      const response = await axios.post('/api/appointments/cancel', {
+      const response = await axios.post("/api/appointments/cancel", {
         appointmentId,
-        cancellationReason: 'Cancelled by user',
+        cancellationReason: "Cancelled by user",
       });
 
       if (response.data.success) {
-        toast.success('Appointment cancelled successfully');
+        toast.success("Appointment cancelled successfully");
         fetchAppointments();
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error cancelling appointment');
+      toast.error(
+        error.response?.data?.message || "Error cancelling appointment",
+      );
     }
   };
 
@@ -71,13 +73,13 @@ const AppointmentList = ({ userRole }) => {
       await axios.put(`/api/notifications/${notificationId}/read`);
       fetchNotifications();
     } catch (error) {
-      toast.error('Error marking notification as read');
+      toast.error("Error marking notification as read");
     }
   };
 
   const openRescheduleDialog = (appointment) => {
     if (!token) {
-      toast.error('You must be logged in to reschedule an appointment.');
+      toast.error("You must be logged in to reschedule an appointment.");
       return;
     }
     setRescheduleTarget(appointment);
@@ -93,8 +95,8 @@ const AppointmentList = ({ userRole }) => {
         prev.map((appointment) =>
           appointment._id === updatedAppointment._id
             ? { ...appointment, ...updatedAppointment }
-            : appointment
-        )
+            : appointment,
+        ),
       );
     }
     await fetchAppointments();
@@ -110,21 +112,21 @@ const AppointmentList = ({ userRole }) => {
         <h2 className="text-2xl font-bold">My Appointments</h2>
         <div className="flex space-x-4">
           <button
-            onClick={() => setActiveTab('upcoming')}
+            onClick={() => setActiveTab("upcoming")}
             className={`px-4 py-2 rounded-md ${
-              activeTab === 'upcoming'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700'
+              activeTab === "upcoming"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             }`}
           >
             Upcoming
           </button>
           <button
-            onClick={() => setActiveTab('past')}
+            onClick={() => setActiveTab("past")}
             className={`px-4 py-2 rounded-md ${
-              activeTab === 'past'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700'
+              activeTab === "past"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             }`}
           >
             Past
@@ -144,7 +146,7 @@ const AppointmentList = ({ userRole }) => {
                   <div className="flex justify-between items-start">
                     <div>
                       <h3 className="text-lg font-medium">
-                        {userRole === 'specialist'
+                        {userRole === "specialist"
                           ? `Patient: ${appointment.patient.firstName} ${appointment.patient.lastName}`
                           : `Dr. ${appointment.specialist.firstName} ${appointment.specialist.lastName}`}
                       </h3>
@@ -154,49 +156,62 @@ const AppointmentList = ({ userRole }) => {
                       <p className="text-gray-600">
                         Specialty: {appointment.specialistCategory}
                       </p>
-                      <p className="text-gray-600">Reason: {appointment.reason}</p>
+                      <p className="text-gray-600">
+                        Reason: {appointment.reason}
+                      </p>
                       {appointment.duration && (
-                        <p className="text-gray-600">Duration: {appointment.duration} mins</p>
+                        <p className="text-gray-600">
+                          Duration: {appointment.duration} mins
+                        </p>
                       )}
                       <p className="mt-2 text-sm text-gray-600">
-                        Changes left: {Math.max(0, 2 - (appointment.rescheduleCount ?? 0))}
+                        Changes left:{" "}
+                        {Math.max(0, 2 - (appointment.rescheduleCount ?? 0))}
                       </p>
-                      {Array.isArray(appointment.rescheduleHistory) && appointment.rescheduleHistory.length > 0 && (
-                        <div className="mt-2 rounded-md bg-gray-50 p-2">
-                          <p className="text-xs font-semibold text-gray-700">Reschedule history</p>
-                          <ul className="mt-1 space-y-1 text-xs text-gray-600">
-                            {appointment.rescheduleHistory.map((historyItem, index) => (
-                              <li key={historyItem.rescheduledAt || index}>
-                                {historyItem.previousDateTime
-                                  ? `From ${new Date(historyItem.previousDateTime).toLocaleString()}`
-                                  : 'Rescheduled'}{' '}
-                                {historyItem.rescheduledAt
-                                  ? `on ${new Date(historyItem.rescheduledAt).toLocaleString()}`
-                                  : ''}
-                              </li>
-                            ))}
-                          </ul>
+                      {Array.isArray(appointment.rescheduleHistory) &&
+                        appointment.rescheduleHistory.length > 0 && (
+                          <div className="mt-2 rounded-md bg-gray-50 p-2">
+                            <p className="text-xs font-semibold text-gray-700">
+                              Reschedule history
+                            </p>
+                            <ul className="mt-1 space-y-1 text-xs text-gray-600">
+                              {appointment.rescheduleHistory.map(
+                                (historyItem, index) => (
+                                  <li key={historyItem.rescheduledAt || index}>
+                                    {historyItem.previousDateTime
+                                      ? `From ${new Date(historyItem.previousDateTime).toLocaleString()}`
+                                      : "Rescheduled"}{" "}
+                                    {historyItem.rescheduledAt
+                                      ? `on ${new Date(historyItem.rescheduledAt).toLocaleString()}`
+                                      : ""}
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                          </div>
+                        )}
+                    </div>
+                    {activeTab === "upcoming" &&
+                      appointment.status === "scheduled" && (
+                        <div className="flex flex-col items-end space-y-2 md:flex-row md:items-center md:space-x-3 md:space-y-0">
+                          {appointment.rescheduleCount < 2 && (
+                            <button
+                              onClick={() => openRescheduleDialog(appointment)}
+                              className="text-blue-600 hover:text-blue-800"
+                            >
+                              Reschedule
+                            </button>
+                          )}
+                          <button
+                            onClick={() =>
+                              handleCancelAppointment(appointment._id)
+                            }
+                            className="text-red-600 hover:text-red-800"
+                          >
+                            Cancel
+                          </button>
                         </div>
                       )}
-                    </div>
-                    {activeTab === 'upcoming' && appointment.status === 'scheduled' && (
-                      <div className="flex flex-col items-end space-y-2 md:flex-row md:items-center md:space-x-3 md:space-y-0">
-                        {appointment.rescheduleCount < 2 && (
-                          <button
-                            onClick={() => openRescheduleDialog(appointment)}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            Reschedule
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleCancelAppointment(appointment._id)}
-                          className="text-red-600 hover:text-red-800"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    )}
                   </div>
                 </div>
               ))}
@@ -216,12 +231,14 @@ const AppointmentList = ({ userRole }) => {
                 <div
                   key={notification._id}
                   className={`bg-white p-4 rounded-lg shadow-md ${
-                    !notification.isRead ? 'border-l-4 border-blue-500' : ''
+                    !notification.isRead ? "border-l-4 border-blue-500" : ""
                   }`}
                   onClick={() => markNotificationAsRead(notification._id)}
                 >
                   <h4 className="font-medium">{notification.title}</h4>
-                  <p className="text-sm text-gray-600">{notification.message}</p>
+                  <p className="text-sm text-gray-600">
+                    {notification.message}
+                  </p>
                   <p className="text-xs text-gray-500 mt-2">
                     {new Date(notification.createdAt).toLocaleString()}
                   </p>
@@ -249,4 +266,4 @@ const AppointmentList = ({ userRole }) => {
   );
 };
 
-export default AppointmentList; 
+export default AppointmentList;

@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingBagIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import {
+  ShoppingBagIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 import Cart from "@/components/MiniCart";
 
 export default function SubNav() {
@@ -28,10 +31,14 @@ export default function SubNav() {
       </div>
 
       {/* Cart Button - Fixed size */}
-      
 
       {/* Mini Cart */}
-      <Cart cartItems={cartItems} setCartItems={setCartItems} isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
+      <Cart
+        cartItems={cartItems}
+        setCartItems={setCartItems}
+        isOpen={isCartOpen}
+        setIsOpen={setIsCartOpen}
+      />
     </div>
   );
 }

@@ -18,7 +18,7 @@ export { default as PricingModal } from "./PricingModal";
 export { default as LogoutModal } from "./LogoutModal";
 export { default as CheckoutModal } from "./CheckoutModal";
 export { default as LoadingAnimation } from "./LoadingAnimation";
-export { default as FindSpecialistModal } from "./FindSpecialistModal"
+export { default as FindSpecialistModal } from "./FindSpecialistModal";
 // export { default as Notification } from "./Notification";
 // export { default as ForgotPassword } from "./ForgotPassword";
 // export { default as ResetPassword } from "./ResetPassword";

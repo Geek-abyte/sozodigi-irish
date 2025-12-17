@@ -1,19 +1,29 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from 'react-icons/io';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowDroprightCircle,
+} from "react-icons/io";
 
-const CustomCarousel = ({ children, autoScroll = false, autoScrollInterval = 5000 }) => {
+const CustomCarousel = ({
+  children,
+  autoScroll = false,
+  autoScrollInterval = 5000,
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const childrenCount = React.Children.count(children);
 
-  const updateIndex = useCallback((newIndex) => {
-    if (newIndex < 0) {
-      newIndex = 0;
-    } else if (newIndex >= childrenCount) {
-      newIndex = childrenCount - 1;
-    }
-    setActiveIndex(newIndex);
-  }, [childrenCount]);
+  const updateIndex = useCallback(
+    (newIndex) => {
+      if (newIndex < 0) {
+        newIndex = 0;
+      } else if (newIndex >= childrenCount) {
+        newIndex = childrenCount - 1;
+      }
+      setActiveIndex(newIndex);
+    },
+    [childrenCount],
+  );
 
   useEffect(() => {
     if (autoScroll && !paused) {
@@ -48,7 +58,10 @@ const CustomCarousel = ({ children, autoScroll = false, autoScrollInterval = 500
           onClick={() => updateIndex(activeIndex - 1)}
           className="absolute left-2 top-1/2 transform -translate-y-1/2 z-10"
         >
-          <IoIosArrowDropleftCircle size={40} className="text-gray-600 hover:text-gray-800" />
+          <IoIosArrowDropleftCircle
+            size={40}
+            className="text-gray-600 hover:text-gray-800"
+          />
         </button>
       )}
       {activeIndex < childrenCount - 1 && (
@@ -56,7 +69,10 @@ const CustomCarousel = ({ children, autoScroll = false, autoScrollInterval = 500
           onClick={() => updateIndex(activeIndex + 1)}
           className="absolute right-2 top-1/2 transform -translate-y-1/2 z-10"
         >
-          <IoIosArrowDroprightCircle size={40} className="text-gray-600 hover:text-gray-800" />
+          <IoIosArrowDroprightCircle
+            size={40}
+            className="text-gray-600 hover:text-gray-800"
+          />
         </button>
       )}
     </div>

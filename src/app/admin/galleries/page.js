@@ -1,10 +1,10 @@
-"use client"
-import { useEffect, useState } from 'react';
-import { fetchData, deleteData } from '@/utils/api';
-import { Trash, Pencil, Plus } from 'lucide-react';
-import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { useToast } from '@/context/ToastContext';
+"use client";
+import { useEffect, useState } from "react";
+import { fetchData, deleteData } from "@/utils/api";
+import { Trash, Pencil, Plus } from "lucide-react";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/context/ToastContext";
 
 export default function GalleryListPage() {
   const [galleries, setGalleries] = useState([]);
@@ -12,10 +12,10 @@ export default function GalleryListPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const { addToast } = useToast()
+  const { addToast } = useToast();
 
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
   const loadGalleries = async () => {
     setLoading(true);
@@ -28,10 +28,10 @@ export default function GalleryListPage() {
   };
 
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this gallery item?')) {
+    if (confirm("Are you sure you want to delete this gallery item?")) {
       await deleteData(`galleries/${id}`, token);
       loadGalleries();
-      addToast("Gallery deleted!")
+      addToast("Gallery deleted!");
     }
   };
 
@@ -55,22 +55,38 @@ export default function GalleryListPage() {
       ) : (
         <div className="space-y-4">
           {galleries.map((gallery) => (
-            <div key={gallery._id} className="flex items-center justify-between p-4 border rounded shadow">
+            <div
+              key={gallery._id}
+              className="flex items-center justify-between p-4 border rounded shadow"
+            >
               <div className="flex items-center gap-4">
-                <img src={ process.env.NEXT_PUBLIC_NODE_BASE_URL +"/"+ gallery.photo } alt={gallery.title} className="w-20 h-20 object-cover rounded" />
+                <img
+                  src={
+                    process.env.NEXT_PUBLIC_NODE_BASE_URL + "/" + gallery.photo
+                  }
+                  alt={gallery.title}
+                  className="w-20 h-20 object-cover rounded"
+                />
                 <div>
                   <h2 className="font-semibold text-lg">{gallery.title}</h2>
                   <p className="text-sm text-gray-600">{gallery.description}</p>
-                  <p className={`text-sm mt-1 ${gallery.isActive ? 'text-green-600' : 'text-red-600'}`}>
-                    {gallery.isActive ? 'Active' : 'Inactive'}
+                  <p
+                    className={`text-sm mt-1 ${gallery.isActive ? "text-green-600" : "text-red-600"}`}
+                  >
+                    {gallery.isActive ? "Active" : "Inactive"}
                   </p>
                 </div>
               </div>
               <div className="flex gap-2">
                 <Link href={`/admin/galleries/edit/${gallery._id}`}>
-                  <button className="text-blue-600 hover:underline"><Pencil size={18} /></button>
+                  <button className="text-blue-600 hover:underline">
+                    <Pencil size={18} />
+                  </button>
                 </Link>
-                <button onClick={() => handleDelete(gallery._id)} className="text-red-600 hover:underline">
+                <button
+                  onClick={() => handleDelete(gallery._id)}
+                  className="text-red-600 hover:underline"
+                >
                   <Trash size={18} />
                 </button>
               </div>
@@ -88,7 +104,9 @@ export default function GalleryListPage() {
         >
           Prev
         </button>
-        <span className="px-4 py-1">{page} / {totalPages}</span>
+        <span className="px-4 py-1">
+          {page} / {totalPages}
+        </span>
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}

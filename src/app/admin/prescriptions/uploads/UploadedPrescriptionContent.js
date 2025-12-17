@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { EyeIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/admin/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/admin/ui/table";
 import Badge from "@/components/admin/ui/badge/Badge";
 import { fetchData, deleteData } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -40,7 +46,10 @@ const PrescriptionList = () => {
   const fetchPrescriptions = async () => {
     try {
       setLoading(true);
-      const response = await fetchData(`prescriptions/by/status?status=${status}`, token);
+      const response = await fetchData(
+        `prescriptions/by/status?status=${status}`,
+        token,
+      );
       setPrescriptions(response || []);
     } catch (error) {
       console.error("Failed to fetch prescriptions:", error);
@@ -59,8 +68,13 @@ const PrescriptionList = () => {
 
     setLoading(true);
     try {
-      await deleteData(`prescriptions/delete/custom/${itemToDelete._id}`, token);
-      setPrescriptions((prev) => prev.filter((p) => p._id !== itemToDelete._id));
+      await deleteData(
+        `prescriptions/delete/custom/${itemToDelete._id}`,
+        token,
+      );
+      setPrescriptions((prev) =>
+        prev.filter((p) => p._id !== itemToDelete._id),
+      );
     } catch (error) {
       console.error("Error deleting prescription:", error);
       alert("Error rejecting prescription");
@@ -82,7 +96,9 @@ const PrescriptionList = () => {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900 dark:text-gray-300 p-6">
-      <h2 className="text-2xl font-bold mb-4 capitalize">{status} Uploaded Prescriptions</h2>
+      <h2 className="text-2xl font-bold mb-4 capitalize">
+        {status} Uploaded Prescriptions
+      </h2>
 
       {loading ? (
         <div className="flex justify-center">
@@ -94,8 +110,19 @@ const PrescriptionList = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {["ID", "User", "Uploaded At", "Status", "Expiry Status", "Actions"].map((header) => (
-                    <TableCell key={header} isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                  {[
+                    "ID",
+                    "User",
+                    "Uploaded At",
+                    "Status",
+                    "Expiry Status",
+                    "Actions",
+                  ].map((header) => (
+                    <TableCell
+                      key={header}
+                      isHeader
+                      className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                    >
                       {header}
                     </TableCell>
                   ))}
@@ -115,23 +142,47 @@ const PrescriptionList = () => {
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500">{prescription.user?.firstName} {prescription.user?.lastName}</TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500">{new Date(prescription.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500">
+                      {prescription.user?.firstName}{" "}
+                      {prescription.user?.lastName}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500">
+                      {new Date(prescription.createdAt).toLocaleDateString()}
+                    </TableCell>
                     <TableCell>
-                      <Badge className="px-5 py-4 text-start" color={statusColorMap[status] || "light"} variant="light">
+                      <Badge
+                        className="px-5 py-4 text-start"
+                        color={statusColorMap[status] || "light"}
+                        variant="light"
+                      >
                         {status}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start">
-                      <Badge color={checkExpiry(prescription.createdAt) === "Expired" ? "error" : "success"} variant="light">
+                      <Badge
+                        color={
+                          checkExpiry(prescription.createdAt) === "Expired"
+                            ? "error"
+                            : "success"
+                        }
+                        variant="light"
+                      >
                         {checkExpiry(prescription.createdAt)}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start flex gap-3 items-center">
-                      <Link href={`uploads/${prescription._id}/view`} target="_blank" className="text-blue-500">
+                      <Link
+                        href={`uploads/${prescription._id}/view`}
+                        target="_blank"
+                        className="text-blue-500"
+                      >
                         <EyeIcon className="w-5 h-5" />
                       </Link>
-                      <button onClick={() => confirmDelete(prescription)} className="text-red-500" disabled={loading}>
+                      <button
+                        onClick={() => confirmDelete(prescription)}
+                        className="text-red-500"
+                        disabled={loading}
+                      >
                         <TrashIcon className="w-5 h-5" />
                       </button>
                     </TableCell>

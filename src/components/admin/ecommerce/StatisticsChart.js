@@ -40,29 +40,30 @@ export default function StatisticsChart() {
       const url = `payments/all/no-pagination`;
       const response = await fetchData(url, token);
       const payments = response.payments;
-  
+
       setRevenueData(payments);
-  
+
       const grouped = {};
       payments.forEach((payment) => {
         const date = formatDate(payment.created);
         const amount = (payment.amount || 0) / 100; // Stripe returns amount in cents
         const roundedAmount = Number(amount.toFixed(2)); // Round to 2 decimal places
-  
+
         if (!grouped[date]) grouped[date] = 0;
         grouped[date] += roundedAmount;
       });
-  
+
       const categories = Object.keys(grouped);
-      const series = Object.values(grouped).map(val => Number(val.toFixed(2)));
-  
+      const series = Object.values(grouped).map((val) =>
+        Number(val.toFixed(2)),
+      );
+
       setChartCategories(categories);
       setChartSeries([{ name: "Revenue", data: series }]);
     } catch (error) {
       console.error("Error fetching revenue data:", error);
     }
   };
-  
 
   useEffect(() => {
     fetchRevenue();

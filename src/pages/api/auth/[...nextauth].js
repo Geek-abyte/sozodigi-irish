@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_NODE_API_BASE_URL;
 
@@ -9,7 +9,11 @@ export default NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "you@example.com" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "you@example.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -37,11 +41,11 @@ export default NextAuth({
       },
     }),
   ],
-  
+
   // 👇 Add this block here
   session: {
     strategy: "jwt",
-    maxAge: 60*60*24, // 1 minute for quick testing, adjust as needed
+    maxAge: 60 * 60 * 24, // 1 minute for quick testing, adjust as needed
   },
 
   callbacks: {
@@ -95,4 +99,3 @@ export default NextAuth({
 
   secret: process.env.NEXTAUTH_SECRET,
 });
-

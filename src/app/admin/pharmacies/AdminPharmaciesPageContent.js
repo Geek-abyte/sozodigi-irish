@@ -27,7 +27,7 @@ const PharmaciesPage = () => {
           : `/pharmacies/get-all/no-pagination`;
         const data = await fetchData(url);
 
-        console.log(data)
+        console.log(data);
         setPharmacies(data);
       } catch (error) {
         console.error("Error fetching pharmacies:", error);
@@ -52,10 +52,10 @@ const PharmaciesPage = () => {
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Pharmacy Management</h1>
         <Link
-            href="/admin/pharmacies/add"
-            className="bg-indigo-600 text-white px-4 py-2 rounded-full border border-indigo-400 shadow-lg shadow-indigo-500/50 ring-2 ring-indigo-300 hover:ring-4 transition-all duration-300"
+          href="/admin/pharmacies/add"
+          className="bg-indigo-600 text-white px-4 py-2 rounded-full border border-indigo-400 shadow-lg shadow-indigo-500/50 ring-2 ring-indigo-300 hover:ring-4 transition-all duration-300"
         >
-            Add Pharmacy
+          Add Pharmacy
         </Link>
       </div>
 
@@ -69,19 +69,34 @@ const PharmaciesPage = () => {
               {/* Table Header */}
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start"
+                  >
                     Name
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start"
+                  >
                     License
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start"
+                  >
                     Contact
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start"
+                  >
                     Status
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-gray-500 text-start"
+                  >
                     Actions
                   </TableCell>
                 </TableRow>
@@ -91,17 +106,21 @@ const PharmaciesPage = () => {
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {pharmacies.map((pharmacy) => (
                   <TableRow key={pharmacy._id}>
-                    <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">{pharmacy.name}</TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
-                    <Link
+                      {pharmacy.name}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
+                      <Link
                         href={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}${pharmacy.license}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                    >
-                        {pharmacy.license?.replace('/uploads/', '')}
-                    </Link>
+                      >
+                        {pharmacy.license?.replace("/uploads/", "")}
+                      </Link>
                     </TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">{pharmacy.contactNumber}</TableCell>
+                    <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
+                      {pharmacy.contactNumber}
+                    </TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
                       <Badge
                         size="sm"
@@ -109,18 +128,24 @@ const PharmaciesPage = () => {
                           pharmacy.status === "verified"
                             ? "success"
                             : pharmacy.status === "unverified"
-                            ? "warning"
-                            : "error"
+                              ? "warning"
+                              : "error"
                         }
                       >
                         {pharmacy.status}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start flex gap-3">
-                      <Link href={`/admin/pharmacies/edit/${pharmacy._id}`} className="text-blue-500">
+                      <Link
+                        href={`/admin/pharmacies/edit/${pharmacy._id}`}
+                        className="text-blue-500"
+                      >
                         <PencilSquareIcon className="w-5 h-5" />
                       </Link>
-                      <button onClick={() => deletePharmacy(pharmacy._id)} className="text-red-500">
+                      <button
+                        onClick={() => deletePharmacy(pharmacy._id)}
+                        className="text-red-500"
+                      >
                         <TrashIcon className="w-5 h-5" />
                       </button>
                     </TableCell>

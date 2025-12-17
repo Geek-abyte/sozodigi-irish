@@ -13,10 +13,14 @@ const defaultPlans = [
     title: "Basic",
     price: 20,
     duration: 900,
-    features: ["Duration: 15 mins", "Quick call","Report",
+    features: [
+      "Duration: 15 mins",
+      "Quick call",
+      "Report",
       "Follow-up",
       "Pharmacy Referral",
-      "Laboratory Referral"],
+      "Laboratory Referral",
+    ],
   },
   {
     title: "Delux",
@@ -198,9 +202,9 @@ const PricingModal = ({
               </h2>
               <p className="text-sm text-gray-600 mb-6">
                 By proceeding with consultation, users acknowledge that
-                time-based sessions may conclude early upon mutual consent,
-                and SozoDigiCare holds no responsibility for time not used
-                after such agreement.
+                time-based sessions may conclude early upon mutual consent, and
+                SozoDigiCare holds no responsibility for time not used after
+                such agreement.
               </p>
               <div className="flex justify-end gap-3">
                 <button

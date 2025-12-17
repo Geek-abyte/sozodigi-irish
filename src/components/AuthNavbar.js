@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import { Dialog, DialogPanel, PopoverGroup } from "@headlessui/react";
@@ -41,13 +41,21 @@ export default function Navbar() {
         </div>
         <PopoverGroup className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
-            <Link key={item.name} href={item.href} className="text-sm font-semibold">
+            <Link
+              key={item.name}
+              href={item.href}
+              className="text-sm font-semibold"
+            >
               {item.name}
             </Link>
           ))}
         </PopoverGroup>
       </nav>
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
+      <Dialog
+        open={mobileMenuOpen}
+        onClose={setMobileMenuOpen}
+        className="lg:hidden"
+      >
         <DialogPanel className="fixed inset-0 z-10 bg-blue-600 p-6 sm:max-w-sm">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-xl font-bold text-white">

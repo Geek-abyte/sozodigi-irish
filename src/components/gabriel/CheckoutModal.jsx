@@ -17,17 +17,17 @@ const CheckoutModal = ({
   currency = "EUR",
   duration,
   initiateCallAPI,
-  date
+  date,
 }) => {
-  const specialist = useSelector((state) =>  state.specialist.specialist);
-  const appointmentDate = useSelector((state) => state.specialist.appointmentDate) || date;
+  const specialist = useSelector((state) => state.specialist.specialist);
+  const appointmentDate =
+    useSelector((state) => state.specialist.appointmentDate) || date;
   const consultMode = useSelector((state) => state.specialist.consultMode);
   const slot = useSelector((state) => state.specialist.slot);
-  
-  const { addToast } = useToast()
 
-  console.log(appointmentDate)
+  const { addToast } = useToast();
 
+  console.log(appointmentDate);
 
   const { user } = useUser();
 
@@ -41,11 +41,11 @@ const CheckoutModal = ({
   const [clientSecret, setClientSecret] = useState("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [callStatus, setCallStatus] = useState(null)
+  const [callStatus, setCallStatus] = useState(null);
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
-  
+
   const handleCallTimeout = useCallback(() => {
     console.log("Call timeout triggered");
     // setCallStatus("timeout");
@@ -73,7 +73,7 @@ const CheckoutModal = ({
         const response = await postData(
           "payments/create/intent",
           { amount: smallest, currency },
-          token
+          token,
         );
         setClientSecret(response.clientSecret);
       } catch (err) {
@@ -99,10 +99,9 @@ const CheckoutModal = ({
 
       if (orderData.appointmentId) {
         if (orderData?.type === "general" && consultMode === "now") {
-
           window.location.href = `/admin/available-specialists/${orderData.consultant}?appointmentId=${orderData._id}`;
         } else {
-          setCallStatus("booking")
+          setCallStatus("booking");
           router.push(`/admin/appointments`);
         }
         return;
@@ -125,7 +124,7 @@ const CheckoutModal = ({
       const res = await postData(
         "consultation-appointments/create/custom",
         payload,
-        token
+        token,
       );
 
       if (res.appointment) {
@@ -133,22 +132,22 @@ const CheckoutModal = ({
         if (orderData?.type === "general" && consultMode === "now") {
           window.location.href = `/admin/available-specialists/${orderData.consultant}?appointmentId=${appointmentId}`;
         } else {
-          setCallStatus("booking")
+          setCallStatus("booking");
           window.location.href = `/admin/appointments`;
         }
       } else {
         throw new Error("Failed to book the appointment");
       }
     } catch (err) {
-      addToast(err.message, 'error')
-      setCallStatus(null)
+      addToast(err.message, "error");
+      setCallStatus(null);
       setError("Failed to book the appointment");
       console.error(err);
     } finally {
-      if(consultMode ===  "appointment"){
-        setCallStatus("booking")
-      }else{
-        setCallStatus("redirecting")
+      if (consultMode === "appointment") {
+        setCallStatus("booking");
+      } else {
+        setCallStatus("redirecting");
       }
       setProcessing(false);
     }
@@ -188,12 +187,15 @@ const CheckoutModal = ({
         paymentStatus: "paid",
         consultMode: consultMode,
       };
-      
+
       // Add startTime and endTime only if consultMode is "appointment"
       if (consultMode === "appointment") {
-        orderData = { ...orderData, startTime: slot.startTime, endTime: slot.endTime };
+        orderData = {
+          ...orderData,
+          startTime: slot.startTime,
+          endTime: slot.endTime,
+        };
       }
-      
 
       try {
         await createAppointment(paymentData, orderData);
@@ -213,17 +215,23 @@ const CheckoutModal = ({
   return (
     <div className="fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
       <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-        { callStatus !== "redirecting" && callStatus !== "booking" ? (
+        {callStatus !== "redirecting" && callStatus !== "booking" ? (
           <form onSubmit={handleSubmit}>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">Checkout</h2>
-              <button onClick={closeModal} type="button" className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={closeModal}
+                type="button"
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <IoCloseOutline size={24} />
               </button>
             </div>
 
             <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium">Name</label>
+              <label htmlFor="name" className="block text-sm font-medium">
+                Name
+              </label>
               <input
                 id="name"
                 type="text"
@@ -235,7 +243,9 @@ const CheckoutModal = ({
             </div>
 
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium">
+                Email
+              </label>
               <input
                 id="email"
                 type="email"
@@ -247,7 +257,12 @@ const CheckoutModal = ({
             </div>
 
             <div className="mb-4">
-              <label htmlFor="card-element" className="block text-sm font-medium">Card Details</label>
+              <label
+                htmlFor="card-element"
+                className="block text-sm font-medium"
+              >
+                Card Details
+              </label>
               <CardElement
                 id="card-element"
                 className="mt-1 p-2 border rounded-md"
@@ -277,34 +292,37 @@ const CheckoutModal = ({
             >
               {processing
                 ? "Processing..."
-                // : callStatus === "timeout"
-                // ? "Retry Call"
-                : `Pay ${formatAmount(amount)} ${currency}`}
+                : // : callStatus === "timeout"
+                  // ? "Retry Call"
+                  `Pay ${formatAmount(amount)} ${currency}`}
             </button>
           </form>
-         ) : (
+        ) : (
           <div className="text-center">
-            { callStatus === "booking" ?
-            <>
-              <h2 className="text-2xl font-bold mb-4">
-                Payment successful! Booking your appointment...
-              </h2>
-            </>
-            : <>
-              <h2 className="text-2xl font-bold mb-4">
-                {callStatus === "initiating" ? "Initiating Call..." : "Waiting for Specialist..."}
-              </h2>
-              <p className="mb-4">
-                {callStatus === "initiating"
-                  ? "We're setting up your call. This may take a moment."
-                  : "We've notified the specialist. Please wait..."}
-              </p>
-            </>
-            }
-            
+            {callStatus === "booking" ? (
+              <>
+                <h2 className="text-2xl font-bold mb-4">
+                  Payment successful! Booking your appointment...
+                </h2>
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold mb-4">
+                  {callStatus === "initiating"
+                    ? "Initiating Call..."
+                    : "Waiting for Specialist..."}
+                </h2>
+                <p className="mb-4">
+                  {callStatus === "initiating"
+                    ? "We're setting up your call. This may take a moment."
+                    : "We've notified the specialist. Please wait..."}
+                </p>
+              </>
+            )}
+
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 mx-auto"></div>
           </div>
-        )} 
+        )}
       </div>
     </div>
   );

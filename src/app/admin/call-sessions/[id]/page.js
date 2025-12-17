@@ -72,7 +72,7 @@ const SessionDetailsPage = () => {
           labReferrals: form.labReferrals,
           sessionNotes: form.sessionNotes,
         },
-        token
+        token,
       );
       addToast("Session updated successfully", "success");
     } catch (error) {

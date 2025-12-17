@@ -9,31 +9,80 @@ import {
   resetBooking,
 } from "@/store/specialistSlice";
 import ModalContainer from "@/components/gabriel/ModalContainer";
-import { PricingModal, CheckoutModal, FindSpecialistModal } from "@/components/gabriel";
+import {
+  PricingModal,
+  CheckoutModal,
+  FindSpecialistModal,
+} from "@/components/gabriel";
 import { motion } from "framer-motion";
 
 import {
-  Cardiologist, Dermatologist, Endocrinologist, GeneralPractitioner,
-  Neurologist, Oncologist, PreventiveMedicineSpecialist, OrthopedicSurgeon,
-  Pediatrician, Psychiatrist, Surgeon, Urologist, Gynecologist
+  Cardiologist,
+  Dermatologist,
+  Endocrinologist,
+  GeneralPractitioner,
+  Neurologist,
+  Oncologist,
+  PreventiveMedicineSpecialist,
+  OrthopedicSurgeon,
+  Pediatrician,
+  Psychiatrist,
+  Surgeon,
+  Urologist,
+  Gynecologist,
 } from "@/assets";
 
-const socket = typeof window !== "undefined" ? require("socket.io-client")(process.env.NEXT_PUBLIC_SOCKET_URL) : null;
+const socket =
+  typeof window !== "undefined"
+    ? require("socket.io-client")(process.env.NEXT_PUBLIC_SOCKET_URL)
+    : null;
 
 const specialistCategories = [
-  { name: "Cardiology", desc: "Heart and blood vessel diseases.", image: Cardiologist },
-  { name: "Dermatology", desc: "Skin, hair, and nail conditions.", image: Dermatologist },
-  { name: "Endocrinology", desc: "Hormone-related disorders.", image: Endocrinologist },
-  { name: "Gastroenterology", desc: "Digestive system and related organs.", image: GeneralPractitioner },
+  {
+    name: "Cardiology",
+    desc: "Heart and blood vessel diseases.",
+    image: Cardiologist,
+  },
+  {
+    name: "Dermatology",
+    desc: "Skin, hair, and nail conditions.",
+    image: Dermatologist,
+  },
+  {
+    name: "Endocrinology",
+    desc: "Hormone-related disorders.",
+    image: Endocrinologist,
+  },
+  {
+    name: "Gastroenterology",
+    desc: "Digestive system and related organs.",
+    image: GeneralPractitioner,
+  },
   { name: "Neurology", desc: "Nervous system disorders.", image: Neurologist },
-  { name: "Oncology", desc: "Cancer diagnosis and treatment.", image: Oncologist },
-  { name: "Ophthalmology", desc: "Eye diseases and conditions.", image: PreventiveMedicineSpecialist },
-  { name: "Orthopedics", desc: "Bones, joints, and muscles.", image: OrthopedicSurgeon },
+  {
+    name: "Oncology",
+    desc: "Cancer diagnosis and treatment.",
+    image: Oncologist,
+  },
+  {
+    name: "Ophthalmology",
+    desc: "Eye diseases and conditions.",
+    image: PreventiveMedicineSpecialist,
+  },
+  {
+    name: "Orthopedics",
+    desc: "Bones, joints, and muscles.",
+    image: OrthopedicSurgeon,
+  },
   { name: "Pediatrics", desc: "Child health care.", image: Pediatrician },
   { name: "Psychiatry", desc: "Mental health disorders.", image: Psychiatrist },
   { name: "Surgery", desc: "Surgical procedures and care.", image: Surgeon },
   { name: "Urology", desc: "Urinary tract and male health.", image: Urologist },
-  { name: "Gynecology", desc: "Female reproductive health.", image: Gynecologist },
+  {
+    name: "Gynecology",
+    desc: "Female reproductive health.",
+    image: Gynecologist,
+  },
 ];
 
 const SpecialistCategories = () => {
@@ -66,7 +115,9 @@ const SpecialistCategories = () => {
   };
 
   const handleBooking = (category) => {
-    const available = onlineSpecialists.filter((sp) => sp.specialty === category);
+    const available = onlineSpecialists.filter(
+      (sp) => sp.specialty === category,
+    );
     setSelectedCategory(category);
     if (available.length > 0) {
       dispatch(setSpecialist(available[0]));
@@ -84,7 +135,10 @@ const SpecialistCategories = () => {
   };
 
   const startIdx = currentPage * itemsPerPage;
-  const currentItems = specialistCategories.slice(startIdx, startIdx + itemsPerPage);
+  const currentItems = specialistCategories.slice(
+    startIdx,
+    startIdx + itemsPerPage,
+  );
 
   return (
     <section className="py-16 px-4 md:px-8 bg-gray-50">

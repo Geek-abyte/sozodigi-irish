@@ -1,5 +1,5 @@
-"use client"
-import React, { useState } from "react"
+"use client";
+import React, { useState } from "react";
 
 const MedicalCertificate = ({
   patientName = "Emma Davis",
@@ -10,14 +10,14 @@ const MedicalCertificate = ({
   patientID = "6677889",
   certID = "CH–2024–34567",
 }) => {
-  const [diagnosis, setDiagnosis] = useState(defaultDiagnosis)
-  const [duration, setDuration] = useState(defaultDuration)
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
+  const [diagnosis, setDiagnosis] = useState(defaultDiagnosis);
+  const [duration, setDuration] = useState(defaultDuration);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async () => {
-    setLoading(true)
-    setMessage("")
+    setLoading(true);
+    setMessage("");
 
     try {
       const res = await fetch("/api/update-certificate", {
@@ -31,20 +31,20 @@ const MedicalCertificate = ({
           diagnosis,
           duration,
         }),
-      })
+      });
 
-      const data = await res.json()
+      const data = await res.json();
       if (res.ok) {
-        setMessage("Certificate updated successfully.")
+        setMessage("Certificate updated successfully.");
       } else {
-        setMessage(data.error || "Update failed.")
+        setMessage(data.error || "Update failed.");
       }
     } catch (err) {
-      setMessage("Something went wrong.")
+      setMessage("Something went wrong.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-10 print:p-0 flex justify-center print:bg-white">
@@ -83,7 +83,8 @@ const MedicalCertificate = ({
                 value={diagnosis}
                 onChange={(e) => setDiagnosis(e.target.value)}
                 className="border-b border-gray-400 px-1 font-semibold"
-              />.
+              />
+              .
             </p>
 
             <p className="mt-6">
@@ -149,7 +150,7 @@ const MedicalCertificate = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MedicalCertificate
+export default MedicalCertificate;

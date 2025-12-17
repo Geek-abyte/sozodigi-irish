@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useSidebar } from "@/context/admin/SidebarContext";
 import React from "react";
 

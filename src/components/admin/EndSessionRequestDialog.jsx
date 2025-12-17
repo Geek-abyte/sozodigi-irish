@@ -40,9 +40,11 @@ const EndSessionRequestDialog = ({
         <div className="p-6">
           <p className="text-gray-700 dark:text-gray-300 text-base leading-relaxed">
             Waiting for{" "}
-            <strong className="text-gray-900 dark:text-white">{targetName}</strong>{" "}
-            ({targetRole === "user" ? "Patient" : "Doctor"}) to accept your request
-            to end this session.
+            <strong className="text-gray-900 dark:text-white">
+              {targetName}
+            </strong>{" "}
+            ({targetRole === "user" ? "Patient" : "Doctor"}) to accept your
+            request to end this session.
           </p>
           <p className="text-gray-600 dark:text-gray-400 text-sm mt-3">
             The session will continue until they respond.
@@ -64,4 +66,3 @@ const EndSessionRequestDialog = ({
 };
 
 export default EndSessionRequestDialog;
-

@@ -1,4 +1,4 @@
-import Dialog from './Dialog';
+import Dialog from "./Dialog";
 
 const PrescriptionDialog = ({
   showPrescriptions,
@@ -8,7 +8,7 @@ const PrescriptionDialog = ({
   newPrescription,
   setNewPrescription,
   handleAddPrescription,
-  savingPrescription
+  savingPrescription,
 }) => {
   if (!showPrescriptions) return null;
 
@@ -68,7 +68,7 @@ const PrescriptionDialog = ({
         className="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         onClick={handleAddPrescription}
       >
-        {savingPrescription ? 'Adding Prescription...' : 'Add Prescription'}
+        {savingPrescription ? "Adding Prescription..." : "Add Prescription"}
       </button>
     </Dialog>
   );

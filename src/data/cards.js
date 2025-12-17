@@ -6,7 +6,6 @@ import {
   rect59,
   rect60,
   rect61,
-
   Cardiologist,
   Allergist,
   Dentist,
@@ -24,7 +23,7 @@ import {
   Surgeon,
   Urologist,
   PreventiveMedicineSpecialist,
-  Hematologist
+  Hematologist,
 } from "@/assets";
 
 export const cards = [

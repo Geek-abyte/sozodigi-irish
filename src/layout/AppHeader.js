@@ -6,12 +6,11 @@ import { useSidebar } from "@/context/admin/SidebarContext";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useRef } from "react";
-import { Home } from 'lucide-react';
+import { Home } from "lucide-react";
 
 const AppHeader = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
-
 
   const handleToggle = () => {
     if (window.innerWidth >= 1024) {
@@ -121,8 +120,11 @@ const AppHeader = () => {
               />
             </svg>
           </button>
-          
-          <Link href="/" className="flex items-center gap-2 text-blue-600 hover:underline">
+
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-blue-600 hover:underline"
+          >
             <Home className="w-5 h-5" />
             Home
           </Link>
@@ -137,12 +139,11 @@ const AppHeader = () => {
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
 
-           {/* <NotificationDropdown />  */}
+            {/* <NotificationDropdown />  */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown /> 
-    
+          <UserDropdown />
         </div>
       </div>
     </header>

@@ -37,8 +37,8 @@ const EndSessionConsentDialog = ({
             <strong className="text-gray-900 dark:text-white">
               {requesterName}
             </strong>{" "}
-            ({requesterRole === "user" ? "Patient" : "Doctor"}) has requested to end
-            this consultation session early.
+            ({requesterRole === "user" ? "Patient" : "Doctor"}) has requested to
+            end this consultation session early.
           </p>
           <p className="text-gray-600 dark:text-gray-400 text-sm mt-3">
             Do you agree to end the session now?
@@ -66,4 +66,3 @@ const EndSessionConsentDialog = ({
 };
 
 export default EndSessionConsentDialog;
-

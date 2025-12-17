@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const SimpleCarousel = ({ items, autoplay = false, autoplayInterval = 5000 }) => {
+const SimpleCarousel = ({
+  items,
+  autoplay = false,
+  autoplayInterval = 5000,
+}) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4);
   const [touchStart, setTouchStart] = useState(null);
@@ -19,8 +23,8 @@ const SimpleCarousel = ({ items, autoplay = false, autoplayInterval = 5000 }) =>
 
   useEffect(() => {
     updateItemsPerPage();
-    window.addEventListener('resize', updateItemsPerPage);
-    return () => window.removeEventListener('resize', updateItemsPerPage);
+    window.addEventListener("resize", updateItemsPerPage);
+    return () => window.removeEventListener("resize", updateItemsPerPage);
   }, [updateItemsPerPage]);
 
   const totalPages = Math.ceil(items.length / itemsPerPage);

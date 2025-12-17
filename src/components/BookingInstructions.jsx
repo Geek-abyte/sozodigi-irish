@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-const BookingInstructions = ({showSpecialistCateogies}) => {
-  const [showInstructions, setShowInstructions] = useState(true)
+const BookingInstructions = ({ showSpecialistCateogies }) => {
+  const [showInstructions, setShowInstructions] = useState(true);
 
   return (
     <div className="max-w-lg mb-6">
@@ -11,10 +11,14 @@ const BookingInstructions = ({showSpecialistCateogies}) => {
         aria-expanded={showInstructions}
         aria-controls="booking-instructions"
       >
-        <span>{showInstructions ? 'Close instructions' : 'Need help booking? click here!'}</span>
+        <span>
+          {showInstructions
+            ? "Close instructions"
+            : "Need help booking? click here!"}
+        </span>
         <svg
           className={`w-5 h-5 transition-transform duration-300 ${
-            showInstructions ? 'rotate-180' : 'rotate-0'
+            showInstructions ? "rotate-180" : "rotate-0"
           }`}
           fill="none"
           stroke="currentColor"
@@ -23,7 +27,11 @@ const BookingInstructions = ({showSpecialistCateogies}) => {
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </button>
 
@@ -37,13 +45,14 @@ const BookingInstructions = ({showSpecialistCateogies}) => {
             <li>Choose a date from the calendar.</li>
             <li>Select an available time slot.</li>
             <li>
-              Enter the reason for your visit and click <strong>Book Appointment</strong>.
+              Enter the reason for your visit and click{" "}
+              <strong>Book Appointment</strong>.
             </li>
           </ol>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default BookingInstructions
+export default BookingInstructions;

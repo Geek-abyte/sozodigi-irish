@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 import Badge from "../ui/badge/Badge";
 import { fetchData } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -14,7 +20,10 @@ export default function RecentTransactions() {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const data = await fetchData("payments/all/no-pagination?limit=10", token); // Adjust endpoint as needed
+        const data = await fetchData(
+          "payments/all/no-pagination?limit=10",
+          token,
+        ); // Adjust endpoint as needed
         setTransactions(data.payments); // Assuming `transactions` key in response
         setLoading(false);
       } catch (error) {
@@ -42,19 +51,31 @@ export default function RecentTransactions() {
         <Table>
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
             <TableRow>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Transaction ID
               </TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Date
               </TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Amount
               </TableCell>
               {/* <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                 Payment Method
               </TableCell> */}
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Status
               </TableCell>
             </TableRow>
@@ -92,8 +113,8 @@ export default function RecentTransactions() {
                       txn.status === "Success"
                         ? "success"
                         : txn.status === "Pending"
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                   >
                     {txn.status}

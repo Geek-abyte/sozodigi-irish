@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar } from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from "react";
+import { Calendar } from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const BookAppointment = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [selectedSpecialty, setSelectedSpecialty] = useState('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState("");
   const [availableSlots, setAvailableSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [reason, setReason] = useState('');
+  const [reason, setReason] = useState("");
   const [specialties, setSpecialties] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -17,10 +17,10 @@ const BookAppointment = () => {
     // Fetch available specialties
     const fetchSpecialties = async () => {
       try {
-        const response = await axios.get('/api/specialties');
+        const response = await axios.get("/api/specialties");
         setSpecialties(response.data.data);
       } catch (error) {
-        toast.error('Error fetching specialties');
+        toast.error("Error fetching specialties");
       }
     };
     fetchSpecialties();
@@ -35,42 +35,42 @@ const BookAppointment = () => {
   const fetchAvailableSlots = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/appointments/available-slots', {
+      const response = await axios.get("/api/appointments/available-slots", {
         params: {
           specialty: selectedSpecialty,
-          date: selectedDate.toISOString().split('T')[0],
+          date: selectedDate.toISOString().split("T")[0],
         },
       });
       setAvailableSlots(response.data.data);
     } catch (error) {
-      toast.error('Error fetching available slots');
+      toast.error("Error fetching available slots");
     }
     setLoading(false);
   };
 
   const handleBookAppointment = async () => {
     if (!selectedSlot || !reason) {
-      toast.error('Please select a time slot and provide a reason');
+      toast.error("Please select a time slot and provide a reason");
       return;
     }
 
     try {
-      const response = await axios.post('/api/appointments/book', {
+      const response = await axios.post("/api/appointments/book", {
         availabilityId: selectedSlot._id,
         timeSlotIndex: selectedSlot.timeSlotIndex,
         reason,
       });
 
       if (response.data.success) {
-        toast.success('Appointment booked successfully');
+        toast.success("Appointment booked successfully");
         // Reset form
         setSelectedSlot(null);
-        setReason('');
+        setReason("");
         // Refresh available slots
         fetchAvailableSlots();
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error booking appointment');
+      toast.error(error.response?.data?.message || "Error booking appointment");
     }
   };
 
@@ -118,8 +118,8 @@ const BookAppointment = () => {
                     key={slot._id}
                     className={`p-4 border rounded-md cursor-pointer ${
                       selectedSlot?._id === slot._id
-                        ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-200 hover:border-blue-300'
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:border-blue-300"
                     }`}
                     onClick={() => setSelectedSlot(slot)}
                   >
@@ -127,8 +127,9 @@ const BookAppointment = () => {
                       Dr. {slot.doctor.firstName} {slot.doctor.lastName}
                     </div>
                     <div className="text-sm text-gray-600">
-                      {new Date(slot.date).toLocaleDateString()} at{' '}
-                      {slot.timeSlots[0].startTime} - {slot.timeSlots[0].endTime}
+                      {new Date(slot.date).toLocaleDateString()} at{" "}
+                      {slot.timeSlots[0].startTime} -{" "}
+                      {slot.timeSlots[0].endTime}
                     </div>
                   </div>
                 ))}
@@ -163,10 +164,10 @@ const BookAppointment = () => {
                 <>
                   <p>No available slots for the selected date.</p>
                   <p className="mt-2">
-                    Please contact our call center at{' '}
+                    Please contact our call center at{" "}
                     <a href="tel:+1234567890" className="text-blue-600">
                       +1 (234) 567-890
-                    </a>{' '}
+                    </a>{" "}
                     for assistance.
                   </p>
                 </>
@@ -181,4 +182,4 @@ const BookAppointment = () => {
   );
 };
 
-export default BookAppointment; 
+export default BookAppointment;

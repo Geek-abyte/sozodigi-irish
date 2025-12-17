@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import AdminPharmaciesPageContent from './AdminPharmaciesPageContent'; // your real page content
+import { Suspense } from "react";
+import AdminPharmaciesPageContent from "./AdminPharmaciesPageContent"; // your real page content
 
 export default function AdminPharmaciesPage() {
   return (

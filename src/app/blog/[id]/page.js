@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation'; // Use useParams from next/navigation
-import { fetchData } from '@/utils/api'; // adjust the path if different
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation"; // Use useParams from next/navigation
+import { fetchData } from "@/utils/api"; // adjust the path if different
 
 export default function BlogViewPage() {
   const [blog, setBlog] = useState(null);
@@ -14,10 +14,10 @@ export default function BlogViewPage() {
         setLoading(true);
         try {
           const res = await fetchData(`blogs/${id}`); // Fetch blog based on the id
-          console.log(res)
+          console.log(res);
           setBlog(res);
         } catch (error) {
-          console.error('Error fetching blog:', error);
+          console.error("Error fetching blog:", error);
         } finally {
           setLoading(false);
         }
@@ -45,23 +45,29 @@ export default function BlogViewPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <h1 className="text-4xl font-bold text-center mb-6">{blog.title}</h1>
-      
+
       <img
-        src={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${blog.featuredImage}` || '/images/blog-placeholder.jpg'}
+        src={
+          blog.featuredImage
+            ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${blog.featuredImage}`
+            : "/images/blog-placeholder.jpg"
+        }
         alt={blog.title}
         className="w-full h-96 object-cover rounded-lg mb-8"
         onError={(e) => {
           e.target.onerror = null;
-          e.target.src = '/images/blog-placeholder.jpg';
+          e.target.src = "/images/blog-placeholder.jpg";
         }}
       />
 
-      <p className="text-xs text-gray-400 mb-4">{new Date(blog.createdAt).toLocaleDateString()}</p>
-      
+      <p className="text-xs text-gray-400 mb-4">
+        {new Date(blog.createdAt).toLocaleDateString()}
+      </p>
+
       <div
         className="text-lg text-gray-800"
         dangerouslySetInnerHTML={{
-          __html: blog.content
+          __html: blog.content,
         }}
       />
     </div>

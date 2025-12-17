@@ -1,63 +1,67 @@
-"use client"
-import React, { useState, useEffect } from "react"
-import { updateData, fetchData } from "@/utils/api"
-import { useSession } from "next-auth/react"
-import { useParams } from "next/navigation"
+"use client";
+import React, { useState, useEffect } from "react";
+import { updateData, fetchData } from "@/utils/api";
+import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
 
 const MedicalCertificate = () => {
-  const params = useParams()
-  const certificateId = params.id
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
+  const params = useParams();
+  const certificateId = params.id;
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
-  const [certificate, setCertificate] = useState(null)
-  const [diagnosis, setDiagnosis] = useState("")
-  const [comment, setComment] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
+  const [certificate, setCertificate] = useState(null);
+  const [diagnosis, setDiagnosis] = useState("");
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const getCertificate = async () => {
       try {
-        const res = await fetchData(`certificates/${certificateId}`, token)
+        const res = await fetchData(`certificates/${certificateId}`, token);
         if (res) {
-          setCertificate(res)
-          setDiagnosis(res.diagnosis)
-          setComment(res.comment)
+          setCertificate(res);
+          setDiagnosis(res.diagnosis);
+          setComment(res.comment);
         }
       } catch (err) {
-        console.error("Failed to fetch certificate", err)
+        console.error("Failed to fetch certificate", err);
       }
-    }
+    };
 
     if (certificateId && token) {
-      getCertificate()
+      getCertificate();
     }
-  }, [certificateId, token])
+  }, [certificateId, token]);
 
   const handleSubmit = async () => {
-    setLoading(true)
-    setMessage("")
+    setLoading(true);
+    setMessage("");
 
     try {
-      const res = await updateData(`certificates/update/${certificateId}`, {
-        diagnosis,
-        comment,
-      }, token)
+      const res = await updateData(
+        `certificates/update/${certificateId}`,
+        {
+          diagnosis,
+          comment,
+        },
+        token,
+      );
 
       if (res?.success || res?.status === 200) {
-        setMessage("Certificate updated successfully.")
+        setMessage("Certificate updated successfully.");
       } else {
-        setMessage(res?.error || "Update failed.")
+        setMessage(res?.error || "Update failed.");
       }
     } catch (err) {
-      setMessage("Something went wrong.")
+      setMessage("Something went wrong.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  if (!certificate) return <div className="text-center py-20">Loading...</div>
+  if (!certificate) return <div className="text-center py-20">Loading...</div>;
 
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-10 print:p-0 flex justify-center print:bg-white">
@@ -80,7 +84,10 @@ const MedicalCertificate = () => {
             <h2 className="text-base sm:text-lg font-bold">Sozo Digicare</h2>
             <p className="text-sm">11 The Avenue Folkstown Park.</p>
             <p className="text-sm mb-4">Balbriggan Co Dublin.</p>
-            <h1 className="text-[34px] font-bold text-[#335b75] uppercase tracking-wide mt-20 mb-20 font-serif" style={{ fontFamily: "serif" }}>
+            <h1
+              className="text-[34px] font-bold text-[#335b75] uppercase tracking-wide mt-20 mb-20 font-serif"
+              style={{ fontFamily: "serif" }}
+            >
               Medical Certificate for Sick Leave
             </h1>
           </div>
@@ -88,15 +95,21 @@ const MedicalCertificate = () => {
           {/* Body */}
           <div className="leading-8 mb-10 text-sm sm:text-base text-left">
             <p>
-              This certifies that <strong>{certificate?.patient?.name || "Patient"}</strong> underwent a
-              medical evaluation at <strong>Sozo Digicare Online Medical Consultations</strong>{" "}
-              on <strong>{new Date(certificate?.issueDate).toLocaleDateString()}</strong> and is currently experiencing{" "}
+              This certifies that{" "}
+              <strong>{certificate?.patient?.name || "Patient"}</strong>{" "}
+              underwent a medical evaluation at{" "}
+              <strong>Sozo Digicare Online Medical Consultations</strong> on{" "}
+              <strong>
+                {new Date(certificate?.issueDate).toLocaleDateString()}
+              </strong>{" "}
+              and is currently experiencing{" "}
               <input
                 type="text"
                 value={diagnosis}
                 onChange={(e) => setDiagnosis(e.target.value)}
                 className="border-b border-gray-400 px-1 font-semibold w-full sm:w-auto"
-              />.
+              />
+              .
             </p>
 
             <p className="mt-6">
@@ -120,7 +133,9 @@ const MedicalCertificate = () => {
             <div className="flex justify-center items-center mt-6">
               {/* Doctor Info */}
               <div className="text-center">
-                <p className="font-semibold">{certificate?.doctor?.name || "Doctor"}</p>
+                <p className="font-semibold">
+                  {certificate?.doctor?.name || "Doctor"}
+                </p>
                 <p className="text-sm -mt-1">Doctor/Examiner</p>
               </div>
 
@@ -161,7 +176,7 @@ const MedicalCertificate = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default MedicalCertificate
+export default MedicalCertificate;

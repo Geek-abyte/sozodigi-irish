@@ -28,7 +28,11 @@ const EditCategory = () => {
           setCategoryName(data.name);
           setDescription(data.description);
           setStatus(data.status || "active");
-          setImagePreview(data.image ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}${data.image}` : null);
+          setImagePreview(
+            data.image
+              ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}${data.image}`
+              : null,
+          );
         } catch (error) {
           console.error("Error fetching category:", error);
         }
@@ -51,11 +55,16 @@ const EditCategory = () => {
     setLoading(true);
 
     try {
-        // Update existing category
-        await updateData(`categories/${id}`, {name: categoryName}, token, false);
-        alert("Category updated successfully!");
-      
-        router.push("/admin/categories");
+      // Update existing category
+      await updateData(
+        `categories/${id}`,
+        { name: categoryName },
+        token,
+        false,
+      );
+      alert("Category updated successfully!");
+
+      router.push("/admin/categories");
     } catch (error) {
       console.error("Error saving category:", error);
       alert("Failed to save category");
@@ -72,7 +81,9 @@ const EditCategory = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block font-medium text-gray-700 dark:text-gray-300">Category Name</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">
+            Category Name
+          </label>
           <input
             type="text"
             value={categoryName}
@@ -89,7 +100,13 @@ const EditCategory = () => {
           className="w-full bg-indigo-500 text-white p-3 rounded-lg hover:bg-indigo-600 transition disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? (id ? "Updating..." : "Adding...") : id ? "Update Category" : "Add Category"}
+          {loading
+            ? id
+              ? "Updating..."
+              : "Adding..."
+            : id
+              ? "Update Category"
+              : "Add Category"}
         </button>
       </form>
     </div>

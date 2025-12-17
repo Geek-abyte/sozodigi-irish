@@ -1,6 +1,6 @@
 export function removeProperty(obj, prop) {
   // Check if the property exists in the object
-  if (!obj.hasOwnProperty(prop)) {
+  if (!Object.prototype.hasOwnProperty.call(obj, prop)) {
     return obj; // Return the original object if the property does not exist
   }
 
@@ -56,29 +56,29 @@ export const toCents = (amount) => Math.round(amount * 100);
 export const toKobo = (amount) => Math.round(amount * 100);
 
 export const convertTo24Hour = (timeStr) => {
-  const [time, modifier] = timeStr.split(' ');
-  let [hours, minutes] = time.split(':');
+  const [time, modifier] = timeStr.split(" ");
+  let [hours, minutes] = time.split(":");
 
-  if (modifier === 'PM' && hours !== '12') {
+  if (modifier === "PM" && hours !== "12") {
     hours = parseInt(hours, 10) + 12;
   }
-  if (modifier === 'AM' && hours === '12') {
-    hours = '00';
+  if (modifier === "AM" && hours === "12") {
+    hours = "00";
   }
 
-  return `${hours}:${minutes}`; 
-}
+  return `${hours}:${minutes}`;
+};
 
 export const convertMillisecondsTo24HourFormat = (milliseconds) => {
-  const date = new Date(milliseconds);  // Create a Date object using the milliseconds
-  
+  const date = new Date(milliseconds); // Create a Date object using the milliseconds
+
   // Extract hours and minutes
-  const hours = date.getHours().toString().padStart(2, '0'); // Ensure two digits
-  const minutes = date.getMinutes().toString().padStart(2, '0'); // Ensure two digits
+  const hours = date.getHours().toString().padStart(2, "0"); // Ensure two digits
+  const minutes = date.getMinutes().toString().padStart(2, "0"); // Ensure two digits
 
   // Return in 24-hour format (HH:mm)
   return `${hours}:${minutes}`;
-}
+};
 
 /**
  * Converts an amount to the smallest currency unit based on the currency code

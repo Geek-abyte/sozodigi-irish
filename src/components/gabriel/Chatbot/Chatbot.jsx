@@ -26,28 +26,32 @@ const MessageWithDisclaimer = ({ text, sender, showDisclaimer }) => {
   const router = useRouter();
 
   return (
-    <div className={`message ${sender} max-w-[85%] ${
-      sender === 'bot' 
-        ? 'bg-blue-50 border-blue-200 border ml-2' 
-        : 'bg-[var(--color-primary-7)] ml-auto mr-2'
-    } rounded-lg p-4 shadow-md relative`}>
-      {sender === 'bot' && (
+    <div
+      className={`message ${sender} max-w-[85%] ${
+        sender === "bot"
+          ? "bg-blue-50 border-blue-200 border ml-2"
+          : "bg-[var(--color-primary-7)] ml-auto mr-2"
+      } rounded-lg p-4 shadow-md relative`}
+    >
+      {sender === "bot" && (
         <div className="absolute -left-2 top-4 w-4 h-4 bg-blue-50 border-l border-t border-blue-200 transform rotate-45" />
       )}
-      {sender === 'user' && (
+      {sender === "user" && (
         <div className="absolute -right-2 top-4 w-4 h-4 bg-[var(--color-primary-7)] transform rotate-45" />
       )}
-      <p className={`${
-        sender === 'bot' 
-          ? 'text-gray-800' 
-          : 'text-white'
-      } text-sm md:text-base`}>
+      <p
+        className={`${
+          sender === "bot" ? "text-gray-800" : "text-white"
+        } text-sm md:text-base`}
+      >
         {text}
       </p>
       {sender === "bot" && showDisclaimer && (
         <div className="mt-4 border-t border-blue-200 pt-3">
           <p className="text-xs text-gray-600 italic">
-            Disclaimer: This AI assistant is not qualified to give medical advice. Please consult with a healthcare professional for accurate diagnosis and treatment.
+            Disclaimer: This AI assistant is not qualified to give medical
+            advice. Please consult with a healthcare professional for accurate
+            diagnosis and treatment.
           </p>
           <button
             onClick={() => router.push("/admin/available-specialists")}
@@ -63,7 +67,9 @@ const MessageWithDisclaimer = ({ text, sender, showDisclaimer }) => {
 
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { ChatBotOpen, chatbotAttentionTriggered } = useSelector((state) => state.popUp);
+  const { ChatBotOpen, chatbotAttentionTriggered } = useSelector(
+    (state) => state.popUp,
+  );
   const dispatch = useDispatch();
   const [tags, setTags] = useState([]);
   const [isAddingTags, setIsAddingTags] = useState(false);
@@ -102,7 +108,7 @@ const ChatBot = () => {
     setSearchTerm(value);
 
     const filteredSuggestions = symptoms.filter((item) =>
-      item.toLowerCase().includes(value.toLowerCase())
+      item.toLowerCase().includes(value.toLowerCase()),
     );
     setSuggestions(filteredSuggestions);
   };
@@ -140,17 +146,17 @@ const ChatBot = () => {
     setIsAddingTags(false);
     addMessage(
       `What is the possible cause of this symptoms? \n ${payload.join(",\n")}`,
-      "user"
+      "user",
     );
 
     sendTags(payload);
   };
 
   const addMessage = (text, sender) => {
-    const newMessage = { 
-      text, 
+    const newMessage = {
+      text,
       sender,
-      showDisclaimer: sender === 'bot' && text?.includes('response') // Only show disclaimer for bot responses
+      showDisclaimer: sender === "bot" && text?.includes("response"), // Only show disclaimer for bot responses
     };
     setTimeout(() => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -159,7 +165,7 @@ const ChatBot = () => {
 
   const sendTags = async (message) => {
     let packet = message.map((tag) => toSnakeCase(tag));
-  
+
     setLoading(true);
     try {
       const data = await postData("chatbot/predict_disease", {
@@ -169,13 +175,16 @@ const ChatBot = () => {
       addMessage(data.message || data.error, "bot");
       addMessage(
         "Try a different set of symptoms, or would you like to contact a consultant?",
-        "bot"
+        "bot",
       );
       console.log("Response:", data);
     } catch (error) {
       console.error("Error:", error);
       setLoading(false);
-      addMessage("There was a problem with the result, please try again", "bot");
+      addMessage(
+        "There was a problem with the result, please try again",
+        "bot",
+      );
       addMessage("Or would you like to contact a consultant?", "bot");
     }
   };
@@ -190,40 +199,44 @@ const ChatBot = () => {
   const sendQuestion = async (question) => {
     setLoading(true);
 
-  
     try {
       const data = await postData("/chatbot/predict_disease", {
         symptoms: question,
       });
-  
+
       setLoading(false);
-  
+
       if (data.error) {
         addMessage(data.error, "bot");
         return;
       }
-  
+
       if (data.predicted_diseases && data.predicted_diseases.length > 0) {
         const result = `Possible conditions:\n- ${data.predicted_diseases.join("\n- ")}`;
         addMessage(result, "bot");
-  
+
         if (data.disclaimer) {
           addMessage(data.disclaimer, "bot");
         }
-  
+
         return;
       }
-  
+
       // Fallback
-      addMessage(data.message || "Hmm, I couldn't determine anything from that. Try more symptoms.", "bot");
+      addMessage(
+        data.message ||
+          "Hmm, I couldn't determine anything from that. Try more symptoms.",
+        "bot",
+      );
     } catch (error) {
       console.error("Error:", error);
       setLoading(false);
-      addMessage("There was a problem with the response, please try again.", "bot");
+      addMessage(
+        "There was a problem with the response, please try again.",
+        "bot",
+      );
     }
   };
-  
-  
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -264,10 +277,11 @@ const ChatBot = () => {
     <div className="fixed font-roboto-condensed bottom-2 md:bottom-4 right-2 md:right-6 z-999999">
       <div
         ref={chatbotRef}
-        className={`${chatClass} overflow-hidden rounded-lg shadow-lg w-[95vw] sm:w-96 h-[400px] md:h-[450px] mb-[70px] md:mb-[100px] flex flex-col transition-transform duration-300 transform ${isOpen
-          ? "translate-y-0 translate-x-0 scale-100"
-          : "translate-y-96 translate-x-44 scale-0"
-          } ${isAttentionEffect ? "animate-gentle-bounce" : ""}`}
+        className={`${chatClass} overflow-hidden rounded-lg shadow-lg w-[95vw] sm:w-96 h-[400px] md:h-[450px] mb-[70px] md:mb-[100px] flex flex-col transition-transform duration-300 transform ${
+          isOpen
+            ? "translate-y-0 translate-x-0 scale-100"
+            : "translate-y-96 translate-x-44 scale-0"
+        } ${isAttentionEffect ? "animate-gentle-bounce" : ""}`}
         onTransitionEnd={() => !isOpen && setChatClass("hidden")}
       >
         {isAuthenticated ? (
@@ -316,10 +330,13 @@ const ChatBot = () => {
                   className="flex-1 overflow-y-auto p-4 space-y-6 bg-gray-50"
                 >
                   {messages.map((message, index) => (
-                    <div key={index} className={`message-wrapper ${message.sender} mb-4`}>
-                      <MessageWithDisclaimer 
-                        text={message.text} 
-                        sender={message.sender} 
+                    <div
+                      key={index}
+                      className={`message-wrapper ${message.sender} mb-4`}
+                    >
+                      <MessageWithDisclaimer
+                        text={message.text}
+                        sender={message.sender}
                         showDisclaimer={message.showDisclaimer}
                       />
                     </div>
@@ -339,7 +356,10 @@ const ChatBot = () => {
                     onKeyDown={handleKeyPress}
                     className="flex-1 border rounded-lg px-4 py-2 mr-2"
                   />
-                  <button onClick={handleSendQuestion} className="text-blue-500">
+                  <button
+                    onClick={handleSendQuestion}
+                    className="text-blue-500"
+                  >
                     <FiSend size={24} />
                   </button>
                 </div>
@@ -349,7 +369,9 @@ const ChatBot = () => {
         ) : (
           <div className="flex flex-col items-center justify-center h-full bg-white p-6">
             <RiCustomerService2Fill className="text-6xl text-[var(--color-primary-7)] mb-4" />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Login Required</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+              Login Required
+            </h2>
             <p className="text-gray-600 text-center mb-4">
               Please log in or sign up to use the AI chat feature.
             </p>
@@ -372,8 +394,9 @@ const ChatBot = () => {
       </div>
       <button
         onClick={toggleChatBot}
-        className={`absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-[5px] md:p-[10px] shadow-lg hover:scale-110 transition-transform duration-300 ${isAttentionEffect ? "animate-pulse" : ""
-          }`}
+        className={`absolute bottom-0 right-0 bg-blue-500 text-white rounded-full p-[5px] md:p-[10px] shadow-lg hover:scale-110 transition-transform duration-300 ${
+          isAttentionEffect ? "animate-pulse" : ""
+        }`}
       >
         <div className="border-2 border-white rounded-full p-2">
           {isOpen ? (

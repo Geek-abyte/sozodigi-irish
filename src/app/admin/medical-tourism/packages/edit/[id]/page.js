@@ -40,7 +40,9 @@ const EditMedicalTourismPackagePage = () => {
           status: data.status,
           photo: null,
         });
-        setExistingPhoto(`${process.env.NEXT_PUBLIC_NODE_BASE_URL}${data.photo}`);
+        setExistingPhoto(
+          `${process.env.NEXT_PUBLIC_NODE_BASE_URL}${data.photo}`,
+        );
       } catch (error) {
         console.error("Failed to load package", error);
       }
@@ -93,10 +95,23 @@ const EditMedicalTourismPackagePage = () => {
           Back
         </Link>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
-        {["name", "description", "price", "location", "duration", "services"].map((field) => (
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5"
+        encType="multipart/form-data"
+      >
+        {[
+          "name",
+          "description",
+          "price",
+          "location",
+          "duration",
+          "services",
+        ].map((field) => (
           <div key={field}>
-            <label className="block font-medium mb-1 capitalize">{field.replace("services", "Services (comma separated)")}</label>
+            <label className="block font-medium mb-1 capitalize">
+              {field.replace("services", "Services (comma separated)")}
+            </label>
             {field === "description" ? (
               <textarea
                 name={field}
@@ -134,7 +149,11 @@ const EditMedicalTourismPackagePage = () => {
           <label className="block font-medium mb-1">Package Photo</label>
           {existingPhoto && (
             <div className="mb-2">
-              <img src={existingPhoto} alt="Existing" className="w-32 h-32 object-cover rounded" />
+              <img
+                src={existingPhoto}
+                alt="Existing"
+                className="w-32 h-32 object-cover rounded"
+              />
             </div>
           )}
           <input

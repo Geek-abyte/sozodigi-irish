@@ -12,7 +12,11 @@ export default function LabReferral() {
 
   const initialPage = parseInt(searchParams.get("page")) || 1;
   const [services, setServices] = useState([]);
-  const [pagination, setPagination] = useState({ total: 0, page: initialPage, pages: 1 });
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: initialPage,
+    pages: 1,
+  });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -27,7 +31,11 @@ export default function LabReferral() {
 
       if (response && Array.isArray(response.data)) {
         setServices(response.data);
-        setPagination({ total: response.total, page: response.page, pages: response.pages });
+        setPagination({
+          total: response.total,
+          page: response.page,
+          pages: response.pages,
+        });
         router.push(`?page=${page}`, { scroll: false });
       } else {
         console.error("Invalid API response:", response);
@@ -55,7 +63,11 @@ export default function LabReferral() {
           ) : (
             <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {services.map((service) => (
-                <Link key={service._id} href={`/laboratory/examination/${service._id}`} className="group relative bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                <Link
+                  key={service._id}
+                  href={`/laboratory/examination/${service._id}`}
+                  className="group relative bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out"
+                >
                   {/* Service Image */}
                   <div className="aspect-w-16 aspect-h-9 overflow-hidden rounded-t-lg">
                     <img
@@ -66,13 +78,22 @@ export default function LabReferral() {
                   </div>
                   {/* Service Details */}
                   <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-800">{service.name}</h3>
-                    <p className="mt-2 text-sm text-gray-600">{service.description}</p>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {service.name}
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-600">
+                      {service.description}
+                    </p>
                     <div className="mt-4 flex justify-between items-center">
                       <p className="text-xl font-bold text-indigo-600">
-                        ₦{new Intl.NumberFormat().format(Math.round(service.price))}
+                        ₦
+                        {new Intl.NumberFormat().format(
+                          Math.round(service.price),
+                        )}
                       </p>
-                      <button className="text-sm text-blue-500 hover:text-blue-700">View Details</button>
+                      <button className="text-sm text-blue-500 hover:text-blue-700">
+                        View Details
+                      </button>
                     </div>
                   </div>
                 </Link>

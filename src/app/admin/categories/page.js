@@ -41,7 +41,9 @@ const CategoriesPage = () => {
 
     try {
       await deleteData(`categories/${categoryId}`, token);
-      setCategories(categories.filter((category) => category._id !== categoryId));
+      setCategories(
+        categories.filter((category) => category._id !== categoryId),
+      );
     } catch (error) {
       console.error("Error deleting category:", error);
     }
@@ -91,7 +93,6 @@ const CategoriesPage = () => {
               <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                 {categories.map((category) => (
                   <TableRow key={category._id}>
-
                     {/* Category Name */}
                     <TableCell className="px-5 py-4 text-gray-500 dark:text-gray-400">
                       {category.name}
@@ -99,10 +100,16 @@ const CategoriesPage = () => {
 
                     {/* Actions */}
                     <TableCell className="px-5 py-4 text-start flex gap-3">
-                      <Link href={`/admin/categories/edit/${category._id}`} className="text-blue-500">
+                      <Link
+                        href={`/admin/categories/edit/${category._id}`}
+                        className="text-blue-500"
+                      >
                         <PencilSquareIcon className="w-5 h-5 inline-block" />
                       </Link>
-                      <button className="text-red-500" onClick={() => deleteCategory(category._id)}>
+                      <button
+                        className="text-red-500"
+                        onClick={() => deleteCategory(category._id)}
+                      >
                         <TrashIcon className="w-5 h-5 inline-block" />
                       </button>
                     </TableCell>

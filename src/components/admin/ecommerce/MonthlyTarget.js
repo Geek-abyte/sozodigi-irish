@@ -5,24 +5,28 @@ import { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { MoreDotIcon } from "@/icons";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { fetchData } from "@/utils/api"
+import { fetchData } from "@/utils/api";
 import { useSession } from "next-auth/react";
 
-const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+  ssr: false,
+});
 
 export default function RatingsBreakdown() {
   const [series, setSeries] = useState([0, 0, 0, 0, 0]);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
-  
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
   useEffect(() => {
     async function fetchFeedback() {
       try {
-        const data  = await fetchData("session-feedback/all/no-pagination", token);
-        console.log(data)
+        const data = await fetchData(
+          "session-feedback/all/no-pagination",
+          token,
+        );
+        console.log(data);
         const counts = [0, 0, 0, 0, 0]; // Index 0 -> 1 star, Index 4 -> 5 stars
 
         data.forEach((feedback) => {
@@ -38,7 +42,7 @@ export default function RatingsBreakdown() {
       }
     }
 
-    if(token) fetchFeedback();
+    if (token) fetchFeedback();
   }, [token]);
 
   const totalFeedback = series.reduce((a, b) => a + b, 0);
@@ -57,20 +61,22 @@ export default function RatingsBreakdown() {
     },
     dataLabels: {
       enabled: true,
-      formatter: (val, opts) => `${opts.w.config.series[opts.seriesIndex]}`
+      formatter: (val, opts) => `${opts.w.config.series[opts.seriesIndex]}`,
     },
     tooltip: {
       y: {
         formatter: (val) => `${val} feedback`,
       },
     },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: { width: 300 },
-        legend: { position: "bottom" }
-      }
-    }],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          chart: { width: 300 },
+          legend: { position: "bottom" },
+        },
+      },
+    ],
   };
 
   function toggleDropdown() {
@@ -98,7 +104,11 @@ export default function RatingsBreakdown() {
             <button onClick={toggleDropdown} className="dropdown-toggle">
               <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
             </button>
-            <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
+            <Dropdown
+              isOpen={isOpen}
+              onClose={closeDropdown}
+              className="w-40 p-2"
+            >
               <DropdownItem
                 onItemClick={closeDropdown}
                 className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
@@ -116,11 +126,19 @@ export default function RatingsBreakdown() {
         </div>
 
         <div className="pt-6">
-          <ReactApexChart options={options} series={series} type="donut" height={320} />
+          <ReactApexChart
+            options={options}
+            series={series}
+            type="donut"
+            height={320}
+          />
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-          Total Feedback Received: <span className="font-semibold text-gray-800 dark:text-white">{totalFeedback}</span>
+          Total Feedback Received:{" "}
+          <span className="font-semibold text-gray-800 dark:text-white">
+            {totalFeedback}
+          </span>
         </p>
       </div>
     </div>

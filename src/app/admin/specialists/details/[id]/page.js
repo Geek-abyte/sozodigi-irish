@@ -17,7 +17,10 @@ const SpecialistDetailPage = () => {
 
   const [specialist, setSpecialist] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [statusDialog, setStatusDialog] = useState({ open: false, newStatus: null });
+  const [statusDialog, setStatusDialog] = useState({
+    open: false,
+    newStatus: null,
+  });
 
   useEffect(() => {
     if (!token || !id) return;
@@ -40,7 +43,11 @@ const SpecialistDetailPage = () => {
   const updateStatus = async () => {
     if (!statusDialog.newStatus || !specialist) return;
     try {
-      await updateData(`users/${specialist._id}/status`, { status: statusDialog.newStatus }, token);
+      await updateData(
+        `users/${specialist._id}/status`,
+        { status: statusDialog.newStatus },
+        token,
+      );
       // Refresh specialist data to get the latest from backend
       await fetchSpecialist();
       addToast(`Specialist marked as ${statusDialog.newStatus}`, "success");
@@ -52,7 +59,8 @@ const SpecialistDetailPage = () => {
     }
   };
 
-  const openStatusDialog = (newStatus) => setStatusDialog({ open: true, newStatus });
+  const openStatusDialog = (newStatus) =>
+    setStatusDialog({ open: true, newStatus });
 
   if (loading) return <div className="p-6">Loading specialist data...</div>;
   if (!specialist) return <div className="p-6">Specialist not found.</div>;
@@ -70,13 +78,25 @@ const SpecialistDetailPage = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <p><strong>Name:</strong> {specialist.firstName} {specialist.lastName}</p>
-          <p><strong>Email:</strong> {specialist.email}</p>
-          <p><strong>Specialty:</strong> {specialist.specialty}</p>
-          <p><strong>Approval Status:</strong> <span className="capitalize">
-            {specialist.approvalStatus || (specialist.isApproved ? "approved" : "pending")}
-          </span></p>
-          <p><strong>Bio:</strong> {specialist.bio || "N/A"}</p>
+          <p>
+            <strong>Name:</strong> {specialist.firstName} {specialist.lastName}
+          </p>
+          <p>
+            <strong>Email:</strong> {specialist.email}
+          </p>
+          <p>
+            <strong>Specialty:</strong> {specialist.specialty}
+          </p>
+          <p>
+            <strong>Approval Status:</strong>{" "}
+            <span className="capitalize">
+              {specialist.approvalStatus ||
+                (specialist.isApproved ? "approved" : "pending")}
+            </span>
+          </p>
+          <p>
+            <strong>Bio:</strong> {specialist.bio || "N/A"}
+          </p>
         </div>
         <div>
           <p className="font-semibold mb-2">Uploaded License:</p>

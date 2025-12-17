@@ -1,5 +1,5 @@
-import { Suspense } from 'react';
-import PharmacyPage from './PharmacyPage';
+import { Suspense } from "react";
+import PharmacyPage from "./PharmacyPage";
 
 export default function Page() {
   return (

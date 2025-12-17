@@ -54,10 +54,12 @@ const GPServicesIllnesses = ({ limit }) => {
 
   useEffect(() => {
     const socket = getSocket();
-    
+
     socket.emit("get-online-specialists");
     socket.on("update-specialists", (data) => {
-      const gpsOnly = data.filter((specialist) => specialist.category === "General Practitioner");
+      const gpsOnly = data.filter(
+        (specialist) => specialist.category === "General Practitioner",
+      );
       setOnlineGPs(gpsOnly);
     });
 
@@ -69,10 +71,10 @@ const GPServicesIllnesses = ({ limit }) => {
   const openFindModal = () => {
     if (user) {
       // User is logged in, navigate to dashboard
-      router.push('/admin');
+      router.push("/admin");
     } else {
       // User is not logged in, navigate to login page
-      router.push('/login');
+      router.push("/login");
     }
   };
 
@@ -102,12 +104,14 @@ const GPServicesIllnesses = ({ limit }) => {
               className="w-14 h-14 sm:w-16 sm:h-16 object-contain"
             />
             <div className="flex flex-col justify-between flex-1">
-              <h3 className="text-md font-semibold text-gray-800">{illness.name}</h3>
+              <h3 className="text-md font-semibold text-gray-800">
+                {illness.name}
+              </h3>
               <button
                 onClick={openFindModal}
                 className={`mt-2 w-fit text-sm px-4 py-2 rounded-lg transition ${
-                  hasOnlineSpecialist 
-                    ? "bg-green-500 text-white hover:bg-green-600 shadow-md" 
+                  hasOnlineSpecialist
+                    ? "bg-green-500 text-white hover:bg-green-600 shadow-md"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >

@@ -20,7 +20,10 @@ const CreateConsultationDocumentation = () => {
 
   useEffect(() => {
     const loadAppointments = async () => {
-      const res = await fetchData("consultation-appointments/get/all/simple", token);
+      const res = await fetchData(
+        "consultation-appointments/get/all/simple",
+        token,
+      );
       setAppointments(res.data || []);
     };
     if (token) loadAppointments();
@@ -48,7 +51,12 @@ const CreateConsultationDocumentation = () => {
     formData.append("document", form.document);
 
     try {
-      await postData("consultation-documents/create/custom", formData, token, true);
+      await postData(
+        "consultation-documents/create/custom",
+        formData,
+        token,
+        true,
+      );
       addToast("Documentation created successfully", "success");
       router.push("/admin/medical-tourism/consultations/documentations");
     } catch (err) {
@@ -77,7 +85,8 @@ const CreateConsultationDocumentation = () => {
             <option value="">Select appointment</option>
             {appointments.map((appt) => (
               <option key={appt._id} value={appt._id}>
-                {appt.patient?.firstName} {appt.patient?.lastName} – {new Date(appt.date).toLocaleDateString()}
+                {appt.patient?.firstName} {appt.patient?.lastName} –{" "}
+                {new Date(appt.date).toLocaleDateString()}
               </option>
             ))}
           </select>

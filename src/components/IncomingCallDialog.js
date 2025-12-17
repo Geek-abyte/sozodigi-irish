@@ -2,7 +2,11 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef } from "react";
 import { PhoneIncoming, X } from "lucide-react";
 
-export default function IncomingCallDialog({ appointment, onAccept, onReject }) {
+export default function IncomingCallDialog({
+  appointment,
+  onAccept,
+  onReject,
+}) {
   const ringtoneRef = useRef(null);
 
   useEffect(() => {
@@ -18,7 +22,11 @@ export default function IncomingCallDialog({ appointment, onAccept, onReject }) 
 
   return (
     <Transition appear show={!!appointment} as={Fragment}>
-      <Dialog as="div" className="relative z-99999999999" onClose={() => onReject()}>
+      <Dialog
+        as="div"
+        className="relative z-99999999999"
+        onClose={() => onReject()}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

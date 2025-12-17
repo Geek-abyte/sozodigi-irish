@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import LaboratoriesPageContent from './LaboratoriesPageContent'; // Assuming you have a component for the page content
+import { Suspense } from "react";
+import LaboratoriesPageContent from "./LaboratoriesPageContent"; // Assuming you have a component for the page content
 
 export default function LaboratoriesPage() {
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 import { toast } from "react-toastify";
 
 import { rescheduleAppointment, fetchData } from "@/utils/api";
@@ -13,7 +13,8 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
     const now = Date.now();
     const existing = new Date(appointment.dateTime || appointment.date);
     const cutoff = new Date(now + TWENTY_FOUR_HOURS_MS);
-    const minDate = existing.getTime() - now >= TWENTY_FOUR_HOURS_MS ? existing : cutoff;
+    const minDate =
+      existing.getTime() - now >= TWENTY_FOUR_HOURS_MS ? existing : cutoff;
     return {
       minimumDate: minDate,
       initialDate: new Date(Math.max(existing.getTime(), minDate.getTime())),
@@ -46,32 +47,40 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
 
   const fetchAvailableSlots = async () => {
     if (!consultantId || !selectedDate) return;
-    
+
     setLoadingSlots(true);
     setAvailableSlots([]);
     setSelectedSlot(null);
 
     try {
-      const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const weekdays = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
       const selectedDayName = weekdays[selectedDate.getDay()];
-      const selectedDateString = selectedDate.toISOString().split('T')[0];
+      const selectedDateString = selectedDate.toISOString().split("T")[0];
 
       // 1. Fetch appointments for selected date to exclude booked slots
       const appointmentRes = await fetchData(
         `consultation-appointments/all/no/pagination/?dateFrom=${selectedDateString}&dateTo=${selectedDateString}`,
-        token
+        token,
       );
       const bookedAppointments = appointmentRes || [];
       const bookedSlotIds = new Set(
         bookedAppointments
-          .filter(apt => apt._id !== appointment._id) // Exclude current appointment
-          .map((apt) => apt.slot?._id)
+          .filter((apt) => apt._id !== appointment._id) // Exclude current appointment
+          .map((apt) => apt.slot?._id),
       );
 
       // 2. Fetch available slots for the consultant
       const res = await fetchData(
         `availabilities/slots/by?userRole=specialist&consultantId=${consultantId}&isBooked=false`,
-        token
+        token,
       );
 
       const slots = res?.data || [];
@@ -79,17 +88,18 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
         const slotId = slot._id;
         // Exclude already booked slots (except current appointment's slot)
         if (bookedSlotIds.has(slotId)) return false;
-        
+
         // Only show "general" category slots
         if (slot.category !== "general") return false;
 
         // Check date/day match
-        if (slot.type === 'recurring') {
+        if (slot.type === "recurring") {
           return slot.dayOfWeek === selectedDayName;
-        } else if (slot.type === 'one-time') {
+        } else if (slot.type === "one-time") {
           if (!slot.date) return false;
-          const slotDate = slot.date instanceof Date ? slot.date : new Date(slot.date);
-          const slotDateStr = slotDate.toISOString().split('T')[0];
+          const slotDate =
+            slot.date instanceof Date ? slot.date : new Date(slot.date);
+          const slotDateStr = slotDate.toISOString().split("T")[0];
           return slotDateStr === selectedDateString;
         }
 
@@ -99,18 +109,18 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
       // Filter slots that are at least 24 hours in the future
       const now = new Date();
       const minDateTime = new Date(now.getTime() + TWENTY_FOUR_HOURS_MS);
-      
+
       const validSlots = filtered.filter((slot) => {
         const slotDate = new Date(selectedDate);
-        const [startH, startM] = slot.startTime.split(':').map(Number);
+        const [startH, startM] = slot.startTime.split(":").map(Number);
         slotDate.setHours(startH, startM, 0, 0);
         return slotDate.getTime() >= minDateTime.getTime();
       });
 
       setAvailableSlots(validSlots);
     } catch (err) {
-      console.error('Error fetching slots:', err);
-      toast.error('Failed to load available slots');
+      console.error("Error fetching slots:", err);
+      toast.error("Failed to load available slots");
     } finally {
       setLoadingSlots(false);
     }
@@ -131,10 +141,10 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
 
     try {
       setIsSubmitting(true);
-      
+
       // Create the new date/time from selected date and slot
       const newDate = new Date(selectedDate);
-      const [startH, startM] = selectedSlot.startTime.split(':').map(Number);
+      const [startH, startM] = selectedSlot.startTime.split(":").map(Number);
       newDate.setHours(startH, startM, 0, 0);
 
       const rescheduleHistory = Array.isArray(appointment.rescheduleHistory)
@@ -155,17 +165,21 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
         payload.notes = notes.trim();
       }
 
-      console.log('Rescheduling appointment:', {
+      console.log("Rescheduling appointment:", {
         appointmentId: appointment._id,
         payload,
         newDate: newDate.toISOString(),
-        token: token ? 'present' : 'missing',
-        endpoint: `consultation-appointments/${appointment._id}/reschedule`
+        token: token ? "present" : "missing",
+        endpoint: `consultation-appointments/${appointment._id}/reschedule`,
       });
 
-      const response = await rescheduleAppointment(appointment._id, payload, token);
+      const response = await rescheduleAppointment(
+        appointment._id,
+        payload,
+        token,
+      );
 
-      console.log('Reschedule response:', response);
+      console.log("Reschedule response:", response);
 
       toast.success("Appointment rescheduled successfully.");
 
@@ -174,10 +188,10 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
       }
       onClose?.();
     } catch (error) {
-      console.error('Reschedule error:', error);
-      
+      console.error("Reschedule error:", error);
+
       let message = "Unable to reschedule appointment. Please try again.";
-      
+
       // Try to extract error message safely
       try {
         if (error?.data?.message) {
@@ -189,16 +203,24 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
         }
       } catch (e) {
         // If error extraction fails, use default message
-        console.error('Error extracting message:', e);
+        console.error("Error extracting message:", e);
       }
-      
+
       toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const weekdays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const selectedDayName = weekdays[selectedDate.getDay()];
 
   return (
@@ -214,12 +236,15 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
         </button>
       </div>
       <p className="mb-4 rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-700">
-        You can move this appointment up to two times, at least 24 hours in advance.
+        You can move this appointment up to two times, at least 24 hours in
+        advance.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="mb-2 block text-sm font-medium text-gray-700">Select Date</label>
+          <label className="mb-2 block text-sm font-medium text-gray-700">
+            Select Date
+          </label>
           <p className="mb-2 text-sm text-gray-600">
             {selectedDayName}, {selectedDate.toLocaleDateString()}
           </p>
@@ -238,18 +263,22 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
             weekStartsOn={1}
             className="rounded-lg border border-gray-300 p-2"
             styles={{
-              caption: { textAlign: 'center' },
-              day_selected: { backgroundColor: '#2563eb', color: 'white' },
+              caption: { textAlign: "center" },
+              day_selected: { backgroundColor: "#2563eb", color: "white" },
             }}
           />
           <p className="mt-2 text-xs text-gray-500">
-            Original appointment: {new Date(appointment.dateTime || appointment.date).toLocaleString()}
+            Original appointment:{" "}
+            {new Date(
+              appointment.dateTime || appointment.date,
+            ).toLocaleString()}
           </p>
         </div>
 
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">
-            Available Time Slots for {selectedDayName}, {selectedDate.toLocaleDateString()}
+            Available Time Slots for {selectedDayName},{" "}
+            {selectedDate.toLocaleDateString()}
           </label>
           {loadingSlots ? (
             <div className="flex justify-center items-center h-32">
@@ -263,8 +292,8 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
                   onClick={() => setSelectedSlot(slot)}
                   className={`p-3 border rounded-md cursor-pointer transition-colors ${
                     selectedSlot?._id === slot._id
-                      ? 'border-blue-600 bg-blue-50'
-                      : 'hover:border-blue-300 border-gray-200'
+                      ? "border-blue-600 bg-blue-50"
+                      : "hover:border-blue-300 border-gray-200"
                   }`}
                 >
                   <div className="font-medium">
@@ -281,7 +310,9 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-gray-700">Notes (optional)</label>
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Notes (optional)
+          </label>
           <textarea
             value={notes}
             onChange={(event) => setNotes(event.target.value)}
@@ -314,4 +345,3 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
 };
 
 export default RescheduleDialog;
-

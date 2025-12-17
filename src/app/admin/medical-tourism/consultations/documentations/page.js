@@ -3,7 +3,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { fetchData, deleteData } from "@/utils/api";
 import { useSession } from "next-auth/react";
-import { PencilSquareIcon, TrashIcon, EyeIcon } from "@heroicons/react/24/outline";
+import {
+  PencilSquareIcon,
+  TrashIcon,
+  EyeIcon,
+} from "@heroicons/react/24/outline";
 import { useToast } from "@/context/ToastContext";
 import {
   Table,
@@ -51,7 +55,10 @@ const ConsultationDocumentationList = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData(`consultation-documents/delete/custom/${itemToDelete._id}`, token);
+      await deleteData(
+        `consultation-documents/delete/custom/${itemToDelete._id}`,
+        token,
+      );
       addToast("Documentation deleted successfully", "success");
       setDocs((prev) => prev.filter((doc) => doc._id !== itemToDelete._id));
     } catch {
@@ -172,54 +179,73 @@ const ConsultationDocumentationList = () => {
         <Table>
           <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
             <TableRow>
-              <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Patient</TableCell>
-              <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Notes</TableCell>
-              <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Actions</TableCell>
+              <TableCell
+                isHeader
+                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
+                Patient
+              </TableCell>
+              <TableCell
+                isHeader
+                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
+                Notes
+              </TableCell>
+              <TableCell
+                isHeader
+                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
+                Actions
+              </TableCell>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
             {docs.length > 0 ? (
               docs.map((doc) => (
                 <TableRow key={doc._id}>
-                    <TableCell className="px-5 py-4 text-start">
-                        {doc.appointment?.patient?.firstName}{" "}
-                        {doc.appointment?.patient?.lastName}
-                    </TableCell>
-                    <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">{doc.notes || "-"}</TableCell>
-                    <TableCell className="px-5 py-4 text-start flex gap-3">
-                        {/* Edit Icon */}
-                        <Link
-                            href={`/admin/medical-tourism/consultations/documentations/edit/${doc._id}`}
-                            className="text-blue-600 hover:text-blue-800"
-                        >
-                            <PencilSquareIcon className="w-5 h-5" />
-                        </Link>
+                  <TableCell className="px-5 py-4 text-start">
+                    {doc.appointment?.patient?.firstName}{" "}
+                    {doc.appointment?.patient?.lastName}
+                  </TableCell>
+                  <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
+                    {doc.notes || "-"}
+                  </TableCell>
+                  <TableCell className="px-5 py-4 text-start flex gap-3">
+                    {/* Edit Icon */}
+                    <Link
+                      href={`/admin/medical-tourism/consultations/documentations/edit/${doc._id}`}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <PencilSquareIcon className="w-5 h-5" />
+                    </Link>
 
-                        {/* View Icon */}
-                        <Link
-                            href={`/admin/medical-tourism/consultations/documentations/view/${doc._id}`}
-                            className="text-green-600 hover:text-green-800"
-                        >
-                            <EyeIcon className="w-5 h-5" />
-                        </Link>
+                    {/* View Icon */}
+                    <Link
+                      href={`/admin/medical-tourism/consultations/documentations/view/${doc._id}`}
+                      className="text-green-600 hover:text-green-800"
+                    >
+                      <EyeIcon className="w-5 h-5" />
+                    </Link>
 
-                        {/* Delete Icon */}
-                        <button
-                            onClick={() => {
-                            setItemToDelete(doc);
-                            setIsDialogOpen(true);
-                            }}
-                            className="text-red-600 hover:text-red-800"
-                        >
-                            <TrashIcon className="w-5 h-5" />
-                        </button>
-                    </TableCell>
-
+                    {/* Delete Icon */}
+                    <button
+                      onClick={() => {
+                        setItemToDelete(doc);
+                        setIsDialogOpen(true);
+                      }}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                <TableCell
+                  colSpan={4}
+                  className="text-center py-4 text-gray-500"
+                >
                   No documentation found.
                 </TableCell>
               </TableRow>

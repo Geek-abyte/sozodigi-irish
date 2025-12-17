@@ -7,7 +7,7 @@ const DashboardTable = ({ calls, loading, limit = Infinity }) => {
   // const navigate = useNavigate();
   // const { user } = useSelector((state) => state.auth);
 
-  const { user } = useUser()
+  const { user } = useUser();
 
   const handleRowClick = (id) => {
     if (user?.role === "user") {
@@ -26,7 +26,7 @@ const DashboardTable = ({ calls, loading, limit = Infinity }) => {
     const duration = new Date(endTime) - new Date(startTime);
     const minutes = Math.floor(duration / 60000);
     const seconds = ((duration % 60000) / 1000).toFixed(0);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   if (loading) {
@@ -42,7 +42,9 @@ const DashboardTable = ({ calls, loading, limit = Infinity }) => {
     return (
       <div className="text-center py-10 bg-white shadow-sm sm:rounded-lg border border-gray-200">
         <p className="text-gray-500 text-lg">No calls found.</p>
-        <p className="text-gray-400 mt-2">When you make or receive calls, they will appear here.</p>
+        <p className="text-gray-400 mt-2">
+          When you make or receive calls, they will appear here.
+        </p>
       </div>
     );
   }
@@ -80,21 +82,17 @@ const DashboardTable = ({ calls, loading, limit = Infinity }) => {
             >
               <td className="px-6 py-4 font-medium text-gray-800 whitespace-nowrap">
                 {/* { JSON.stringify(call) } */}
-                {user?.role === "user" ? `${call.specialist?.firstName} ${call.specialist?.lastName}` : `${call.user?.firstName} ${call.user?.lastName}`}
+                {user?.role === "user"
+                  ? `${call.specialist?.firstName} ${call.specialist?.lastName}`
+                  : `${call.user?.firstName} ${call.user?.lastName}`}
               </td>
-              <td className="px-6 py-4">
-                {call.specialist.category}
-              </td>
+              <td className="px-6 py-4">{call.specialist.category}</td>
               <td className="px-6 py-4">
                 {/* {console.log("see the time here", call.startTime, call.endTime)} */}
                 {calculateDuration(call.startTime, call.endTime)}
               </td>
-              <td className="px-6 py-4">
-                {formatDate(call.startTime)}
-              </td>
-              <td className="px-6 py-4">
-                {call.appointment.status}
-              </td>
+              <td className="px-6 py-4">{formatDate(call.startTime)}</td>
+              <td className="px-6 py-4">{call.appointment.status}</td>
             </tr>
           ))}
         </tbody>

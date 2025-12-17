@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { fetchData, postData } from "@/utils/api";
 import { useToast } from "@/context/ToastContext";
-import {  useUser } from "@/context/UserContext";
+import { useUser } from "@/context/UserContext";
 
 export default function AddLabResultPage() {
   const [users, setUsers] = useState([]);
@@ -17,7 +17,7 @@ export default function AddLabResultPage() {
     file: null,
   });
 
-  const { user } = useUser()
+  const { user } = useUser();
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
@@ -36,14 +36,16 @@ export default function AddLabResultPage() {
     };
     loadUsers();
   }, [token]);
-  
 
   useEffect(() => {
     const loadOrders = async () => {
       if (!form.userId) return setOrders([]);
       try {
-        const data = await fetchData(`orders/get/user/custom?userId=${form.userId}&category=LabService`, token);
-        console.log(data)
+        const data = await fetchData(
+          `orders/get/user/custom?userId=${form.userId}&category=LabService`,
+          token,
+        );
+        console.log(data);
         setOrders(data);
       } catch (err) {
         console.error("Failed to load orders", err);
@@ -64,12 +66,12 @@ export default function AddLabResultPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const { userId, orderId, file, status, comments } = form;
-  
+
     if (!userId || !orderId || !file) {
       addToast("Please fill all required fields", "error");
       return;
     }
-  
+
     const formData = new FormData();
     formData.append("user", userId);
     formData.append("order", orderId);
@@ -77,7 +79,7 @@ export default function AddLabResultPage() {
     formData.append("comments", comments);
     formData.append("uploadedBy", user._id);
     formData.append("resultFile", file); // 👈 Match expected field name
-  
+
     try {
       await postData("/lab-results/custom/create", formData, token, true); // `true` means multipart/form-data
       addToast("Lab result uploaded successfully", "success");
@@ -104,7 +106,7 @@ export default function AddLabResultPage() {
             <option value="">Select a user</option>
             {users.map((user) => (
               <option key={user._id} value={user._id}>
-                {user.firstName +" "+ user.lastName} ({user.email})
+                {user.firstName + " " + user.lastName} ({user.email})
               </option>
             ))}
           </select>

@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { Calendar } from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { Calendar } from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const AvailabilityCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [timeSlots, setTimeSlots] = useState([]);
   const [isRecurring, setIsRecurring] = useState(false);
-  const [recurringPattern, setRecurringPattern] = useState('weekly');
+  const [recurringPattern, setRecurringPattern] = useState("weekly");
 
   const addTimeSlot = () => {
     setTimeSlots([
       ...timeSlots,
-      { startTime: '', endTime: '', isBooked: false }
+      { startTime: "", endTime: "", isBooked: false },
     ]);
   };
 
@@ -30,26 +30,28 @@ const AvailabilityCalendar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/appointments/availability', {
+      const response = await axios.post("/api/appointments/availability", {
         date: selectedDate,
         timeSlots,
         isRecurring,
-        recurringPattern: isRecurring ? recurringPattern : null
+        recurringPattern: isRecurring ? recurringPattern : null,
       });
 
       if (response.data.success) {
-        toast.success('Availability set successfully');
+        toast.success("Availability set successfully");
         setTimeSlots([]);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error setting availability');
+      toast.error(
+        error.response?.data?.message || "Error setting availability",
+      );
     }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6">Set Your Availability</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <Calendar
@@ -105,14 +107,18 @@ const AvailabilityCalendar = () => {
                   <input
                     type="time"
                     value={slot.startTime}
-                    onChange={(e) => updateTimeSlot(index, 'startTime', e.target.value)}
+                    onChange={(e) =>
+                      updateTimeSlot(index, "startTime", e.target.value)
+                    }
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   <span>to</span>
                   <input
                     type="time"
                     value={slot.endTime}
-                    onChange={(e) => updateTimeSlot(index, 'endTime', e.target.value)}
+                    onChange={(e) =>
+                      updateTimeSlot(index, "endTime", e.target.value)
+                    }
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   <button
@@ -146,4 +152,4 @@ const AvailabilityCalendar = () => {
   );
 };
 
-export default AvailabilityCalendar; 
+export default AvailabilityCalendar;

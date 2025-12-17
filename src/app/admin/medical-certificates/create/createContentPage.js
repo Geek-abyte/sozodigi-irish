@@ -1,55 +1,58 @@
-"use client"
-import React, { useState, useEffect } from "react"
-import { fetchData, postData } from "@/utils/api"
-import { useSession } from "next-auth/react"
-import { useRouter, useSearchParams } from "next/navigation"
+"use client";
+import React, { useState, useEffect } from "react";
+import { fetchData, postData } from "@/utils/api";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const CreateMedicalCertificate = () => {
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const appointmentId = searchParams.get("appointment")
-  const [appointment, setAppointment] = useState(null)
+  const appointmentId = searchParams.get("appointment");
+  const [appointment, setAppointment] = useState(null);
 
-  const [diagnosis, setDiagnosis] = useState("")
-  const [comment, setComment] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState("")
+  const [diagnosis, setDiagnosis] = useState("");
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const generateCertID = () => {
-    const rand = Math.floor(10000 + Math.random() * 90000)
-    return `CH-${new Date().getFullYear()}-${rand}`
-  }
+    const rand = Math.floor(10000 + Math.random() * 90000);
+    return `CH-${new Date().getFullYear()}-${rand}`;
+  };
 
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const res = await fetchData(`consultation-appointments/get/custom/${appointmentId}`, token)
-        console.log(res)
+        const res = await fetchData(
+          `consultation-appointments/get/custom/${appointmentId}`,
+          token,
+        );
+        console.log(res);
         if (res && res._id) {
-          setAppointment(res)
+          setAppointment(res);
         }
       } catch (error) {
-        console.error("Failed to fetch appointment:", error)
-        setMessage("Error loading appointment details.")
+        console.error("Failed to fetch appointment:", error);
+        setMessage("Error loading appointment details.");
       }
-    }
+    };
 
     if (appointmentId && token) {
-      fetchAppointment()
+      fetchAppointment();
     }
-  }, [appointmentId, token])
+  }, [appointmentId, token]);
 
   const handleSubmit = async () => {
-    if (!appointment) return
+    if (!appointment) return;
 
-    setLoading(true)
-    setMessage("")
+    setLoading(true);
+    setMessage("");
 
     try {
-      const certID = generateCertID()
+      const certID = generateCertID();
 
       const payload = {
         appointment: appointment._id,
@@ -58,25 +61,25 @@ const CreateMedicalCertificate = () => {
         diagnosis,
         comment,
         certID,
-      }
+      };
 
-      const res = await postData("certificates/create", payload, token)
-      console.log(res)
+      const res = await postData("certificates/create", payload, token);
+      console.log(res);
       if (res?.certificate && res?.certificate?._id) {
-        router.push(`/admin/medical-certificates/${res.certificate._id}`)
+        router.push(`/admin/medical-certificates/${res.certificate._id}`);
       } else {
-        setMessage("Certificate creation failed.")
+        setMessage("Certificate creation failed.");
       }
     } catch (error) {
-      console.error("Error creating certificate:", error)
-      setMessage("Something went wrong.")
+      console.error("Error creating certificate:", error);
+      setMessage("Something went wrong.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   if (!appointment) {
-    return <div className="text-center py-20">Loading appointment...</div>
+    return <div className="text-center py-20">Loading appointment...</div>;
   }
 
   return (
@@ -113,7 +116,7 @@ const CreateMedicalCertificate = () => {
 
       {message && <p className="mt-4 text-sm text-red-600">{message}</p>}
     </div>
-  )
-}
+  );
+};
 
-export default CreateMedicalCertificate
+export default CreateMedicalCertificate;

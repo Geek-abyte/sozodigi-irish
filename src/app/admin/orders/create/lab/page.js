@@ -20,13 +20,19 @@ const LabOrderPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [noResults, setNoResults] = useState(false);
 
-  const selectedUser = typeof window !== "undefined" ? sessionStorage.getItem("newOrderUser") : null;
+  const selectedUser =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("newOrderUser")
+      : null;
   const userId = selectedUser;
 
   const loadLabServices = async (query = "") => {
     setLoading(true);
     try {
-      const data = await fetchData(`lab-services?page=${page}&search=${query}`, token);
+      const data = await fetchData(
+        `lab-services?page=${page}&search=${query}`,
+        token,
+      );
       setLabServices(data.data);
       setTotalPages(data.pages);
       setNoResults(data.data.length === 0);
@@ -39,7 +45,10 @@ const LabOrderPage = () => {
 
   useEffect(() => {
     if (!selectedUser) {
-      addToast("No user selected. Please select a user to place the order.", "error");
+      addToast(
+        "No user selected. Please select a user to place the order.",
+        "error",
+      );
       router.push("/admin/orders/start");
     }
   }, [router, selectedUser]);
@@ -187,7 +196,9 @@ const LabOrderPage = () => {
                 >
                   <div>
                     <p className="font-medium text-sm">{item.name}</p>
-                    <p className="text-xs text-gray-500">${item.price.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">
+                      ${item.price.toFixed(2)}
+                    </p>
                   </div>
                   <button onClick={() => removeFromBasket(item._id)}>
                     <TrashIcon className="w-4 h-4 text-red-500" />
@@ -201,7 +212,12 @@ const LabOrderPage = () => {
             <div className="mt-4">
               <div className="flex justify-between text-sm font-medium text-gray-900">
                 <span>Total</span>
-                <span>${basket.reduce((total, item) => total + item.price, 0).toFixed(2)}</span>
+                <span>
+                  $
+                  {basket
+                    .reduce((total, item) => total + item.price, 0)
+                    .toFixed(2)}
+                </span>
               </div>
               <button
                 className="bg-indigo-700 text-white px-4 py-2 text-sm rounded w-full mt-2"

@@ -28,7 +28,8 @@ export default function MiniCart() {
   const { cart, updateCartItem, removeFromCart, refreshCart } = useCart();
   const [prescriptions, setPrescriptions] = useState({});
   const [selectedItem, setSelectedItem] = useState(null);
-  const [isPrescriptionDialogOpen, setIsPrescriptionDialogOpen] = useState(false);
+  const [isPrescriptionDialogOpen, setIsPrescriptionDialogOpen] =
+    useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +39,10 @@ export default function MiniCart() {
   const cartItems = cart?.items || [];
 
   const subtotal = cartItems.reduce((total, item) => {
-    return total + (Math.round(Number(item.price)) || 0) * (Number(item.quantity) || 0);
+    return (
+      total +
+      (Math.round(Number(item.price)) || 0) * (Number(item.quantity) || 0)
+    );
   }, 0);
 
   const { data: session } = useSession();
@@ -76,7 +80,12 @@ export default function MiniCart() {
     formData.append("itemId", itemId);
 
     try {
-      const response = await postData("prescriptions/upload", formData, token, true);
+      const response = await postData(
+        "prescriptions/upload",
+        formData,
+        token,
+        true,
+      );
 
       if (response) {
         alertSuccess("Prescription uploaded successfully!");
@@ -104,7 +113,11 @@ export default function MiniCart() {
   const handleLinkPrescription = async (cartItemId, prescriptionId) => {
     setIsLoading(true);
     try {
-      const response = await postData("cart/link-prescription", { cartItemId, prescriptionId }, token);
+      const response = await postData(
+        "cart/link-prescription",
+        { cartItemId, prescriptionId },
+        token,
+      );
       alertSuccess("Prescription linked successfully!");
       refreshCart();
       setIsPrescriptionDialogOpen(false);
@@ -132,7 +145,10 @@ export default function MiniCart() {
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)} className="relative p-2 text-gray-700 hover:text-gray-900">
+      <button
+        onClick={() => setIsOpen(true)}
+        className="relative p-2 text-gray-700 hover:text-gray-900"
+      >
         <ShoppingBagIcon className="h-6 w-6" />
         {cartItems.length > 0 && (
           <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
@@ -141,28 +157,52 @@ export default function MiniCart() {
         )}
       </button>
 
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-10">
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="relative z-10"
+      >
         <DialogBackdrop className="fixed inset-0 bg-gray-500/75" />
         <div className="fixed inset-0 overflow-hidden">
           <div className="absolute inset-0 overflow-hidden">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
               <DialogPanel className="pointer-events-auto w-screen max-w-md transform transition">
                 <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl relative">
-                  
                   {/* Localized MiniCart Loading Spinner */}
                   {isLoading && (
                     <div className="absolute inset-0 z-50 bg-white/70 flex items-center justify-center">
-                      <svg className="animate-spin h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                      <svg
+                        className="animate-spin h-6 w-6 text-indigo-600"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8H4z"
+                        />
                       </svg>
                     </div>
                   )}
 
                   <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <DialogTitle className="text-lg font-medium text-gray-900">Shopping Cart</DialogTitle>
-                      <button onClick={() => setIsOpen(false)} className="p-2 text-gray-400 hover:text-gray-500">
+                      <DialogTitle className="text-lg font-medium text-gray-900">
+                        Shopping Cart
+                      </DialogTitle>
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className="p-2 text-gray-400 hover:text-gray-500"
+                      >
                         <XMarkIcon className="h-6 w-6" />
                       </button>
                     </div>
@@ -191,7 +231,11 @@ export default function MiniCart() {
                                 <div className="ml-4 flex flex-1 flex-col">
                                   <div className="flex justify-between text-base font-medium text-gray-900">
                                     <h3>{item.product?.name}</h3>
-                                    <p className="ml-4">₦{Math.round(item.product?.price) * item.quantity}</p>
+                                    <p className="ml-4">
+                                      ₦
+                                      {Math.round(item.product?.price) *
+                                        item.quantity}
+                                    </p>
                                   </div>
                                   <div className="flex flex-1 items-end justify-between text-sm">
                                     <div className="flex items-center space-x-2 border px-3 py-1 rounded-md">
@@ -203,9 +247,14 @@ export default function MiniCart() {
                                               if (item.quantity > 1) {
                                                 setIsLoading(true);
                                                 try {
-                                                  await updateCartItem(item._id, item.quantity - 1);
+                                                  await updateCartItem(
+                                                    item._id,
+                                                    item.quantity - 1,
+                                                  );
                                                 } catch (err) {
-                                                  alertError("Failed to update item quantity.");
+                                                  alertError(
+                                                    "Failed to update item quantity.",
+                                                  );
                                                 } finally {
                                                   setIsLoading(false);
                                                 }
@@ -220,9 +269,14 @@ export default function MiniCart() {
                                             onClick={async () => {
                                               setIsLoading(true);
                                               try {
-                                                await updateCartItem(item._id, item.quantity + 1);
+                                                await updateCartItem(
+                                                  item._id,
+                                                  item.quantity + 1,
+                                                );
                                               } catch (err) {
-                                                alertError("Failed to update item quantity.");
+                                                alertError(
+                                                  "Failed to update item quantity.",
+                                                );
                                               } finally {
                                                 setIsLoading(false);
                                               }
@@ -232,7 +286,6 @@ export default function MiniCart() {
                                           </button>
                                         </>
                                       )}
-
                                     </div>
                                     <button
                                       className="text-gray-400 hover:text-red-500"
@@ -260,7 +313,12 @@ export default function MiniCart() {
                                           <input
                                             type="file"
                                             accept="image/*"
-                                            onChange={(e) => handlePrescriptionUpload(e, item._id)}
+                                            onChange={(e) =>
+                                              handlePrescriptionUpload(
+                                                e,
+                                                item._id,
+                                              )
+                                            }
                                             className="hidden"
                                             id={`prescription-${item._id}`}
                                           />
@@ -270,13 +328,21 @@ export default function MiniCart() {
                                             style={{ fontSize: ".6rem" }}
                                           >
                                             <CloudArrowUpIcon className="h-5 w-5 mr-2" />
-                                            {prescriptions[item._id] ? "Change Prescription" : "Upload Prescription"}
+                                            {prescriptions[item._id]
+                                              ? "Change Prescription"
+                                              : "Upload Prescription"}
                                           </label>
                                         </>
                                       ) : (
-                                        <span className="text-green-600 font-medium flex items-center" style={{ fontSize: ".6rem" }}>
+                                        <span
+                                          className="text-green-600 font-medium flex items-center"
+                                          style={{ fontSize: ".6rem" }}
+                                        >
                                           ✅ Prescription Linked{" "}
-                                          <span className="text-gray-400"> / {item.prescriptionLinkStatus}</span>
+                                          <span className="text-gray-400">
+                                            {" "}
+                                            / {item.prescriptionLinkStatus}
+                                          </span>
                                         </span>
                                       )}
                                     </div>
@@ -296,7 +362,9 @@ export default function MiniCart() {
                                       </button>
                                     ) : (
                                       <button
-                                        onClick={() => handleUnlinkPrescription(item._id)}
+                                        onClick={() =>
+                                          handleUnlinkPrescription(item._id)
+                                        }
                                         className="text-red-600 hover:text-red-800 flex items-center text-xs"
                                         style={{ fontSize: ".7rem" }}
                                       >
@@ -311,7 +379,9 @@ export default function MiniCart() {
                           ))}
                         </ul>
                       ) : (
-                        <p className="text-center text-gray-500">Your cart is empty.</p>
+                        <p className="text-center text-gray-500">
+                          Your cart is empty.
+                        </p>
                       )}
                     </div>
                   </div>
@@ -321,7 +391,9 @@ export default function MiniCart() {
                       <p>Subtotal</p>
                       <p>₦{subtotal}</p>
                     </div>
-                    <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
+                    <p className="mt-0.5 text-sm text-gray-500">
+                      Shipping and taxes calculated at checkout.
+                    </p>
                     <div className="mt-6">
                       <Link href="/checkout">
                         <button
@@ -329,13 +401,17 @@ export default function MiniCart() {
                           disabled={cartItems.some(
                             (item) =>
                               item.product?.prescriptionRequired &&
-                              item.prescriptionLinkStatus !== "approved"
+                              item.prescriptionLinkStatus !== "approved",
                           )}
                         >
                           Checkout
                         </button>
                       </Link>
-                      <button type="button" onClick={() => setIsOpen(false)} className="text-indigo-600 hover:text-indigo-500">
+                      <button
+                        type="button"
+                        onClick={() => setIsOpen(false)}
+                        className="text-indigo-600 hover:text-indigo-500"
+                      >
                         Continue Shopping →
                       </button>
                     </div>

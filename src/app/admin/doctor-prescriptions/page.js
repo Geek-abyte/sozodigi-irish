@@ -22,17 +22,17 @@ const PrescriptionsList = () => {
     const loadPrescriptions = async () => {
       setLoading(true);
       try {
-        let endpoint= ""
-        if(isDoctor){
-          endpoint = `video-sessions/by-specialist/${user?._id}/prescriptions`
-        }else if(isUser){
+        let endpoint = "";
+        if (isDoctor) {
+          endpoint = `video-sessions/by-specialist/${user?._id}/prescriptions`;
+        } else if (isUser) {
           endpoint = `video-sessions/by-user/${user?._id}/prescriptions`;
-        }else if(isAdmin){
-          endpoint = `video-sessions/by-user/${user?._id}/prescriptions`
+        } else if (isAdmin) {
+          endpoint = `video-sessions/by-user/${user?._id}/prescriptions`;
         }
 
         const res = await fetchData(endpoint, token);
-        console.log(res)
+        console.log(res);
         setSessions(res?.sessions || []);
       } catch (error) {
         console.error(error);
@@ -47,7 +47,8 @@ const PrescriptionsList = () => {
     }
   }, [user, token]);
 
-  if (loading) return <p className="text-center mt-8">Loading prescriptions...</p>;
+  if (loading)
+    return <p className="text-center mt-8">Loading prescriptions...</p>;
 
   if (sessions.length === 0) {
     return <p className="text-center mt-8">No prescriptions found.</p>;
@@ -88,23 +89,26 @@ const PrescriptionsList = () => {
               >
                 <div className="flex justify-between items-center">
                   <p>
-                    { prescription.medication } <small>({ prescription.dosage } { prescription.frequency })</small>
+                    {prescription.medication}{" "}
+                    <small>
+                      ({prescription.dosage} {prescription.frequency})
+                    </small>
                   </p>
                 </div>
               </li>
             ))}
           </ul>
-          
+
           <div>
             {session && (
-                <a
-                    href={`/admin/doctor-prescriptions/${session._id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-600 hover:underline"
-                >
-                    View
-                </a>
+              <a
+                href={`/admin/doctor-prescriptions/${session._id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-indigo-600 hover:underline"
+              >
+                View
+              </a>
             )}
           </div>
         </div>

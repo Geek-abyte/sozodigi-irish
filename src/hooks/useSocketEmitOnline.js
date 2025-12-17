@@ -37,14 +37,16 @@ export default function useSocketEmitOnline() {
     });
 
     try {
-      const appointment = await fetchData(`consultation-appointments/${appointmentId}`);
+      const appointment = await fetchData(
+        `consultation-appointments/${appointmentId}`,
+      );
       const payload = {
         appointment: appointmentId,
         specialist: user._id,
         user: appointment.patient,
       };
 
-      console.log(payload)
+      console.log(payload);
 
       const res = await postData("video-sessions", payload, session?.user?.jwt);
       if (res.success) {
@@ -53,7 +55,11 @@ export default function useSocketEmitOnline() {
 
         localStorage.setItem(
           "activeVideoSession",
-          JSON.stringify({ session: sessionData, specialistToken, patientToken })
+          JSON.stringify({
+            session: sessionData,
+            specialistToken,
+            patientToken,
+          }),
         );
 
         if (specialistToken && patientToken) {
@@ -129,7 +135,9 @@ export default function useSocketEmitOnline() {
 
     socketRef.current.on("incoming-call", async ({ appointmentId }) => {
       try {
-        const appointment = await fetchData(`consultation-appointments/${appointmentId}`);
+        const appointment = await fetchData(
+          `consultation-appointments/${appointmentId}`,
+        );
 
         if (soundEnabled && ringtoneRef.current) {
           ringtoneRef.current.play().catch((err) => {

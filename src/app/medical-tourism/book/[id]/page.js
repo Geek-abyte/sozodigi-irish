@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import ConsultationBookingPageContent from './BookingPageContent'; // or whatever your form component is
+import { Suspense } from "react";
+import ConsultationBookingPageContent from "./BookingPageContent"; // or whatever your form component is
 
 export default function BookingPage() {
   return (

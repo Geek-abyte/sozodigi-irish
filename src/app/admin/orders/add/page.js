@@ -44,14 +44,17 @@ const OrderCreationPage = () => {
 
   const handleItemChange = (itemId, field, value) => {
     const updated = selectedItems.map((item) =>
-      item._id === itemId ? { ...item, [field]: value } : item
+      item._id === itemId ? { ...item, [field]: value } : item,
     );
     setSelectedItems(updated);
   };
 
   const handleAddItem = (item) => {
     if (!selectedItems.find((i) => i._id === item._id)) {
-      setSelectedItems([...selectedItems, { ...item, quantity: 1, price: item.price || 0 }]);
+      setSelectedItems([
+        ...selectedItems,
+        { ...item, quantity: 1, price: item.price || 0 },
+      ]);
     }
   };
 
@@ -81,7 +84,7 @@ const OrderCreationPage = () => {
           paymentStatus,
           paymentReference,
         },
-        token
+        token,
       );
 
       alertSuccess("Order created successfully");

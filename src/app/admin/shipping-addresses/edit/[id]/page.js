@@ -70,7 +70,11 @@ const EditShippingAddress = () => {
     };
 
     try {
-      await updateData(`shipping-addresses/update/custom/${id}`, payload, token);
+      await updateData(
+        `shipping-addresses/update/custom/${id}`,
+        payload,
+        token,
+      );
       alertSuccess("Shipping address updated successfully!");
       router.push("/admin/shipping-addresses");
     } catch (error) {
@@ -100,7 +104,7 @@ const EditShippingAddress = () => {
               <option value="">-- Select User --</option>
               {users.map((user) => (
                 <option key={user._id} value={user._id}>
-                  {user.firstName+" "+user.lastName || user.email}
+                  {user.firstName + " " + user.lastName || user.email}
                 </option>
               ))}
             </select>

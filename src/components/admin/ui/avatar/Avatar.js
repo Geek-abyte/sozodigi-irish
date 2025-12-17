@@ -26,7 +26,12 @@ const statusColorClasses = {
   busy: "bg-warning-500",
 };
 
-const Avatar = ({ src, alt = "User Avatar", size = "medium", status = "none" }) => {
+const Avatar = ({
+  src,
+  alt = "User Avatar",
+  size = "medium",
+  status = "none",
+}) => {
   return (
     <div className={`relative rounded-full ${sizeClasses[size]}`}>
       {/* Avatar Image */}
@@ -54,7 +59,14 @@ const Avatar = ({ src, alt = "User Avatar", size = "medium", status = "none" }) 
 Avatar.propTypes = {
   src: PropTypes.string.isRequired,
   alt: PropTypes.string,
-  size: PropTypes.oneOf(["xsmall", "small", "medium", "large", "xlarge", "xxlarge"]),
+  size: PropTypes.oneOf([
+    "xsmall",
+    "small",
+    "medium",
+    "large",
+    "xlarge",
+    "xxlarge",
+  ]),
   status: PropTypes.oneOf(["online", "offline", "busy", "none"]),
 };
 

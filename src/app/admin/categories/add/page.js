@@ -12,22 +12,22 @@ const AddCategory = () => {
   const { data: session } = useSession();
   const token = session?.user?.jwt;
 
-//   console.log(token)
+  //   console.log(token)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-        postData("categories", { name: categoryName }, token, false)
+      postData("categories", { name: categoryName }, token, false);
 
-        alert("Category added successfully!");
-        router.push("/admin/categories");
+      alert("Category added successfully!");
+      router.push("/admin/categories");
     } catch (error) {
-        console.error("Error adding category:", error);
-        alert("Failed to add category");
+      console.error("Error adding category:", error);
+      alert("Failed to add category");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -38,7 +38,9 @@ const AddCategory = () => {
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block font-medium text-gray-700 dark:text-gray-300">Category Name</label>
+          <label className="block font-medium text-gray-700 dark:text-gray-300">
+            Category Name
+          </label>
           <input
             type="text"
             value={categoryName}

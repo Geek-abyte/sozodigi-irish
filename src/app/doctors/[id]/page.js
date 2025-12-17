@@ -1,13 +1,23 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { fetchData } from '@/utils/api';
-import { defaultUser } from '@/assets';
-import { FaCalendarAlt, FaLocationArrow, FaStar, FaGraduationCap, FaUserMd, FaEnvelope, FaPhone, FaCertificate, FaCheckCircle } from 'react-icons/fa';
-import { motion } from 'framer-motion';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import Image from "next/image";
+import { fetchData } from "@/utils/api";
+import { defaultUser } from "@/assets";
+import {
+  FaCalendarAlt,
+  FaLocationArrow,
+  FaStar,
+  FaGraduationCap,
+  FaUserMd,
+  FaEnvelope,
+  FaPhone,
+  FaCertificate,
+  FaCheckCircle,
+} from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 const DoctorProfilePage = () => {
   const { id } = useParams();
@@ -16,7 +26,7 @@ const DoctorProfilePage = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL;
 
   useEffect(() => {
@@ -24,7 +34,10 @@ const DoctorProfilePage = () => {
       try {
         setLoading(true);
         const response = await fetchData(`users/${id}`);
-        if (response && (response.role === 'specialist' || response.role === 'consultant')) {
+        if (
+          response &&
+          (response.role === "specialist" || response.role === "consultant")
+        ) {
           setDoctor(response);
         } else {
           setError("Doctor profile not found");
@@ -36,14 +49,14 @@ const DoctorProfilePage = () => {
         setLoading(false);
       }
     }
-    
+
     if (id) {
       fetchDoctorProfile();
     }
   }, [id]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
@@ -69,10 +82,14 @@ const DoctorProfilePage = () => {
           <div className="text-red-500 text-5xl mb-4 flex justify-center">
             <FaUserMd />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Profile Not Found</h2>
-          <p className="text-gray-600 mb-4">{error || "This doctor profile could not be found."}</p>
-          <button 
-            onClick={() => router.push('/doctors')}
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Profile Not Found
+          </h2>
+          <p className="text-gray-600 mb-4">
+            {error || "This doctor profile could not be found."}
+          </p>
+          <button
+            onClick={() => router.push("/doctors")}
             className="px-4 py-2 bg-[var(--color-primary-6)] text-white rounded-lg hover:bg-[var(--color-primary-7)] transition-colors"
           >
             Browse All Doctors
@@ -86,19 +103,29 @@ const DoctorProfilePage = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       {/* Header Section */}
       <div className="max-w-6xl mx-auto mb-8">
-        <Link 
+        <Link
           href="/doctors"
           className="inline-flex items-center text-[var(--color-primary-6)] hover:text-[var(--color-primary-7)] mb-4"
         >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
           Back to All Doctors
         </Link>
       </div>
 
       <div className="max-w-6xl mx-auto">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -109,7 +136,11 @@ const DoctorProfilePage = () => {
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               <div className="relative">
                 <img
-                  src={doctor.profileImage ? `${apiUrl}${doctor.profileImage}` : defaultUser.src}
+                  src={
+                    doctor.profileImage
+                      ? `${apiUrl}${doctor.profileImage}`
+                      : defaultUser.src
+                  }
                   alt={`Dr. ${doctor.firstName} ${doctor.lastName}`}
                   className="w-40 h-40 rounded-full object-cover border-4 border-white shadow-lg"
                   crossOrigin="anonymous"
@@ -126,23 +157,29 @@ const DoctorProfilePage = () => {
                   Dr. {doctor.firstName} {doctor.lastName}
                 </h1>
                 <p className="text-xl text-[var(--color-primary-1)] font-medium mb-4">
-                  {doctor.specialistCategory || doctor.category || 'Medical Specialist'}
+                  {doctor.specialistCategory ||
+                    doctor.category ||
+                    "Medical Specialist"}
                 </p>
-                
+
                 <div className="flex items-center justify-center md:justify-start mb-4">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <FaStar 
-                      key={i} 
-                      className={`h-5 w-5 ${i < (doctor.rating || 5) ? 'text-yellow-400' : 'text-white text-opacity-30'}`} 
+                    <FaStar
+                      key={i}
+                      className={`h-5 w-5 ${i < (doctor.rating || 5) ? "text-yellow-400" : "text-white text-opacity-30"}`}
                     />
                   ))}
-                  <span className="ml-2 font-medium">{doctor.rating || 5}.0</span>
+                  <span className="ml-2 font-medium">
+                    {doctor.rating || 5}.0
+                  </span>
                 </div>
 
                 {doctor.doctorRegistrationNumber && (
                   <div className="flex items-center justify-center md:justify-start gap-2 text-sm">
                     <FaCertificate className="text-[var(--color-primary-1)]" />
-                    <span>Registration No: {doctor.doctorRegistrationNumber}</span>
+                    <span>
+                      Registration No: {doctor.doctorRegistrationNumber}
+                    </span>
                   </div>
                 )}
               </div>
@@ -167,8 +204,18 @@ const DoctorProfilePage = () => {
               {/* Contact Information */}
               <div className="bg-gray-50 rounded-2xl p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-[var(--color-primary-6)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-5 h-5 mr-2 text-[var(--color-primary-6)]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   Contact Information
                 </h3>
@@ -189,7 +236,9 @@ const DoctorProfilePage = () => {
                     <div className="flex items-center text-gray-600">
                       <FaLocationArrow className="w-4 h-4 mr-3 text-gray-400" />
                       <span className="text-sm">
-                        {[doctor.address?.city, doctor.address?.country].filter(Boolean).join(', ')}
+                        {[doctor.address?.city, doctor.address?.country]
+                          .filter(Boolean)
+                          .join(", ")}
                       </span>
                     </div>
                   )}
@@ -203,11 +252,12 @@ const DoctorProfilePage = () => {
                   Qualifications
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  {doctor.qualifications || 'Licensed Medical Professional'}
+                  {doctor.qualifications || "Licensed Medical Professional"}
                 </p>
                 {doctor.yearsOfExperience && (
                   <p className="text-gray-600 text-sm mt-2">
-                    <strong>Experience:</strong> {doctor.yearsOfExperience} years
+                    <strong>Experience:</strong> {doctor.yearsOfExperience}{" "}
+                    years
                   </p>
                 )}
               </div>
@@ -243,8 +293,9 @@ const DoctorProfilePage = () => {
                 About Dr. {doctor.firstName} {doctor.lastName}
               </h3>
               <p className="text-gray-600 leading-relaxed">
-                {doctor.bio || doctor.specialistDescription || 
-                `Dr. ${doctor.firstName} ${doctor.lastName} is a dedicated healthcare professional specializing in ${doctor.specialistCategory || doctor.category}. With a commitment to patient care and extensive experience in the field, Dr. ${doctor.lastName} provides high-quality medical services to address patient needs effectively.`}
+                {doctor.bio ||
+                  doctor.specialistDescription ||
+                  `Dr. ${doctor.firstName} ${doctor.lastName} is a dedicated healthcare professional specializing in ${doctor.specialistCategory || doctor.category}. With a commitment to patient care and extensive experience in the field, Dr. ${doctor.lastName} provides high-quality medical services to address patient needs effectively.`}
               </p>
             </div>
 
@@ -254,10 +305,13 @@ const DoctorProfilePage = () => {
                 <FaCheckCircle className="w-8 h-8 text-blue-600" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-1">Verified Healthcare Professional</h4>
+                <h4 className="font-semibold text-gray-900 mb-1">
+                  Verified Healthcare Professional
+                </h4>
                 <p className="text-sm text-gray-600">
-                  This doctor's credentials have been verified by Sozo Digicare. 
-                  All consultations are conducted in a secure and professional environment.
+                  This doctor's credentials have been verified by Sozo Digicare.
+                  All consultations are conducted in a secure and professional
+                  environment.
                 </p>
               </div>
             </div>
@@ -269,4 +323,3 @@ const DoctorProfilePage = () => {
 };
 
 export default DoctorProfilePage;
-

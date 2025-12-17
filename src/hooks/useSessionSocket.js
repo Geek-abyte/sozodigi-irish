@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 import { getSocket } from "@/lib/socket";
 
 const useSessionSocket = ({
@@ -11,7 +11,7 @@ const useSessionSocket = ({
   handleEndCall,
   addToast,
   router,
-  sessionEnded
+  sessionEnded,
 }) => {
   const socketRef = useRef();
 
@@ -22,15 +22,18 @@ const useSessionSocket = ({
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      if (appointmentRef.current?.session?.appointment?.status === 'pending' && !sessionEnded) {
-        socketRef.current.emit('session-ended', {
+      if (
+        appointmentRef.current?.session?.appointment?.status === "pending" &&
+        !sessionEnded
+      ) {
+        socketRef.current.emit("session-ended", {
           appointmentId: appointmentRef.current.session.appointment._id,
-          specialist: session.user
+          specialist: session.user,
         });
       }
     };
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [appointmentRef, sessionEnded]);
 
   useEffect(() => {
@@ -46,31 +49,34 @@ const useSessionSocket = ({
     //   router.push(`/admin/available-specialists?appointmentId=${appointmentId}`);
     // });
 
-    socket.on('specialist-disconnected', ({ appointmentId }) => {
-      alert('The specialist disconnected unexpectedly. Please try another.');
-      router.push(`/admin/available-specialists?appointmentId=${appointmentId}`);
+    socket.on("specialist-disconnected", ({ appointmentId }) => {
+      alert("The specialist disconnected unexpectedly. Please try another.");
+      router.push(
+        `/admin/available-specialists?appointmentId=${appointmentId}`,
+      );
     });
 
-    socket.on('session-ended', ({ specialist, appointmentId }) => {
+    socket.on("session-ended", ({ specialist, appointmentId }) => {
       const currentAppointment = appointmentRef.current;
       if (
         currentAppointment?.session?.appointment?._id === appointmentId &&
-        currentAppointment?.session?.appointment?.patient?._id === session?.user?.id
+        currentAppointment?.session?.appointment?.patient?._id ===
+          session?.user?.id
       ) {
         setSessionEnded(true);
         setIsTimerRunning(false);
         setShowRatingField(true);
         handleEndSession();
         handleEndCall();
-        addToast('Specialist ended the session', 'info', 5000);
+        addToast("Specialist ended the session", "info", 5000);
       }
     });
 
     return () => {
       // socket.off('call-rejected');
       // socket.off('call-timeout');
-      socket.off('specialist-disconnected');
-      socket.off('session-ended');
+      socket.off("specialist-disconnected");
+      socket.off("session-ended");
     };
   }, [appointmentRef, session]);
 

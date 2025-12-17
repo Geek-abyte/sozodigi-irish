@@ -68,7 +68,11 @@ const AddMedicalTourismPackagePage = () => {
           Back
         </Link>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-5"
+        encType="multipart/form-data"
+      >
         <div>
           <label className="block font-medium mb-1">Package Name</label>
           <input
@@ -129,7 +133,9 @@ const AddMedicalTourismPackagePage = () => {
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Services (comma separated)</label>
+          <label className="block font-medium mb-1">
+            Services (comma separated)
+          </label>
           <input
             type="text"
             name="services"

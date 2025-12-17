@@ -1,6 +1,6 @@
 // page.js
-import { Suspense } from 'react';
-import PaymentSuccessContentPage from './PaymentSuccessContentPage';
+import { Suspense } from "react";
+import PaymentSuccessContentPage from "./PaymentSuccessContentPage";
 
 const PaymentSuccessPage = () => {
   return (

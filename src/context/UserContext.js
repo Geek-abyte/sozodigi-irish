@@ -16,9 +16,9 @@ export const UserProvider = ({ children }) => {
         const userId = session.user.id;
         const token = session.user.jwt;
 
-        console.log(userId)
+        console.log(userId);
 
-        const fullUser = await fetchData('users/'+userId, token);
+        const fullUser = await fetchData("users/" + userId, token);
 
         if (fullUser) {
           setUser(fullUser); // full user object from backend

@@ -36,8 +36,8 @@ export function ToastProvider({ children }) {
               toast.type === "success"
                 ? "border-l-4 border-green-500"
                 : toast.type === "error"
-                ? "border-l-4 border-red-500"
-                : "border-l-4 border-blue-500"
+                  ? "border-l-4 border-red-500"
+                  : "border-l-4 border-blue-500"
             }`}
             onClick={() => removeToast(toast.id)} // Click to remove early
           >

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { faqItems } from "@/data/faqData";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function FaqSection() {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -15,7 +15,10 @@ export default function FaqSection() {
     // scroll into view after a delay
     setTimeout(() => {
       if (!alreadyOpen && refs.current[index]) {
-        refs.current[index].scrollIntoView({ behavior: "smooth", block: "start" });
+        refs.current[index].scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     }, 100);
   };
@@ -40,7 +43,9 @@ export default function FaqSection() {
                 onClick={() => toggleAccordion(index)}
                 className="w-full p-6 flex justify-between items-center text-left focus:outline-none"
               >
-                <h3 className="text-md sm:text-lg font-semibold text-primary-9">{faq.question}</h3>
+                <h3 className="text-md sm:text-lg font-semibold text-primary-9">
+                  {faq.question}
+                </h3>
                 {activeIndex === index ? (
                   <FaChevronUp className="text-secondary-6 transition-transform" />
                 ) : (

@@ -29,7 +29,7 @@ const SpecialistPage = () => {
   const price = useSelector((state) => state.specialist.price);
   const duration = useSelector((state) => state.specialist.duration);
   const appointmentDate = useSelector(
-    (state) => state.specialist.appointmentDate
+    (state) => state.specialist.appointmentDate,
   );
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,7 +54,7 @@ const SpecialistPage = () => {
   const filteredCards = cards.filter(
     (card) =>
       card.content.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedCategory === "" || card.specialty === selectedCategory)
+      (selectedCategory === "" || card.specialty === selectedCategory),
   );
 
   const handleCategorySelect = (category, fromSelect = false) => {
@@ -62,9 +62,10 @@ const SpecialistPage = () => {
       setSelectedCategory(category);
     }
 
-    const availableSpecialists = onlineSpecialists.filter(
-      (sp) =>{ console.log(sp.category, category); return sp.category === category}
-    );
+    const availableSpecialists = onlineSpecialists.filter((sp) => {
+      console.log(sp.category, category);
+      return sp.category === category;
+    });
 
     if (availableSpecialists.length > 0) {
       const selected = availableSpecialists[0];
@@ -79,7 +80,7 @@ const SpecialistPage = () => {
   };
 
   const openCheckoutModal = (price, duration) => {
-    console.log(duration)
+    console.log(duration);
     dispatch(setPrice(price));
     dispatch(setDuration(duration));
     setModalContent("checkoutModal");
@@ -222,7 +223,6 @@ const SpecialistPage = () => {
           }
         />
       )}
-
     </section>
   );
 };

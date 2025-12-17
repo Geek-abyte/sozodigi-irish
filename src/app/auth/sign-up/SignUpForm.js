@@ -62,7 +62,7 @@ export default function SignUpPage() {
       uppercase: /[A-Z]/.test(password),
       lowercase: /[a-z]/.test(password),
       number: /\d/.test(password),
-      special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+      special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
     };
     setPasswordValidation(validation);
     return Object.values(validation).every(Boolean);
@@ -100,17 +100,23 @@ export default function SignUpPage() {
         captchaToken,
       });
 
-      console.log("Registration response:", res)
+      console.log("Registration response:", res);
 
       // Check for successful registration - API returns userId for success
-      if (res?.userId || res?.message?.toLowerCase().includes("successful") || res?.message?.toLowerCase().includes("otp")) {
+      if (
+        res?.userId ||
+        res?.message?.toLowerCase().includes("successful") ||
+        res?.message?.toLowerCase().includes("otp")
+      ) {
         alertSuccess("Sign-up successful! Check your email for OTP.");
         router.push(`/auth/verify-otp?email=${formData.email}`);
       } else {
         const knownErrors = {
-          "email already registered": "An account with this email already exists.",
+          "email already registered":
+            "An account with this email already exists.",
           "invalid input": "Please fill all fields correctly.",
-          "failed captcha verification": "CAPTCHA verification failed. Please try again.",
+          "failed captcha verification":
+            "CAPTCHA verification failed. Please try again.",
         };
         const message =
           knownErrors[res?.message?.toLowerCase()] ||
@@ -121,18 +127,19 @@ export default function SignUpPage() {
       }
     } catch (err) {
       console.error("Signup error:", err);
-      
+
       // Handle different types of errors
       let errorMessage = "Something went wrong. Please try again.";
-      
+
       if (err?.status === 400) {
-        errorMessage = err?.data?.message || "Invalid input. Please check your details.";
+        errorMessage =
+          err?.data?.message || "Invalid input. Please check your details.";
       } else if (err?.status === 500) {
         errorMessage = "Server error. Please try again later.";
       } else if (err?.message) {
         errorMessage = err.message;
       }
-      
+
       setError(errorMessage);
       alertError(errorMessage);
     } finally {
@@ -194,33 +201,69 @@ export default function SignUpPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
-                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                  {showPassword ? (
+                    <FaEyeSlash size={20} />
+                  ) : (
+                    <FaEye size={20} />
+                  )}
                 </button>
               </div>
 
               {/* Password Requirements */}
               {formData.password && (
                 <div className="space-y-2 text-sm">
-                  <p className="text-gray-600 font-medium">Password Requirements:</p>
+                  <p className="text-gray-600 font-medium">
+                    Password Requirements:
+                  </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <div className={`flex items-center gap-2 ${passwordValidation.length ? 'text-green-600' : 'text-red-500'}`}>
-                      {passwordValidation.length ? <FaCheck size={14} /> : <FaTimes size={14} />}
+                    <div
+                      className={`flex items-center gap-2 ${passwordValidation.length ? "text-green-600" : "text-red-500"}`}
+                    >
+                      {passwordValidation.length ? (
+                        <FaCheck size={14} />
+                      ) : (
+                        <FaTimes size={14} />
+                      )}
                       <span>At least 8 characters</span>
                     </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.uppercase ? 'text-green-600' : 'text-red-500'}`}>
-                      {passwordValidation.uppercase ? <FaCheck size={14} /> : <FaTimes size={14} />}
+                    <div
+                      className={`flex items-center gap-2 ${passwordValidation.uppercase ? "text-green-600" : "text-red-500"}`}
+                    >
+                      {passwordValidation.uppercase ? (
+                        <FaCheck size={14} />
+                      ) : (
+                        <FaTimes size={14} />
+                      )}
                       <span>One uppercase letter</span>
                     </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.lowercase ? 'text-green-600' : 'text-red-500'}`}>
-                      {passwordValidation.lowercase ? <FaCheck size={14} /> : <FaTimes size={14} />}
+                    <div
+                      className={`flex items-center gap-2 ${passwordValidation.lowercase ? "text-green-600" : "text-red-500"}`}
+                    >
+                      {passwordValidation.lowercase ? (
+                        <FaCheck size={14} />
+                      ) : (
+                        <FaTimes size={14} />
+                      )}
                       <span>One lowercase letter</span>
                     </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.number ? 'text-green-600' : 'text-red-500'}`}>
-                      {passwordValidation.number ? <FaCheck size={14} /> : <FaTimes size={14} />}
+                    <div
+                      className={`flex items-center gap-2 ${passwordValidation.number ? "text-green-600" : "text-red-500"}`}
+                    >
+                      {passwordValidation.number ? (
+                        <FaCheck size={14} />
+                      ) : (
+                        <FaTimes size={14} />
+                      )}
                       <span>One number</span>
                     </div>
-                    <div className={`flex items-center gap-2 ${passwordValidation.special ? 'text-green-600' : 'text-red-500'}`}>
-                      {passwordValidation.special ? <FaCheck size={14} /> : <FaTimes size={14} />}
+                    <div
+                      className={`flex items-center gap-2 ${passwordValidation.special ? "text-green-600" : "text-red-500"}`}
+                    >
+                      {passwordValidation.special ? (
+                        <FaCheck size={14} />
+                      ) : (
+                        <FaTimes size={14} />
+                      )}
                       <span>One special character</span>
                     </div>
                   </div>

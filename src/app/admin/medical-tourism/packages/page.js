@@ -31,7 +31,7 @@ const MedicalTourPackagesPage = () => {
     const loadPackages = async () => {
       try {
         const data = await fetchData("/tour/get-all/no-pagination", token);
-        console.log(data)
+        console.log(data);
         setPackages(data);
       } catch (error) {
         console.error("Error fetching packages:", error);
@@ -46,7 +46,9 @@ const MedicalTourPackagesPage = () => {
   const deletePackage = async () => {
     try {
       await deleteData(`tour/${itemToDelete._id}`, token);
-      setPackages(packages.filter((_package) => _package._id !== itemToDelete._id));
+      setPackages(
+        packages.filter((_package) => _package._id !== itemToDelete._id),
+      );
       alertSuccess("Medical tourism package successfully deleted");
       setIsDialogOpen(false);
     } catch (error) {

@@ -64,7 +64,12 @@ const EditConsultationDocumentation = () => {
     if (form.document) formData.append("document", form.document);
 
     try {
-      await updateData(`consultation-documents/update/custom/${id}`, formData, token, true);
+      await updateData(
+        `consultation-documents/update/custom/${id}`,
+        formData,
+        token,
+        true,
+      );
       addToast("Documentation updated successfully", "success");
       router.push("/admin/medical-tourism/consultations/documentations");
     } catch (err) {
@@ -94,7 +99,8 @@ const EditConsultationDocumentation = () => {
             <option value="">Select appointment</option>
             {appointments.map((appt) => (
               <option key={appt._id} value={appt._id}>
-                {appt.patient?.firstName} {appt.patient?.lastName} – {new Date(appt.date).toLocaleDateString()}
+                {appt.patient?.firstName} {appt.patient?.lastName} –{" "}
+                {new Date(appt.date).toLocaleDateString()}
               </option>
             ))}
           </select>

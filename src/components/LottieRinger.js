@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Lottie from "lottie-react";
 import ringingAnimation from "@/assets/lottie/ringing.json";
@@ -10,7 +10,9 @@ const LottieRinger = () => {
         <div className="w-32 h-32 mx-auto">
           <Lottie animationData={ringingAnimation} loop autoplay />
         </div>
-        <p className="mt-6 text-xl text-white">Connecting you to the specialist...</p>
+        <p className="mt-6 text-xl text-white">
+          Connecting you to the specialist...
+        </p>
       </div>
     </div>
   );

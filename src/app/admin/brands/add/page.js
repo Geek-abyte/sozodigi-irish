@@ -29,12 +29,12 @@ const AddBrand = () => {
     formData.append("status", status);
     if (logo) formData.append("logo", logo);
 
-    console.log(formData)
+    console.log(formData);
 
     setLoading(true);
 
     try {
-        postData("brands/create", formData, token, true)
+      postData("brands/create", formData, token, true);
       alert("Brand added successfully!");
 
       router.push("/admin/brands");
@@ -55,7 +55,10 @@ const AddBrand = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Brand Name */}
           <div>
-            <label htmlFor="brand-name" className="block font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="brand-name"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
               Brand Name
             </label>
             <input
@@ -71,7 +74,10 @@ const AddBrand = () => {
 
           {/* Brand Description */}
           <div>
-            <label htmlFor="brand-description" className="block font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="brand-description"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
               Description
             </label>
             <textarea
@@ -87,7 +93,10 @@ const AddBrand = () => {
 
           {/* Brand Logo Upload */}
           <div>
-            <label htmlFor="brand-logo" className="block font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="brand-logo"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
               Brand Logo
             </label>
             <input
@@ -101,7 +110,10 @@ const AddBrand = () => {
 
           {/* Brand Status */}
           <div>
-            <label htmlFor="brand-status" className="block font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="brand-status"
+              className="block font-medium text-gray-700 dark:text-gray-300"
+            >
               Status
             </label>
             <select

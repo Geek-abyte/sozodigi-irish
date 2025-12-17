@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { fetchData } from '@/utils/api';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import { fetchData } from "@/utils/api";
+import Link from "next/link";
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState([]);
@@ -17,7 +17,7 @@ export default function BlogPage() {
         setBlogs(res.data);
         setTotalPages(res.pages); // Set the total number of pages
       } catch (error) {
-        console.error('Error fetching blogs:', error);
+        console.error("Error fetching blogs:", error);
       } finally {
         setLoading(false);
       }
@@ -44,12 +44,16 @@ export default function BlogPage() {
               <Link key={blog._id} href={`/blog/${blog._id}?t=${blog.title}`}>
                 <div className="bg-white w-80 rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                   <img
-                    src={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${blog.featuredImage}` || '/images/blog-placeholder.jpg'}
+                    src={
+                      blog.featuredImage
+                        ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${blog.featuredImage}`
+                        : "/images/blog-placeholder.jpg"
+                    }
                     alt={blog.title}
                     className="w-full h-48 object-cover"
                     onError={(e) => {
                       e.target.onerror = null;
-                      e.target.src = '/images/blog-placeholder.jpg';
+                      e.target.src = "/images/blog-placeholder.jpg";
                     }}
                   />
                   <div className="p-5">
@@ -57,10 +61,15 @@ export default function BlogPage() {
                     <p
                       className="text-sm text-gray-600 mb-4"
                       dangerouslySetInnerHTML={{
-                        __html: blog.content?.slice(0, 100).replace(/(?:\r\n|\r|\n)/g, '<br>') + '...',
+                        __html:
+                          blog.content
+                            ?.slice(0, 100)
+                            .replace(/(?:\r\n|\r|\n)/g, "<br>") + "...",
                       }}
                     />
-                    <p className="text-xs text-gray-400">{new Date(blog.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-gray-400">
+                      {new Date(blog.createdAt).toLocaleDateString()}
+                    </p>
                   </div>
                 </div>
               </Link>
@@ -68,26 +77,25 @@ export default function BlogPage() {
           </div>
 
           {/* Pagination controls */}
-        <div className="flex justify-center items-center mt-8">
+          <div className="flex justify-center items-center mt-8">
             <button
-                onClick={() => handlePageChange(page - 1)}
-                className="px-4 py-2 mx-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-700"
-                disabled={page === 1}
+              onClick={() => handlePageChange(page - 1)}
+              className="px-4 py-2 mx-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-700"
+              disabled={page === 1}
             >
-                Previous
+              Previous
             </button>
             <span className="text-lg font-semibold">
-                Page {page} of {totalPages}
+              Page {page} of {totalPages}
             </span>
             <button
-                onClick={() => handlePageChange(page + 1)}
-                className="px-4 py-2 mx-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-700"
-                disabled={page === totalPages}
+              onClick={() => handlePageChange(page + 1)}
+              className="px-4 py-2 mx-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-700"
+              disabled={page === totalPages}
             >
-                Next
+              Next
             </button>
-        </div>
-
+          </div>
         </>
       )}
     </div>

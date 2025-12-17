@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import AuthLayout from "@/app/authLayout";
 import Link from "next/link";
 import Image from "next/image";
-import { doctors2 } from '@/assets';
+import { doctors2 } from "@/assets";
 import { FaSpinner, FaEye, FaEyeSlash } from "react-icons/fa";
 import { useToast } from "@/context/ToastContext";
 import { useSearchParams } from "next/navigation";
@@ -29,24 +29,23 @@ export default function LoginPage() {
   // const callbackUrl = searchParams.get("callbackUrl") || "/admin";
   const callbackUrl = "/admin";
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-    
+
     // Basic validation
     if (!email.trim()) {
       setError("Please enter your email address.");
       addToast("Please enter your email address.", "error");
       return;
     }
-    
+
     if (!password.trim()) {
       setError("Please enter your password.");
       addToast("Please enter your password.", "error");
       return;
     }
-    
+
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -54,7 +53,7 @@ export default function LoginPage() {
       addToast("Please enter a valid email address.", "error");
       return;
     }
-    
+
     setIsSubmitting(true);
 
     try {
@@ -69,23 +68,41 @@ export default function LoginPage() {
 
       if (res?.error) {
         let friendlyMessage = "An unexpected error occurred. Please try again.";
-        
+
         // More comprehensive error handling
         const errorLower = res.error.toLowerCase();
-        if (errorLower.includes("credentials") || errorLower.includes("unauthorized")) {
-          friendlyMessage = "Incorrect email or password. Please check your credentials.";
-        } else if (errorLower.includes("network") || errorLower.includes("fetch")) {
-          friendlyMessage = "Network error. Please check your internet connection and try again.";
+        if (
+          errorLower.includes("credentials") ||
+          errorLower.includes("unauthorized")
+        ) {
+          friendlyMessage =
+            "Incorrect email or password. Please check your credentials.";
+        } else if (
+          errorLower.includes("network") ||
+          errorLower.includes("fetch")
+        ) {
+          friendlyMessage =
+            "Network error. Please check your internet connection and try again.";
         } else if (errorLower.includes("timeout")) {
           friendlyMessage = "Request timed out. Please try again.";
-        } else if (errorLower.includes("server") || errorLower.includes("500")) {
+        } else if (
+          errorLower.includes("server") ||
+          errorLower.includes("500")
+        ) {
           friendlyMessage = "Server error. Please try again later.";
-        } else if (errorLower.includes("email") && errorLower.includes("verified")) {
+        } else if (
+          errorLower.includes("email") &&
+          errorLower.includes("verified")
+        ) {
           friendlyMessage = "Please verify your email before signing in.";
-        } else if (errorLower.includes("account") && errorLower.includes("disabled")) {
-          friendlyMessage = "Your account has been disabled. Please contact support.";
+        } else if (
+          errorLower.includes("account") &&
+          errorLower.includes("disabled")
+        ) {
+          friendlyMessage =
+            "Your account has been disabled. Please contact support.";
         }
-        
+
         setError(friendlyMessage);
         addToast(friendlyMessage, "error");
         setIsSubmitting(false);
@@ -160,7 +177,11 @@ export default function LoginPage() {
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
                     tabIndex={-1}
                   >
-                    {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                    {showPassword ? (
+                      <FaEyeSlash size={20} />
+                    ) : (
+                      <FaEye size={20} />
+                    )}
                   </button>
                 </div>
 
@@ -175,7 +196,7 @@ export default function LoginPage() {
                     />
                     <span className="text-sm text-gray-600">Remember me</span>
                   </label>
-                  
+
                   <Link
                     href="/auth/forgot-password"
                     className="text-sm text-[var(--color-primary-5)] hover:underline"

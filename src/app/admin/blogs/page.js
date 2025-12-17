@@ -24,7 +24,7 @@ const BlogListingPage = () => {
   const { data: session } = useSession();
   const token = session?.user?.jwt;
 
-  const { addToast } = useToast()
+  const { addToast } = useToast();
 
   const loadBlogs = async (pageNum = 1) => {
     setLoading(true);
@@ -49,11 +49,11 @@ const BlogListingPage = () => {
 
     try {
       await deleteData(`blogs/${blogId}`, token);
-      addToast("Blog deleted successfully!", "success")
+      addToast("Blog deleted successfully!", "success");
       loadBlogs(page);
     } catch (error) {
-        addToast("Error deleting blog!", "error")
-        console.error("Error deleting blog:", error);
+      addToast("Error deleting blog!", "error");
+      console.error("Error deleting blog:", error);
     }
   };
 
@@ -79,13 +79,22 @@ const BlogListingPage = () => {
             <Table>
               <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
                 <TableRow>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400"
+                  >
                     Title
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400"
+                  >
                     Status
                   </TableCell>
-                  <TableCell isHeader className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400">
+                  <TableCell
+                    isHeader
+                    className="px-5 py-3 font-medium text-start text-gray-500 dark:text-gray-400"
+                  >
                     Actions
                   </TableCell>
                 </TableRow>

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Suspense } from 'react';
-import SignUpForm from './SignUpForm'; // or whatever your form component is
+import { Suspense } from "react";
+import SignUpForm from "./SignUpForm"; // or whatever your form component is
 
 export default function SignUpPage() {
   return (

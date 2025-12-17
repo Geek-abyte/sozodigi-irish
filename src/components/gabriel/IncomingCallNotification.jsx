@@ -30,7 +30,6 @@ const IncomingCallNotification = () => {
     }
   }, [currentCall, navigate]);
 
-
   if (!incomingCall) return null;
 
   const handleAccept = () => {
@@ -43,7 +42,9 @@ const IncomingCallNotification = () => {
       })
       .catch((error) => {
         console.error("Failed to accept call:", error);
-        dispatch(showToast({ message: "Failed to accept call", status: "error" }));
+        dispatch(
+          showToast({ message: "Failed to accept call", status: "error" }),
+        );
       });
   };
 
@@ -69,7 +70,7 @@ const IncomingCallNotification = () => {
           {incomingCall.callerImage ? (
             <>
               {console.log(incomingCall.callerImage)}
-              < img
+              <img
                 src={incomingCall.callerImage}
                 alt={incomingCall.callerName}
                 className="w-20 h-20 rounded-full mr-4 object-cover border-4 border-indigo-200"
@@ -81,8 +82,12 @@ const IncomingCallNotification = () => {
             </div>
           )}
           <div>
-            <h3 className="text-xl font-semibold text-gray-800">{incomingCall.callerName}</h3>
-            <p className="text-indigo-600 font-medium">{incomingCall.callerSpecialty}</p>
+            <h3 className="text-xl font-semibold text-gray-800">
+              {incomingCall.callerName}
+            </h3>
+            <p className="text-indigo-600 font-medium">
+              {incomingCall.callerSpecialty}
+            </p>
           </div>
         </div>
         <div className="flex justify-between space-x-4">

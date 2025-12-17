@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { SidebarProvider, useSidebar } from "@/context/admin/SidebarContext";
 import { ToastProvider } from "@/context/ToastContext";
@@ -13,7 +13,6 @@ import useSocketEmitOnline from "@/hooks/useSocketEmitOnline";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import PushNotificationButton from "@/components/PushNotificationButton"; // Import your component
 import { usePathname } from "next/navigation";
-
 
 export default function AdminLayout({ children }) {
   return (
@@ -42,17 +41,19 @@ function AdminLayoutContent({ children }) {
     IncomingCallDialogWrapper,
   } = useSocketEmitOnline();
 
-  const isSessionPage = /^\/admin\/appointments\/session\/[^\/]+$/.test(pathname);
+  const isSessionPage = /^\/admin\/appointments\/session\/[^/]+$/.test(
+    pathname,
+  );
 
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
+    if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register('/sw.js')
+        .register("/sw.js")
         .then((registration) => {
-          console.log('✅ Service Worker registered:', registration);
+          console.log("✅ Service Worker registered:", registration);
         })
         .catch((error) => {
-          console.error('❌ Service Worker registration failed:', error);
+          console.error("❌ Service Worker registration failed:", error);
         });
     }
   }, []);
@@ -64,8 +65,8 @@ function AdminLayoutContent({ children }) {
   const mainContentMargin = isMobileOpen
     ? "ml-0"
     : isExpanded || isHovered
-    ? "lg:ml-[290px]"
-    : "lg:ml-[90px]";
+      ? "lg:ml-[290px]"
+      : "lg:ml-[90px]";
 
   return (
     <div className={`min-h-screen xl:flex dark:bg-gray-900 dark:text-gray-300`}>
@@ -83,22 +84,23 @@ function AdminLayoutContent({ children }) {
         </div>
         {IncomingCallDialogWrapper}
 
-        {((role === "specialist" || role === "consultant") && showSoundPrompt) && (
-          <ConfirmationDialog
-            isOpen={showSoundPrompt}
-            title="Enable Sound Notifications?"
-            message="We can alert you with a ringtone when an incoming call arrives. Do you want to enable this?"
-            confirmText="Yes, enable sound"
-            cancelText="No, stay silent"
-            onConfirm={() => {
-              enableSoundNotifications();
-              setShowSoundPrompt(false);
-            }}
-            onClose={() => {
-              setShowSoundPrompt(false);
-            }}
-          />
-        )}
+        {(role === "specialist" || role === "consultant") &&
+          showSoundPrompt && (
+            <ConfirmationDialog
+              isOpen={showSoundPrompt}
+              title="Enable Sound Notifications?"
+              message="We can alert you with a ringtone when an incoming call arrives. Do you want to enable this?"
+              confirmText="Yes, enable sound"
+              cancelText="No, stay silent"
+              onConfirm={() => {
+                enableSoundNotifications();
+                setShowSoundPrompt(false);
+              }}
+              onClose={() => {
+                setShowSoundPrompt(false);
+              }}
+            />
+          )}
       </div>
     </div>
   );

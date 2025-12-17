@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "../ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
 import Badge from "../ui/badge/Badge";
 import Image from "next/image";
-import { fetchData } from "@/utils/api";  // Assuming you have this API utility
+import { fetchData } from "@/utils/api"; // Assuming you have this API utility
 import { useSession } from "next-auth/react";
 
 export default function RecentOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { data: session } = useSession()
-  const token = session?.user?.jwt
+  const { data: session } = useSession();
+  const token = session?.user?.jwt;
 
   // Fetch orders from the backend
   useEffect(() => {
@@ -18,8 +24,8 @@ export default function RecentOrders() {
       try {
         // Replace with the actual API endpoint for fetching orders
         const data = await fetchData("/orders/filter/by?limit=5", token); // You can add pagination/query params as needed
-        setOrders(data.orders);  // Assuming 'orders' is the key in the response
-        console.log(data.orders)
+        setOrders(data.orders); // Assuming 'orders' is the key in the response
+        console.log(data.orders);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -27,7 +33,7 @@ export default function RecentOrders() {
       }
     };
 
-    if(token) fetchOrders();
+    if (token) fetchOrders();
   }, [token]);
 
   // Loader for the table data
@@ -49,16 +55,28 @@ export default function RecentOrders() {
         <Table>
           <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
             <TableRow>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Service Name
               </TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Category
               </TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Price
               </TableCell>
-              <TableCell isHeader className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+              <TableCell
+                isHeader
+                className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              >
                 Status
               </TableCell>
             </TableRow>
@@ -73,17 +91,24 @@ export default function RecentOrders() {
                       <img
                         width={50}
                         height={50}
-                        src={order.items[0]?.product?.photo ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${order.items[0]?.product?.photo}` : "/images/placeholder.png"}
+                        src={
+                          order.items[0]?.product?.photo
+                            ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${order.items[0]?.product?.photo}`
+                            : "/images/placeholder.png"
+                        }
                         className="h-[50px] w-[50px]"
                         alt={order.items[0]?.product?.name || "Product"}
                       />
                     </div>
                     <div>
                       <p className="font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {order.items.map((item) => item.product?.name).join(", ")}
+                        {order.items
+                          .map((item) => item.product?.name)
+                          .join(", ")}
                       </p>
                       <span className="text-gray-500 text-theme-xs dark:text-gray-400">
-                        {order.items.length} {order.category === 'LabService' ? 'Tests' : 'Variants'}
+                        {order.items.length}{" "}
+                        {order.category === "LabService" ? "Tests" : "Variants"}
                       </span>
                     </div>
                   </div>
@@ -104,8 +129,8 @@ export default function RecentOrders() {
                       order.status === "Completed"
                         ? "success"
                         : order.status === "Pending"
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                   >
                     {order.status}

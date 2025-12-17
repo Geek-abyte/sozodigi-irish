@@ -12,7 +12,7 @@ const CreateConsultationAppointmentPage = () => {
     consultant: "",
     date: "",
     duration: "", // 🔹 Added duration field
-    type: "medicalTourism"
+    type: "medicalTourism",
   });
 
   const [patients, setPatients] = useState([]);
@@ -43,8 +43,14 @@ const CreateConsultationAppointmentPage = () => {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const patientRes = await fetchData("users/get-all/no-pagination", token);
-        const consultantRes = await fetchData("users/get-all/no-pagination", token);
+        const patientRes = await fetchData(
+          "users/get-all/no-pagination",
+          token,
+        );
+        const consultantRes = await fetchData(
+          "users/get-all/no-pagination",
+          token,
+        );
         setPatients(patientRes || []);
         setConsultants(consultantRes || []);
       } catch (err) {
@@ -58,7 +64,10 @@ const CreateConsultationAppointmentPage = () => {
     <div className="max-w-xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl border border-gray-200 shadow">
       <div className="flex justify-between mb-4">
         <h1 className="text-2xl font-bold">Book Consultation Appointment</h1>
-        <Link href="/admin/medical-tourism/appointments" className="text-indigo-600 hover:underline">
+        <Link
+          href="/admin/medical-tourism/appointments"
+          className="text-indigo-600 hover:underline"
+        >
           Back
         </Link>
       </div>

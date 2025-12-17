@@ -43,7 +43,9 @@ const AvailabilityListPage = () => {
     try {
       await deleteData(`availabilities/${itemToDelete._id}`, token);
       addToast("Availability deleted successfully", "success");
-      setAvailabilities((prev) => prev.filter((a) => a._id !== itemToDelete._id));
+      setAvailabilities((prev) =>
+        prev.filter((a) => a._id !== itemToDelete._id),
+      );
     } catch (error) {
       addToast("Failed to delete availability", "error");
     } finally {
@@ -69,21 +71,52 @@ const AvailabilityListPage = () => {
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Type</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">category</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Date / Day</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Time Range</TableCell>
-                <TableCell isHeader className="px-5 py-3 font-medium text-start">Actions</TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Type
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  category
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Date / Day
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Time Range
+                </TableCell>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-start"
+                >
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {availabilities.length > 0 ? (
                 availabilities.map((slot) => (
                   <TableRow key={slot._id}>
-                    <TableCell className="px-5 py-4 capitalize">{slot.type}</TableCell>
-                    <TableCell className="px-5 py-4 capitalize">{slot.category}</TableCell>
+                    <TableCell className="px-5 py-4 capitalize">
+                      {slot.type}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 capitalize">
+                      {slot.category}
+                    </TableCell>
                     <TableCell className="px-5 py-4">
-                      {slot.type === "recurring" ? slot.dayOfWeek : format(new Date(slot.date), "PPP")}
+                      {slot.type === "recurring"
+                        ? slot.dayOfWeek
+                        : format(new Date(slot.date), "PPP")}
                     </TableCell>
                     <TableCell className="px-5 py-4">
                       {slot.startTime} - {slot.endTime}
@@ -109,7 +142,10 @@ const AvailabilityListPage = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                  <TableCell
+                    colSpan={4}
+                    className="text-center py-4 text-gray-500"
+                  >
                     No availability slots found.
                   </TableCell>
                 </TableRow>

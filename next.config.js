@@ -7,6 +7,14 @@ const withPWA = require("next-pwa")({
 
 const nextConfig = withPWA({
   reactStrictMode: true,
+  eslint: {
+    // Don't fail build on warnings, only on errors
+    ignoreDuringBuilds: false,
+  },
+  typescript: {
+    // Ignore TypeScript errors during build if any
+    ignoreBuildErrors: false,
+  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

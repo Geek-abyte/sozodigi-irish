@@ -18,12 +18,21 @@ const ReviewOrderPage = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  const selectedUser = typeof window !== "undefined" ? sessionStorage.getItem("newOrderUser") : null;
-  const selectedOrderType = typeof window !== "undefined" ? sessionStorage.getItem("newOrderType") : null;
+  const selectedUser =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("newOrderUser")
+      : null;
+  const selectedOrderType =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("newOrderType")
+      : null;
 
   useEffect(() => {
     if (!selectedUser) {
-      addToast("No user selected. Please select a user to place the order.", "error");
+      addToast(
+        "No user selected. Please select a user to place the order.",
+        "error",
+      );
       router.push("/admin/orders/start");
     } else {
       fetchUserData(selectedUser);
@@ -41,7 +50,10 @@ const ReviewOrderPage = () => {
   };
 
   useEffect(() => {
-    const storedBasket = selectedOrderType === "Medication"? sessionStorage.getItem("newOrderBasket") : sessionStorage.getItem("newLabOrderBasket");
+    const storedBasket =
+      selectedOrderType === "Medication"
+        ? sessionStorage.getItem("newOrderBasket")
+        : sessionStorage.getItem("newLabOrderBasket");
     if (storedBasket) {
       setBasket(JSON.parse(storedBasket));
     }
@@ -53,8 +65,8 @@ const ReviewOrderPage = () => {
       prev.map((item) =>
         item._id === itemId
           ? { ...item, quantity: Math.max(1, quantity) }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -66,7 +78,10 @@ const ReviewOrderPage = () => {
   };
 
   const calculateTotalPrice = () => {
-    return basket.reduce((total, item) => total + item.price * (item.quantity || 1), 0);
+    return basket.reduce(
+      (total, item) => total + item.price * (item.quantity || 1),
+      0,
+    );
   };
 
   const handleSubmitOrder = async () => {
@@ -87,7 +102,7 @@ const ReviewOrderPage = () => {
 
       if (isMedication || isLabService) {
         return { ...base, product: item._id };
-      }else {
+      } else {
         throw new Error("Unknown order type");
       }
     });
@@ -129,16 +144,22 @@ const ReviewOrderPage = () => {
             <div className="space-y-4">
               {user && (
                 <p className="text-xl sm:text-2xl font-bold">
-                  Order summary for {user.firstName?.toUpperCase()} {user.lastName?.toUpperCase()}
+                  Order summary for {user.firstName?.toUpperCase()}{" "}
+                  {user.lastName?.toUpperCase()}
                 </p>
               )}
 
               <ul>
                 {basket.map((item) => (
-                  <li key={item._id} className="flex justify-between items-center border-b pb-2 pt-2">
+                  <li
+                    key={item._id}
+                    className="flex justify-between items-center border-b pb-2 pt-2"
+                  >
                     <div>
                       <p className="font-medium text-sm">{item.name}</p>
-                      <p className="text-xs text-gray-500">Price: ${item.price.toFixed(2)}</p>
+                      <p className="text-xs text-gray-500">
+                        Price: ${item.price.toFixed(2)}
+                      </p>
                     </div>
                     <div className="flex items-center space-x-4">
                       <input
@@ -146,7 +167,10 @@ const ReviewOrderPage = () => {
                         min="1"
                         value={item.quantity || 1}
                         onChange={(e) =>
-                          handleQuantityChange(item._id, parseInt(e.target.value, 10))
+                          handleQuantityChange(
+                            item._id,
+                            parseInt(e.target.value, 10),
+                          )
                         }
                         className="w-12 p-1 border rounded"
                         disabled={!item.quantity}
@@ -174,7 +198,7 @@ const ReviewOrderPage = () => {
                     <div className="w-4 h-4 border-2 border-t-2 border-white rounded-full animate-spin"></div>
                   </div>
                 ) : (
-                  'Confirm Order'
+                  "Confirm Order"
                 )}
               </button>
             </div>

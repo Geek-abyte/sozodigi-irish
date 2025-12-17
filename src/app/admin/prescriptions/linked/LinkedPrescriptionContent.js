@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { EyeIcon } from "@heroicons/react/24/outline";
-import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/admin/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/admin/ui/table";
 import Badge from "@/components/admin/ui/badge/Badge";
 import { fetchData } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -39,8 +45,11 @@ const PrescriptionList = () => {
   const fetchPrescriptions = async () => {
     try {
       setLoading(true);
-      const response = await fetchData(`cart/linked-prescriptions/by/status?status=${status}`, token);
-      console.log("linked prescription", response)
+      const response = await fetchData(
+        `cart/linked-prescriptions/by/status?status=${status}`,
+        token,
+      );
+      console.log("linked prescription", response);
       setPrescriptions(response || []); // Ensure we handle possible undefined response
     } catch (error) {
       console.error("Failed to fetch prescriptions:", error);
@@ -63,7 +72,9 @@ const PrescriptionList = () => {
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900 dark:text-gray-300 p-6">
-      <h2 className="text-2xl font-bold mb-4 capitalize">{status} Linked Prescriptions</h2>
+      <h2 className="text-2xl font-bold mb-4 capitalize">
+        {status} Linked Prescriptions
+      </h2>
       {loading ? (
         <div className="flex justify-center">
           <h1>Loading...</h1>
@@ -76,32 +87,38 @@ const PrescriptionList = () => {
                 <TableRow>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     ID
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     User
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     Linked At
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     Status
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     Expiry Status
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  >
                     Actions
                   </TableCell>
                 </TableRow>
@@ -115,29 +132,53 @@ const PrescriptionList = () => {
                           loader={customLoader}
                           width={40}
                           height={40}
-                          src={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${prescription.prescription?.fileUrl}` || "/images/default-product.jpg"}
+                          src={
+                            prescription.prescription?.fileUrl
+                              ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${prescription.prescription.fileUrl}`
+                              : "/images/default-product.jpg"
+                          }
                           alt={prescription._id}
                         />
                       </div>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
-                      {(prescription.user?.firstName + " " + prescription.user?.lastName) || "N/A"}
+                      {prescription.user?.firstName &&
+                      prescription.user?.lastName
+                        ? `${prescription.user.firstName} ${prescription.user.lastName}`
+                        : "N/A"}
                     </TableCell>
                     <TableCell className="px-5 py-4 text-gray-500 text-theme-sm dark:text-gray-400">
                       {new Date(prescription.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
-                      <Badge className="px-5 py-4 text-start" color={statusColorMap[status] || "light"} variant="light">
+                      <Badge
+                        className="px-5 py-4 text-start"
+                        color={statusColorMap[status] || "light"}
+                        variant="light"
+                      >
                         {status}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start">
-                      <Badge className="px-5 py-4 text-start" color={checkExpiry(prescription.prescription?.createdAt) === "Expired" ? "error" : "success"} variant="light">
+                      <Badge
+                        className="px-5 py-4 text-start"
+                        color={
+                          checkExpiry(prescription.prescription?.createdAt) ===
+                          "Expired"
+                            ? "error"
+                            : "success"
+                        }
+                        variant="light"
+                      >
                         {checkExpiry(prescription.prescription?.createdAt)}
                       </Badge>
                     </TableCell>
                     <TableCell className="px-5 py-4 text-start flex gap-3">
-                      <Link href={`linked/${prescription.prescription?._id}/view?cartItemId=${prescription._id}`} target="_blank" className="text-blue-500">
+                      <Link
+                        href={`linked/${prescription.prescription?._id}/view?cartItemId=${prescription._id}`}
+                        target="_blank"
+                        className="text-blue-500"
+                      >
                         <EyeIcon className="w-5 h-5 inline-block" />
                       </Link>
                     </TableCell>
