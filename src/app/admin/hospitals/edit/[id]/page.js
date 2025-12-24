@@ -38,7 +38,7 @@ const EditHospital = () => {
   useEffect(() => {
     const loadHospital = async () => {
       try {
-        const res = await fetchData(`/hospitals/${id}`, token);
+        const res = await fetchData(`medical-tourism/hospitals/${id}`, token);
         const hospital = res;
 
         if (hospital) {
@@ -106,7 +106,7 @@ const EditHospital = () => {
     }
 
     try {
-      await updateData(`/hospitals/custom/update/${id}`, form, token, true); // Set last arg to true for multipart
+      await updateData(`medical-tourism/hospitals/custom/update/${id}`, form, token, true); // Set last arg to true for multipart
       addToast("Hospital updated successfully!", "success");
       router.push("/admin/hospitals");
     } catch (err) {

@@ -45,7 +45,7 @@ export default function GeneralPractitionersPageContent() {
   const loadGeneralPractitioners = async () => {
     setLoading(true);
     try {
-      const res = await fetchData("users/get-all/doctors/no-pagination", token);
+      const res = await fetchData("medical-tourism/users/get-all/doctors/no-pagination", token);
       // Filter to show only general practitioners
       const gpsOnly = res.filter(
         (doctor) =>

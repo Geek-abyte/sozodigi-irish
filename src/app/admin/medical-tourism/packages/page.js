@@ -30,7 +30,7 @@ const MedicalTourPackagesPage = () => {
   useEffect(() => {
     const loadPackages = async () => {
       try {
-        const data = await fetchData("/tour/get-all/no-pagination", token);
+        const data = await fetchData("medical-tourism/tour/get-all/no-pagination", token);
         console.log(data);
         setPackages(data);
       } catch (error) {

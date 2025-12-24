@@ -50,7 +50,7 @@ const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
     async function fetchDoctors() {
       try {
         setLoading(true);
-        const response = await fetchData("users/get-all/doctors/no-pagination");
+        const response = await fetchData("medical-tourism/users/get-all/doctors/no-pagination");
         console.log("Raw doctors response:", response);
         if (response) {
           const doctorsData = response;
