@@ -138,7 +138,7 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchGalleries() {
       try {
-        const data = await fetchData("medical-tourism/galleries/get-all/no-pagination");
+        const data = await fetchData("galleries/get-all/no-pagination");
         setGalleries(data || []);
         console.log(data);
       } catch (error) {
@@ -164,7 +164,7 @@ export default function HomePage() {
 
     async function fetchHospitals() {
       try {
-        const data = await fetchData("medical-tourism/hospitals");
+        const data = await fetchData("hospitals");
         setHospitals(data.data || []);
         console.log(data.data);
       } catch (error) {
@@ -174,7 +174,7 @@ export default function HomePage() {
 
     async function fetchDoctors() {
       try {
-        const data = await fetchData("medical-tourism/users/get-all/doctors/no-pagination");
+        const data = await fetchData("users/get-all/doctors/no-pagination");
         setSpecialists(data || []);
         console.log("doctors", data);
       } catch (error) {
@@ -184,7 +184,7 @@ export default function HomePage() {
 
     async function fetchPackages() {
       try {
-        const data = await fetchData("medical-tourism/tour/get-all/no-pagination");
+        const data = await fetchData("tour/get-all/no-pagination");
         setPackages(data);
         console.log(data);
       } catch (error) {

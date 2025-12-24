@@ -244,7 +244,7 @@ export default function Ecommerce() {
 
   const fetchDoctors = async () => {
     try {
-      const url = `medical-tourism/users/get-all/doctors/no-pagination`;
+      const url = `users/get-all/doctors/no-pagination`;
       const response = await fetchData(url, token);
       // console.log(response)
       setDoctors(response);

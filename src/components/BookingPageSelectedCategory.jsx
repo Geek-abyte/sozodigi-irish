@@ -107,7 +107,7 @@ const ConsultationBookingPageContent = ({
   const fetchSpecialistsByCategory = async () => {
     setLoadingCategories(true);
     try {
-      const res = await fetchData("medical-tourism/users/get-all/doctors/no-pagination", token);
+      const res = await fetchData("users/get-all/doctors/no-pagination", token);
 
       const filteredSpecialists = res.filter(
         (specialist) => specialist.specialty === selectedCategory,

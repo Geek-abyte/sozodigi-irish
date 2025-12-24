@@ -1,20 +1,5 @@
-// API Base URL - must be set via environment variable
-// For local development: http://localhost:5000
-// For production: Set NEXT_PUBLIC_NODE_API_BASE_URL to your remote backend URL (e.g., https://api.sozodigicare.com)
-// 
-// IMPORTANT: In production, you MUST set NEXT_PUBLIC_NODE_API_BASE_URL to your remote backend URL.
-// The localhost fallback is only for local development.
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "http://localhost:5000";
-
-// Warn if using localhost in production
-if (typeof window !== 'undefined' && API_BASE_URL.includes('localhost') && 
-    !window.location.hostname.includes('localhost')) {
-  console.warn(
-    "⚠️ WARNING: Using localhost API URL in production! " +
-    "Please set NEXT_PUBLIC_NODE_API_BASE_URL to your remote backend URL."
-  );
-}
 
 // Timeout Fetch with Retry
 export async function fetchWithTimeout(
