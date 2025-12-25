@@ -16,14 +16,17 @@ export const UserProvider = ({ children }) => {
         const userId = session.user.id;
         const token = session.user.jwt;
 
-        console.log(userId);
-
-        const fullUser = await fetchData("users/" + userId, token);
-
-        if (fullUser) {
-          setUser(fullUser); // full user object from backend
-        } else {
-          setUser(session.user); // fallback to session user
+        try {
+          const fullUser = await fetchData("users/" + userId, token);
+          if (fullUser) {
+            setUser(fullUser); // full user object from backend
+          } else {
+            setUser(session.user); // fallback to session user
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          // If user fetch fails, use session data as fallback
+          setUser(session.user);
         }
       }
       setLoading(false);

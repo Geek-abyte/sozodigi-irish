@@ -48,7 +48,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
-      fetchData("cart/get/all", token)
+      fetchData("medical-tourism/cart/get/all", token)
         .then((data) => {
           console.log(data.items);
           if (data && Array.isArray(data.items)) {
@@ -64,7 +64,7 @@ export const CartProvider = ({ children }) => {
     if (!token) return;
     try {
       const res = await postData(
-        "cart/add/item",
+        "medical-tourism/cart/add/item",
         {
           productId: payload.product._id,
           quantity: payload.quantity,
@@ -100,7 +100,7 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = async (itemId) => {
     if (!token) return;
     try {
-      const res = await deleteData(`cart/remove/${itemId}`, token);
+      const res = await deleteData(`medical-tourism/cart/remove/${itemId}`, token);
       if (res && Array.isArray(res.cart.items)) {
         dispatch({ type: actionTypes.SET_CART, payload: res.cart.items });
         alertSuccess("Item removed from cart successfully");
@@ -116,7 +116,7 @@ export const CartProvider = ({ children }) => {
 
     try {
       const res = await updateData(
-        `cart/update/custom`,
+        `medical-tourism/cart/update/custom`,
         { cartItemId: itemId, quantity },
         token,
       );
@@ -134,7 +134,7 @@ export const CartProvider = ({ children }) => {
   const clearCart = async () => {
     if (!token) return;
     try {
-      const res = await deleteData("cart", token);
+      const res = await deleteData("medical-tourism/cart/clear", token);
       if (res) {
         dispatch({ type: actionTypes.CLEAR_CART });
       }
