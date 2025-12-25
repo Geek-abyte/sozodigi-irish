@@ -36,11 +36,21 @@ const nextConfig = withPWA({
   images: {
     domains: [
       "sozodigicare.com",
+      "api.sozodigicare.com", // Backend API domain for uploaded images
+      "ireland.sozodigicare.com",
       "127.0.0.1",
       "localhost",
       "images.unsplash.com",
       "via.placeholder.com"
     ],
+    // Alternative: use remotePatterns for more control (Next.js 12.3+)
+    // remotePatterns: [
+    //   {
+    //     protocol: 'https',
+    //     hostname: 'api.sozodigicare.com',
+    //     pathname: '/uploads/**',
+    //   },
+    // ],
   },
 });
 
