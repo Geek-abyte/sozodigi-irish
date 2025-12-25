@@ -63,7 +63,7 @@ const ConsultationAppointmentsPageContent = () => {
 
       // Fetch the data from the backend API
       const res = await fetchData(
-        `consultation-appointments/all/paginated?${query.toString()}`,
+        `medical-tourism/consultation-appointments/all/paginated?${query.toString()}`,
         token,
       );
       console.log(res.data);

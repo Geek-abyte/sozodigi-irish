@@ -48,7 +48,7 @@ const ConsultationAppointmentsPageContent = () => {
       }).toString();
 
       const res = await fetchData(
-        `consultation-appointments/all/paginated?${query}`,
+        `medical-tourism/consultation-appointments/all/paginated?${query}`,
         token,
       );
       setAppointments(res.data || []);

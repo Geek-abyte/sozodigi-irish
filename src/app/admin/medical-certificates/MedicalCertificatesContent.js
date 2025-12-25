@@ -25,11 +25,11 @@ const MedicalCertificatesContent = () => {
         // Fetch certificates based on user role
         let endpoint = "";
         if (userRole === "user") {
-          endpoint = `certificates/patient/${userId}`;
+          endpoint = `medical-tourism/certificates/patient/${userId}`;
         } else if (userRole === "specialist" || userRole === "consultant") {
-          endpoint = `certificates/doctor/${userId}`;
+          endpoint = `medical-tourism/certificates/doctor/${userId}`;
         } else if (userRole === "admin") {
-          endpoint = `certificates/get-all/no-pagination`;
+          endpoint = `medical-tourism/certificates/get-all/no-pagination`;
         }
 
         const response = await fetchData(endpoint, token);

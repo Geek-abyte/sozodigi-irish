@@ -147,7 +147,7 @@ export default function Ecommerce() {
   // Fetch video session statistics
   const fetchSessionData = async () => {
     try {
-      const response = await fetchData("video-sessions/by-user/all", token); // Adjust to your actual endpoint
+      const response = await fetchData("medical-tourism/video-sessions/by-user/all", token); // Adjust to your actual endpoint
       const sessions = response.sessions;
       // console.log(response.sessions)
       // Prepare data for chart (e.g., sessions count by month)
@@ -185,11 +185,11 @@ export default function Ecommerce() {
     try {
       let url = "";
       if (userRole === "user") {
-        url = `consultation-appointments/all/paginated?patient=${user?._id}&status=pending`;
+        url = `medical-tourism/consultation-appointments/all/paginated?patient=${user?._id}&status=pending`;
       } else if (userRole === "specialist") {
-        url = `consultation-appointments/all/paginated?consultant=${user?._id}&status=pending`;
+        url = `medical-tourism/consultation-appointments/all/paginated?consultant=${user?._id}&status=pending`;
       } else {
-        url = `consultation-appointments/all/paginated`;
+        url = `medical-tourism/consultation-appointments/all/paginated`;
       }
       const response = await fetchData(url, token);
       // console.log(response.data)
@@ -205,7 +205,7 @@ export default function Ecommerce() {
         try {
           // Get all labs (or ideally you could have a backend endpoint like `laboratories/by-admin/:id`)
           const labs = await fetchData(
-            "laboratories/get-all/no-pagination",
+            "medical-tourism/laboratories/get-all/no-pagination",
             token,
           );
 
@@ -233,7 +233,7 @@ export default function Ecommerce() {
 
   const fetchPatients = async () => {
     try {
-      const url = `users/get-all/no-pagination`;
+      const url = `medical-tourism/users/get-all/no-pagination`;
       const response = await fetchData(url, token);
       // console.log(response)
       setPatients(response);
@@ -263,7 +263,7 @@ export default function Ecommerce() {
 
   const fetchRevenue = async () => {
     try {
-      const url = `payments/all/no-pagination`;
+      const url = `medical-tourism/payments/all/no-pagination`;
       const response = await fetchData(url, token);
       console.log(response.payments);
       setRevenue(response.payments);
@@ -276,7 +276,7 @@ export default function Ecommerce() {
 
   const fetchPharmacies = async () => {
     try {
-      const url = `pharmacies/get-all/no-pagination`;
+      const url = `medical-tourism/pharmacies/get-all/no-pagination`;
       const response = await fetchData(url, token);
       // console.log(response)
       setPharmacies(response);
