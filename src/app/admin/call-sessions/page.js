@@ -32,7 +32,7 @@ const VideoSessionsPage = () => {
   const loadSessions = async (currentPage, token) => {
     setLoading(true);
     try {
-      const endpoint = `video-sessions/get/all/paginated?page=${currentPage}`;
+      const endpoint = `medical-tourism/video-sessions/get/all/paginated?page=${currentPage}`;
       const data = await fetchData(endpoint, token);
       setSessions(data.data);
       setTotalPages(data.pages || 1);

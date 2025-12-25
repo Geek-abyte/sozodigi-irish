@@ -41,7 +41,7 @@ const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
   const [viewMode, setViewMode] = useState("grid"); // 'grid' or 'list'
   const [sortOption, setSortOption] = useState("rating"); // 'rating', 'experience', 'name'
 
-  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL || process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "";
 
   const dispatch = useDispatch();
 
@@ -107,7 +107,7 @@ const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
 
   const DoctorImage = ({ profileImage, alt = "Doctor" }) => {
     const [imgSrc, setImgSrc] = useState(
-      profileImage ? `${apiUrl}${profileImage}` : defaultUser.src,
+      profileImage && apiUrl ? `${apiUrl}${profileImage}` : defaultUser.src,
     );
 
     return (
@@ -276,7 +276,7 @@ const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
                   <div className="mb-6 flex flex-col items-center">
                     <img
                       src={
-                        selectedDoctor.profileImage
+                        selectedDoctor.profileImage && apiUrl
                           ? `${apiUrl}${selectedDoctor.profileImage}`
                           : defaultUser.src
                       }

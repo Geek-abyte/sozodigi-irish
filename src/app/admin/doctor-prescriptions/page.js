@@ -24,11 +24,11 @@ const PrescriptionsList = () => {
       try {
         let endpoint = "";
         if (isDoctor) {
-          endpoint = `video-sessions/by-specialist/${user?._id}/prescriptions`;
+          endpoint = `medical-tourism/video-sessions/by-specialist/${user?._id}/prescriptions`;
         } else if (isUser) {
-          endpoint = `video-sessions/by-user/${user?._id}/prescriptions`;
+          endpoint = `medical-tourism/video-sessions/by-user/${user?._id}/prescriptions`;
         } else if (isAdmin) {
-          endpoint = `video-sessions/by-user/${user?._id}/prescriptions`;
+          endpoint = `medical-tourism/video-sessions/by-user/${user?._id}/prescriptions`;
         }
 
         const res = await fetchData(endpoint, token);
