@@ -59,11 +59,26 @@ export default NextAuth({
             throw new Error(errorMessage);
           }
 
-          const user = await res.json();
+          const userData = await res.json();
 
-          if (!user.token) throw new Error("No token returned");
+          if (!userData.token) throw new Error("No token returned");
 
-          return { ...user };
+          // Backend returns user object directly with token property
+          // Format: { _id, email, role, firstName, lastName, token, ... }
+          // NextAuth expects: { user: {...}, token: "..." }
+          return {
+            user: {
+              _id: userData._id,
+              email: userData.email,
+              role: userData.role,
+              name: `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || userData.email,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              isProfileComplete: userData.isProfileComplete,
+              approvalStatus: userData.isApproved ? "approved" : "pending",
+            },
+            token: userData.token,
+          };
         } catch (error) {
           console.error("NextAuth authorize error:", error);
           throw new Error(error.message || "Authentication failed");
@@ -81,18 +96,21 @@ export default NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.user._id;
+        // Handle the user object structure from authorize function
+        token.id = user.user?._id || user._id;
         token.jwt = user.token;
-        token.email = user.user.email;
-        token.role = user.user.role;
-        token.name = user.user.name;
-        token.isProfileComplete = user.user.isProfileComplete ?? false;
-        // token.isHealthQuestionsAnswered = user.user.isHealthQuestionsAnswered ?? false;
-        token.approvalStatus = user.user.approvalStatus ?? "pending";
+        token.email = user.user?.email || user.email;
+        token.role = user.user?.role || user.role;
+        token.name = user.user?.name || user.name || user.email;
+        token.isProfileComplete = user.user?.isProfileComplete ?? false;
+        token.approvalStatus = user.user?.approvalStatus ?? "pending";
 
         try {
-          const decoded = jwtDecode(user.token);
-          token.exp = decoded.exp;
+          const jwtToken = user.token;
+          if (jwtToken) {
+            const decoded = jwtDecode(jwtToken);
+            token.exp = decoded.exp;
+          }
         } catch (e) {
           console.error("Failed to decode JWT:", e);
           token.exp = null;
@@ -127,5 +145,7 @@ export default NextAuth({
     signIn: "/login",
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-key-change-in-production",
+  
+  debug: process.env.NODE_ENV === "development", // Enable debug logging in development
 });
