@@ -110,7 +110,7 @@ const ConsultationBookingPageContent = () => {
 
       // 1. Fetch appointments for selected date
       const appointmentRes = await fetchData(
-        `consultation-appointments/all/no/pagination/?dateFrom=${selectedDateString}&dateTo=${selectedDateString}`,
+        `medical-tourism/consultation-appointments/all/no/pagination/?dateFrom=${selectedDateString}&dateTo=${selectedDateString}`,
         token,
       );
       const bookedAppointments = appointmentRes || [];

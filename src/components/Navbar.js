@@ -59,7 +59,7 @@ export default function TopNav() {
   const { user } = useUser() || {};
   const isAuthenticated = !!user;
 
-  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL || process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "";
 
   const navigate = (location) => {
     if (location === "/login") {
@@ -187,7 +187,7 @@ export default function TopNav() {
                     className="h-8 w-8 rounded-full object-cover border-2 border-white shadow-sm"
                     src={
                       user.profileImage
-                        ? `${apiUrl}${user.profileImage}`
+                        ? (apiUrl && user.profileImage ? `${apiUrl}${user.profileImage}` : defaultUser)
                         : defaultUser
                     }
                     alt={user.firstName}

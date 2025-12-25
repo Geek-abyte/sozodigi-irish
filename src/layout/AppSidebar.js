@@ -47,7 +47,7 @@ const AppSidebar = () => {
   const [openSubmenus, setOpenSubmenus] = useState({});
   const subMenuRefs = useRef({});
 
-  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL || process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "";
 
   const [unverifiedLabCount, setUnverifiedLabCount] = useState(0);
   const [unverifiedPharmCount, setUnverifiedPharmCount] = useState(0);
@@ -537,7 +537,7 @@ const AppSidebar = () => {
           <div className="flex flex-col items-center p-4 border-b border-gray-200">
             <img
               src={
-                user?.profileImage
+                user?.profileImage && apiUrl
                   ? `${apiUrl}${user?.profileImage}`
                   : defaultUser.src
               }

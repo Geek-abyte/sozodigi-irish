@@ -46,7 +46,11 @@ export default function UserDropdown() {
           <img
             width={44}
             height={44}
-            src={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}${currentUser?.profileImage}`}
+            src={
+              currentUser?.profileImage && process.env.NEXT_PUBLIC_NODE_BASE_URL
+                ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}${currentUser.profileImage}`
+                : "/images/default-user.png"
+            }
             alt="User"
           />
         </span>

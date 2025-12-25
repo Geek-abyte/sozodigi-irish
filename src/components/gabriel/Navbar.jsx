@@ -35,7 +35,7 @@ import {
   FaStethoscope,
 } from "react-icons/fa";
 
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL || process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "";
 
 const Navbar = ({ className, onMenuClick }) => {
   const navigate = useNavigate();
@@ -549,7 +549,7 @@ const Navbar = ({ className, onMenuClick }) => {
                         <img
                           className="h-8 w-8 rounded-full object-cover border-2 border-white shadow-sm"
                           src={
-                            user.profileImage
+                            user.profileImage && apiUrl
                               ? `${apiUrl}${user.profileImage}`
                               : defaultUser
                           }
@@ -644,7 +644,7 @@ const Navbar = ({ className, onMenuClick }) => {
                     <img
                       className="h-14 w-14 rounded-full object-cover border-2 border-white shadow-md"
                       src={
-                        user.profileImage
+                        user.profileImage && apiUrl
                           ? `${apiUrl}${user.profileImage}`
                           : defaultUser
                       }
