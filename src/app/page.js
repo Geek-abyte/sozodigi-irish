@@ -152,8 +152,10 @@ export default function HomePage() {
         setBlogsError(null);
         const data = await fetchData("blogs");
         console.log("Raw blogs response:", data);
-        setBlogs(data.data || []);
-        console.log("Processed blogs:", data.data || []);
+        // Blogs endpoint returns array directly, not wrapped in { data: [...] }
+        const blogs = Array.isArray(data) ? data : (data?.data || []);
+        setBlogs(blogs);
+        console.log("Processed blogs:", blogs);
       } catch (error) {
         console.error("Failed to fetch blogs:", error);
         setBlogsError(error.message || "Failed to fetch blogs");
