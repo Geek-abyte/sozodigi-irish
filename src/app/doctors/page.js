@@ -49,7 +49,7 @@ const DoctorsPage = () => {
     async function fetchDoctors() {
       try {
         setLoading(true);
-        const response = await fetchData("users/get-all/doctors/no-pagination");
+        const response = await fetchData("medical-tourism/users/get-all/doctors/no-pagination");
         if (response) {
           const doctorsData = response;
           console.log("Fetched doctors:", doctorsData);

@@ -26,7 +26,7 @@ const HospitalsPage = () => {
   const loadHospitals = async (pageNum = 1) => {
     setLoading(true);
     try {
-      const res = await fetchData(`/hospitals?page=${pageNum}&limit=5`);
+      const res = await fetchData(`medical-tourism/hospitals?page=${pageNum}&limit=5`);
       setHospitals(res.data);
       setPage(res.page);
       setPages(res.pages);
@@ -45,7 +45,7 @@ const HospitalsPage = () => {
     if (!confirm("Are you sure you want to delete this hospital?")) return;
 
     try {
-      await deleteData(`/hospitals/${hospitalId}`, token);
+      await deleteData(`medical-tourism/hospitals/${hospitalId}`, token);
       loadHospitals(page);
     } catch (error) {
       console.error("Error deleting hospital:", error);

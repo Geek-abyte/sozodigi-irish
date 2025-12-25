@@ -105,7 +105,7 @@ const ConsultationBookingPageContent = ({ showSpecialistCategories }) => {
   const fetchSpecialistCategories = async () => {
     setLoadingCategories(true);
     try {
-      const res = await fetchData("users/get-all/doctors/no-pagination", token);
+      const res = await fetchData("medical-tourism/users/get-all/doctors/no-pagination", token);
 
       // Filter to only show General Practitioners
       const generalPractitioners = res.filter((specialist) => {
