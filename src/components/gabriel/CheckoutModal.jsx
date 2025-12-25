@@ -65,25 +65,41 @@ const CheckoutModal = ({
   useEffect(() => {
     const fetchPaymentIntent = async () => {
       try {
+        if (!token) {
+          setError("Please log in to continue with payment");
+          return;
+        }
+        
         const numericAmount = Number(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
           throw new Error("Invalid amount");
         }
         const smallest = toSmallestUnit(numericAmount, currency);
         const response = await postData(
-          "payments/create/intent",
+          "medical-tourism/payments/create/intent",
           { amount: smallest, currency },
           token,
         );
+        
+        if (!response || !response.clientSecret) {
+          console.error("Invalid payment response:", response);
+          throw new Error("Invalid response from payment server. Please try again.");
+        }
+        
         setClientSecret(response.clientSecret);
+        setError(null); // Clear any previous errors
       } catch (err) {
-        console.error("Error fetching payment intent:", err.message);
-        setError("Failed to initialize payment. Please try again.");
+        console.error("Error fetching payment intent:", err);
+        const errorMessage = err.message || "Failed to initialize payment. Please try again.";
+        setError(errorMessage);
+        setClientSecret(""); // Clear clientSecret on error
       }
     };
 
     if (amount && token) {
       fetchPaymentIntent();
+    } else if (amount && !token) {
+      setError("Please log in to continue with payment");
     }
   }, [amount, currency, token]);
 
@@ -122,7 +138,7 @@ const CheckoutModal = ({
       };
 
       const res = await postData(
-        "consultation-appointments/create/custom",
+        "medical-tourism/consultation-appointments/create/custom",
         payload,
         token,
       );
@@ -155,55 +171,72 @@ const CheckoutModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!clientSecret || !clientSecret.trim()) {
+      setError("Payment not initialized. Please wait or refresh the page.");
+      return;
+    }
+    
+    if (!stripe || !elements) {
+      setError("Stripe not loaded. Please refresh the page.");
+      return;
+    }
+    
     setProcessing(true);
     setError(null);
 
-    const payload = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
-        billing_details: { name, email },
-      },
-    });
+    try {
+      const payload = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+          billing_details: { name, email },
+        },
+      });
 
-    if (payload.error) {
-      setError(`Payment failed: ${payload.error.message}`);
-      setProcessing(false);
-    } else {
-      setSucceeded(true);
-      // setCallStatus("initiating");
+      if (payload.error) {
+        setError(`Payment failed: ${payload.error.message}`);
+        setProcessing(false);
+      } else {
+        setSucceeded(true);
+        // setCallStatus("initiating");
 
-      const paymentData = {
-        transactionId: payload.paymentIntent.id,
-        amount: payload.paymentIntent.amount,
-      };
-
-      let orderData = {
-        patient: session?.user?.id,
-        consultant: specialist?._id,
-        date: appointmentDate,
-        duration: duration,
-        type: "general",
-        mode: consultMode,
-        paymentStatus: "paid",
-        consultMode: consultMode,
-      };
-
-      // Add startTime and endTime only if consultMode is "appointment"
-      if (consultMode === "appointment") {
-        orderData = {
-          ...orderData,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
+        const paymentData = {
+          transactionId: payload.paymentIntent.id,
+          amount: payload.paymentIntent.amount,
         };
-      }
 
-      try {
-        await createAppointment(paymentData, orderData);
-      } catch (err) {
-        console.error("Failed to initiate call:", err);
-        setError("Payment successful, but failed to initiate call.");
-        // setCallStatus("error");
+        let orderData = {
+          patient: session?.user?.id,
+          consultant: specialist?._id,
+          date: appointmentDate,
+          duration: duration,
+          type: "general",
+          mode: consultMode,
+          paymentStatus: "paid",
+          consultMode: consultMode,
+        };
+
+        // Add startTime and endTime only if consultMode is "appointment"
+        if (consultMode === "appointment") {
+          orderData = {
+            ...orderData,
+            startTime: slot.startTime,
+            endTime: slot.endTime,
+          };
+        }
+
+        try {
+          await createAppointment(paymentData, orderData);
+        } catch (err) {
+          console.error("Failed to initiate call:", err);
+          setError("Payment successful, but failed to initiate call.");
+          // setCallStatus("error");
+        }
       }
+    } catch (err) {
+      console.error("Payment confirmation error:", err);
+      setError(`Payment failed: ${err.message || "Unknown error"}`);
+      setProcessing(false);
     }
   };
 

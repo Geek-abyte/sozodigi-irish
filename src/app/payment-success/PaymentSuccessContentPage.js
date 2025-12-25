@@ -87,7 +87,7 @@ const PaymentSuccessContentPage = () => {
       };
 
       const res = await postData(
-        "consultation-appointments/create/custom",
+        "medical-tourism/consultation-appointments/create/custom",
         payload,
         token,
       );

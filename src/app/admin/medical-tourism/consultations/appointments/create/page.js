@@ -31,7 +31,7 @@ const CreateConsultationAppointmentPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await postData("consultation-appointments/create/custom", form, token);
+      await postData("medical-tourism/consultation-appointments/create/custom", form, token);
       addToast("Appointment booked successfully!", "success");
       router.push("/admin/medical-tourism/consultations/appointments");
     } catch (error) {
