@@ -25,7 +25,7 @@ const SessionDetailsPage = () => {
   useEffect(() => {
     const loadSession = async () => {
       try {
-        const res = await fetchData(`video-sessions/${id}`, token);
+        const res = await fetchData(`medical-tourism/video-sessions/${id}`, token);
         setSessionData(res.session);
         setForm({
           prescriptions: res.session.prescriptions || [],
@@ -65,7 +65,7 @@ const SessionDetailsPage = () => {
     setUpdating(true);
     try {
       await updateData(
-        `video-sessions/${id}`,
+        `medical-tourism/video-sessions/${id}`,
         {
           ...sessionData,
           prescriptions: form.prescriptions,

@@ -29,8 +29,8 @@ const EditConsultationAppointmentPage = () => {
     const loadData = async () => {
       try {
         const [usersRes, appointmentRes] = await Promise.all([
-          fetchData("users/get-all/no-pagination", token),
-          fetchData(`consultation-appointments/get/custom/${id}`, token),
+          fetchData("medical-tourism/users/get-all/no-pagination", token),
+          fetchData(`medical-tourism/consultation-appointments/get/custom/${id}`, token),
         ]);
 
         const patientsList = usersRes.filter(

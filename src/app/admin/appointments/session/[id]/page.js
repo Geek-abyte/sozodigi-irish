@@ -323,7 +323,7 @@ const SessionPage = () => {
       try {
         setSessionNotes("loading...");
         const response = await fetchData(
-          `video-sessions/${appointmentRef.current.session._id}`,
+          `medical-tourism/video-sessions/${appointmentRef.current.session._id}`,
           token,
         );
         // console.log(response.success && response.session)
@@ -349,7 +349,7 @@ const SessionPage = () => {
 
       try {
         const response = await fetchData(
-          `video-sessions/${appointmentRef.current.session._id}`,
+          `medical-tourism/video-sessions/${appointmentRef.current.session._id}`,
           token,
         );
         if (response.success && response.session) {
@@ -387,7 +387,7 @@ const SessionPage = () => {
 
       try {
         const response = await fetchData(
-          `video-sessions/${appointmentRef.current.session._id}`,
+          `medical-tourism/video-sessions/${appointmentRef.current.session._id}`,
           token,
         );
         if (response.success && response.session) {

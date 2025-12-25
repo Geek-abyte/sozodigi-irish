@@ -148,30 +148,34 @@ export default function Ecommerce() {
   const fetchSessionData = async () => {
     try {
       const response = await fetchData("medical-tourism/video-sessions/by-user/all", token); // Adjust to your actual endpoint
-      const sessions = response.sessions;
+      const sessions = response?.sessions || response || [];
       // console.log(response.sessions)
       // Prepare data for chart (e.g., sessions count by month)
       const sessionCountsByMonth = Array(12).fill(0);
       const prescriptionCountsByMonth = Array(12).fill(0);
       const sessionPrescriptions = [];
 
-      sessions.forEach((session) => {
-        const month = new Date(session.createdAt).getMonth(); // Get month from the session date
-        sessionCountsByMonth[month]++;
+      if (Array.isArray(sessions)) {
+        sessions.forEach((session) => {
+          const month = new Date(session.createdAt).getMonth(); // Get month from the session date
+          sessionCountsByMonth[month]++;
 
-        if (session.prescriptions && session.prescriptions.length > 0) {
-          prescriptionCountsByMonth[month]++;
-          sessionPrescriptions.push(session.prescriptions);
-        }
-      });
+          if (session.prescriptions && session.prescriptions.length > 0) {
+            prescriptionCountsByMonth[month]++;
+            sessionPrescriptions.push(session.prescriptions);
+          }
+        });
+      }
 
       // console.log(response.sessions)
 
-      setCalls(response.sessions);
+      setCalls(Array.isArray(sessions) ? sessions : []);
       setLoading(false);
       setPrescriptions(sessionPrescriptions);
     } catch (error) {
       console.error("Error fetching session data:", error);
+      setCalls([]);
+      setLoading(false);
     }
   };
 
@@ -193,9 +197,11 @@ export default function Ecommerce() {
       }
       const response = await fetchData(url, token);
       // console.log(response.data)
-      setUpcomingAppointments(response.data);
+      const appointments = response?.data || response || [];
+      setUpcomingAppointments(Array.isArray(appointments) ? appointments : []);
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.error("Error fetching appointments:", error);
+      setUpcomingAppointments([]);
     }
   };
 
@@ -236,9 +242,10 @@ export default function Ecommerce() {
       const url = `medical-tourism/users/get-all/no-pagination`;
       const response = await fetchData(url, token);
       // console.log(response)
-      setPatients(response);
+      setPatients(Array.isArray(response) ? response : []);
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.error("Error fetching patients:", error);
+      setPatients([]);
     }
   };
 
@@ -247,9 +254,10 @@ export default function Ecommerce() {
       const url = `medical-tourism/users/get-all/doctors/no-pagination`;
       const response = await fetchData(url, token);
       // console.log(response)
-      setDoctors(response);
+      setDoctors(Array.isArray(response) ? response : []);
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.error("Error fetching doctors:", error);
+      setDoctors([]);
     }
   };
 
@@ -265,12 +273,14 @@ export default function Ecommerce() {
     try {
       const url = `medical-tourism/payments/all/no-pagination`;
       const response = await fetchData(url, token);
-      console.log(response.payments);
-      setRevenue(response.payments);
+      console.log(response);
+      const payments = response?.payments || response || [];
+      setRevenue(Array.isArray(payments) ? payments : []);
 
       // console.log("Total Revenue:", calTotalRevnue(response.payments).toFixed(2));
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.error("Error fetching revenue:", error);
+      setRevenue([]);
     }
   };
 
@@ -279,9 +289,10 @@ export default function Ecommerce() {
       const url = `medical-tourism/pharmacies/get-all/no-pagination`;
       const response = await fetchData(url, token);
       // console.log(response)
-      setPharmacies(response);
+      setPharmacies(Array.isArray(response) ? response : response?.pharmacies || []);
     } catch (error) {
-      console.error("Error fetching session data:", error);
+      console.error("Error fetching pharmacies:", error);
+      setPharmacies([]);
     }
   };
 

@@ -19,7 +19,7 @@ const MedicalCertificate = () => {
   useEffect(() => {
     const getCertificate = async () => {
       try {
-        const res = await fetchData(`certificates/${certificateId}`, token);
+        const res = await fetchData(`medical-tourism/certificates/${certificateId}`, token);
         if (res) {
           setCertificate(res);
           setDiagnosis(res.diagnosis);

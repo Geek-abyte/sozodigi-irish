@@ -19,19 +19,29 @@ export default function GalleryListPage() {
 
   const loadGalleries = async () => {
     setLoading(true);
-    const res = await fetchData(`galleries?page=${page}&limit=10`);
-    if (res?.data) {
-      setGalleries(res.data);
-      setTotalPages(res.total);
+    try {
+      const res = await fetchData(`medical-tourism/galleries?page=${page}&limit=10`, token);
+      const galleriesData = res?.data || res || [];
+      setGalleries(Array.isArray(galleriesData) ? galleriesData : []);
+      setTotalPages(res?.total || res?.totalPages || 1);
+    } catch (error) {
+      console.error("Error loading galleries:", error);
+      setGalleries([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this gallery item?")) {
-      await deleteData(`galleries/${id}`, token);
-      loadGalleries();
-      addToast("Gallery deleted!");
+      try {
+        await deleteData(`medical-tourism/galleries/${id}`, token);
+        loadGalleries();
+        addToast("Gallery deleted!", "success");
+      } catch (error) {
+        console.error("Error deleting gallery:", error);
+        addToast("Failed to delete gallery", "error");
+      }
     }
   };
 

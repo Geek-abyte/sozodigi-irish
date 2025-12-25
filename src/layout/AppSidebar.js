@@ -98,13 +98,14 @@ const AppSidebar = () => {
       try {
         if (roles.some((role) => user?.role === role)) {
           const data = await fetchData(
-            "laboratories/get-all/no-pagination?status=unverified",
+            "medical-tourism/laboratories/get-all/no-pagination?status=unverified",
             token,
           );
-          setUnverifiedLabCount(data.length || 0);
+          setUnverifiedLabCount(Array.isArray(data) ? data.length : 0);
         }
       } catch (err) {
         console.error("Failed to fetch unverified lab count", err);
+        setUnverifiedLabCount(0);
       }
     };
 
@@ -113,13 +114,14 @@ const AppSidebar = () => {
       try {
         if (roles.some((role) => user?.role === role)) {
           const data = await fetchData(
-            "pharmacies/get-all/no-pagination?status=unverified",
+            "medical-tourism/pharmacies/get-all/no-pagination?status=unverified",
             token,
           );
-          setUnverifiedPharmCount(data.length || 0);
+          setUnverifiedPharmCount(Array.isArray(data) ? data.length : 0);
         }
       } catch (err) {
         console.error("Failed to fetch unverified pharmacy count", err);
+        setUnverifiedPharmCount(0);
       }
     };
 

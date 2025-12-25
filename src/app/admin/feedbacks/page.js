@@ -43,11 +43,12 @@ const FeedbackPage = () => {
         ...(filterEndDate && { endDate: filterEndDate }),
       });
 
-      const endpoint = `session-feedback/get/all/paginated?${params.toString()}`;
+      const endpoint = `medical-tourism/session-feedback/get/all/paginated?${params.toString()}`;
       const data = await fetchData(endpoint, token);
-      console.log(data.data);
-      setFeedbacks(data.data);
-      setTotalPages(data.pages || 1);
+      console.log(data);
+      const feedbacksData = data?.data || data || [];
+      setFeedbacks(Array.isArray(feedbacksData) ? feedbacksData : []);
+      setTotalPages(data?.pages || data?.totalPages || 1);
     } catch (error) {
       console.error("Error loading feedbacks:", error);
     } finally {

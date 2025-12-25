@@ -19,7 +19,7 @@ const MedicalCertificate = () => {
   useEffect(() => {
     const fetchCertificate = async () => {
       try {
-        const res = await fetchData(`certificates/custom/get/${id}`, token);
+        const res = await fetchData(`medical-tourism/certificates/custom/get/${id}`, token);
         setCertificate(res);
       } catch (error) {
         console.error("Failed to load certificate:", error);

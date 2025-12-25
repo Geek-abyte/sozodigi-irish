@@ -109,7 +109,7 @@ export default function StartConsultationPage() {
   useEffect(() => {
     if (!socketRef.current || !appointmentId) return;
 
-    fetchData(`consultation-appointments/${appointmentId}`)
+    fetchData(`medical-tourism/consultation-appointments/${appointmentId}`, token)
       .then((appointment) => {
         setAppointment(appointment);
       })

@@ -31,10 +31,10 @@ export default function SpecialistsPageContent() {
     setLoading(true);
     try {
       const res = await fetchData(
-        "users/get-all/no-pagination?role=specialist",
+        "medical-tourism/users/get-all/no-pagination?role=specialist",
         token,
       );
-      setSpecialists(res);
+      setSpecialists(Array.isArray(res) ? res : []);
     } catch (err) {
       addToast("Failed to load specialists", "error");
     } finally {

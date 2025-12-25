@@ -24,8 +24,8 @@ const EditConsultationDocumentation = () => {
 
     const loadData = async () => {
       const [docRes, apptRes] = await Promise.all([
-        fetchData(`consultation-documents/get/custom/${id}`, token),
-        fetchData("consultation-appointments/get/all/simple", token),
+        fetchData(`medical-tourism/consultation-documents/get/custom/${id}`, token),
+        fetchData("medical-tourism/consultation-appointments/get/all/simple", token),
       ]);
 
       if (docRes && docRes._id) {

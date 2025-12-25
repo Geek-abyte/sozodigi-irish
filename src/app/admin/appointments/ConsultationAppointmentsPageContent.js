@@ -89,7 +89,7 @@ const ConsultationAppointmentsPageContent = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData(`consultation-appointments/${itemToDelete._id}`, token);
+      await deleteData(`medical-tourism/consultation-appointments/${itemToDelete._id}`, token);
       addToast("Appointment deleted successfully", "success");
       setAppointments((prev) => prev.filter((a) => a._id !== itemToDelete._id));
     } catch (error) {

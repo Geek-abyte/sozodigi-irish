@@ -23,7 +23,7 @@ const PrescriptionReceipt = () => {
   useEffect(() => {
     const loadSession = async () => {
       try {
-        const res = await fetchData(`video-sessions/${id}`, token);
+        const res = await fetchData(`medical-tourism/video-sessions/${id}`, token);
         setAppointmentSession(res.session);
       } catch (error) {
         console.error(error);
