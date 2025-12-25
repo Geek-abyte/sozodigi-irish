@@ -5,6 +5,7 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useUser } from "@/context/UserContext";
 import { signOut } from "next-auth/react"; // Import signOut
+import { defaultUser } from "@/assets";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,7 +50,7 @@ export default function UserDropdown() {
             src={
               currentUser?.profileImage && process.env.NEXT_PUBLIC_NODE_BASE_URL
                 ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}${currentUser.profileImage}`
-                : "/images/default-user.png"
+                : defaultUser?.src || defaultUser
             }
             alt="User"
           />

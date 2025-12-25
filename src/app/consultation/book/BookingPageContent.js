@@ -72,7 +72,7 @@ export default function ConsultationBookingPageContent() {
     const fetchAvailableSlots = async () => {
       try {
         const res = await fetchData(
-          `availabilities/slots/by?userRole=specialist&isBooked=false`,
+          `medical-tourism/availabilities/slots/by?userRole=specialist&isBooked=false`,
           token,
         );
         console.log(res.data);

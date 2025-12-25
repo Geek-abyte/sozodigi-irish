@@ -119,7 +119,7 @@ const CreateConsultantAvailabilityPage = () => {
     };
 
     try {
-      await postData("availabilities/create/custom", payload, token);
+      await postData("medical-tourism/availabilities/create/custom", payload, token);
       addToast("Availability created successfully!", "success");
       router.push("/admin/availabilities");
     } catch (error) {

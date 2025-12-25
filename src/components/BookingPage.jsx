@@ -186,7 +186,7 @@ const ConsultationBookingPageContent = ({ showSpecialistCategories }) => {
       // 3. Loop through all specialists in the selected category
       for (const specialist of specialistsByCategory) {
         const res = await fetchData(
-          `availabilities/slots/by?userRole=specialist&consultantId=${specialist._id}&isBooked=false`,
+          `medical-tourism/availabilities/slots/by?userRole=specialist&consultantId=${specialist._id}&isBooked=false`,
           token,
         );
 

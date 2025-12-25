@@ -79,7 +79,7 @@ const RescheduleDialog = ({ appointment, token, onClose, onRescheduled }) => {
 
       // 2. Fetch available slots for the consultant
       const res = await fetchData(
-        `availabilities/slots/by?userRole=specialist&consultantId=${consultantId}&isBooked=false`,
+        `medical-tourism/availabilities/slots/by?userRole=specialist&consultantId=${consultantId}&isBooked=false`,
         token,
       );
 

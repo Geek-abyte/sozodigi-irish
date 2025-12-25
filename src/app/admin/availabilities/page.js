@@ -27,8 +27,8 @@ const AvailabilityListPage = () => {
 
   const loadAvailabilities = async () => {
     try {
-      const res = await fetchData(`availabilities/user/${userId}`, token);
-      setAvailabilities(res || []);
+      const res = await fetchData(`medical-tourism/availabilities/user/${userId}`, token);
+      setAvailabilities(Array.isArray(res) ? res : []);
     } catch (err) {
       console.error("Failed to load availabilities", err);
       addToast("Error loading availabilities", "error");
@@ -41,7 +41,7 @@ const AvailabilityListPage = () => {
 
   const handleDelete = async () => {
     try {
-      await deleteData(`availabilities/${itemToDelete._id}`, token);
+      await deleteData(`medical-tourism/availabilities/${itemToDelete._id}`, token);
       addToast("Availability deleted successfully", "success");
       setAvailabilities((prev) =>
         prev.filter((a) => a._id !== itemToDelete._id),
