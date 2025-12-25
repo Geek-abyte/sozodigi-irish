@@ -241,9 +241,17 @@ export default function HomePage() {
     <div key={blog._id} className="w-full">
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden h-[320px] flex flex-col">
         <img
-          src={process.env.NEXT_PUBLIC_NODE_BASE_URL + "/" + blog.featuredImage}
+          src={
+            blog.featuredImage
+              ? `${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${blog.featuredImage}`
+              : "/images/blog-placeholder.jpg"
+          }
           alt={blog.title}
           className="w-full h-40 object-cover"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/images/blog-placeholder.jpg";
+          }}
         />
         <div className="p-4 flex flex-col flex-grow">
           <h3 className="font-bold text-lg mb-2 text-primary-10 line-clamp-2">

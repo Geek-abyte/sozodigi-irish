@@ -13,11 +13,22 @@ export default function BlogPage() {
     const loadBlogs = async () => {
       setLoading(true);
       try {
-        const res = await fetchData(`blogs?page=${page}&limit=6`); // Fetch with pagination (6 items per page)
-        setBlogs(res.data);
-        setTotalPages(res.pages); // Set the total number of pages
+        // Backend doesn't support pagination - returns all blogs as array
+        const res = await fetchData(`blogs`);
+        // Blogs endpoint returns array directly, not wrapped in { data: [...] }
+        const allBlogs = Array.isArray(res) ? res : (res?.data || []);
+        
+        // Client-side pagination: 6 items per page
+        const itemsPerPage = 6;
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedBlogs = allBlogs.slice(startIndex, endIndex);
+        
+        setBlogs(paginatedBlogs);
+        setTotalPages(Math.ceil(allBlogs.length / itemsPerPage) || 1);
       } catch (error) {
         console.error("Error fetching blogs:", error);
+        setBlogs([]);
       } finally {
         setLoading(false);
       }
