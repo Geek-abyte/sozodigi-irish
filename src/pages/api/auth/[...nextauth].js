@@ -2,7 +2,15 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_NODE_API_BASE_URL;
+// Use NEXT_PUBLIC_NODE_API_BASE_URL if set, otherwise fall back to NEXT_PUBLIC_NODE_BASE_URL
+// Both should point to the same backend API URL
+const API_BASE_URL = 
+  process.env.NEXT_PUBLIC_NODE_API_BASE_URL || 
+  process.env.NEXT_PUBLIC_NODE_BASE_URL;
+
+if (!API_BASE_URL) {
+  console.error("❌ Neither NEXT_PUBLIC_NODE_API_BASE_URL nor NEXT_PUBLIC_NODE_BASE_URL is set! Login will not work.");
+}
 
 export default NextAuth({
   providers: [
@@ -18,6 +26,10 @@ export default NextAuth({
       },
       async authorize(credentials) {
         try {
+          if (!API_BASE_URL) {
+            throw new Error("API URL is not configured. Please set NEXT_PUBLIC_NODE_API_BASE_URL.");
+          }
+
           const res = await fetch(`${API_BASE_URL}/users/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -28,7 +40,24 @@ export default NextAuth({
             }),
           });
 
-          if (!res.ok) throw new Error("Invalid credentials");
+          if (!res.ok) {
+            // Try to get error message from response
+            let errorMessage = "Invalid credentials";
+            try {
+              const errorData = await res.text();
+              // If it's JSON, parse it
+              try {
+                const jsonError = JSON.parse(errorData);
+                errorMessage = jsonError.message || errorMessage;
+              } catch {
+                // If not JSON, use the text
+                errorMessage = errorData || errorMessage;
+              }
+            } catch {
+              // If we can't read the response, use default message
+            }
+            throw new Error(errorMessage);
+          }
 
           const user = await res.json();
 
@@ -36,6 +65,7 @@ export default NextAuth({
 
           return { ...user };
         } catch (error) {
+          console.error("NextAuth authorize error:", error);
           throw new Error(error.message || "Authentication failed");
         }
       },
