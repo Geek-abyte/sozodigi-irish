@@ -45,15 +45,17 @@ function AdminLayoutContent({ children }) {
   const isSessionPage = /^\/admin\/appointments\/session\/[^\/]+$/.test(pathname);
 
   useEffect(() => {
+    // Unregister service worker to prevent it from intercepting API calls
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker
-        .register('/sw.js')
-        .then((registration) => {
-          console.log('✅ Service Worker registered:', registration);
-        })
-        .catch((error) => {
-          console.error('❌ Service Worker registration failed:', error);
-        });
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const registration of registrations) {
+          registration.unregister().then((success) => {
+            if (success) {
+              console.log('Service Worker unregistered successfully');
+            }
+          });
+        }
+      });
     }
   }, []);
 
