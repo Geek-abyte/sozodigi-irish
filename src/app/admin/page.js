@@ -423,7 +423,7 @@ export default function Ecommerce() {
         new Date(upcomingAppointments[0].date).toLocaleDateString() : 
         "None",
       change: upcomingAppointments.length > 0 ? 
-        `with ${ userRole === "user" ? 'Dr.'+ upcomingAppointments[0].consultant?.firstName || 'Specialist' : upcomingAppointments[0].patient?.firstName}` : 
+        `with ${ userRole === "user" ? ('Dr. ' + (upcomingAppointments[0].consultant?.firstName || 'Specialist')) : (upcomingAppointments[0].patient?.firstName || 'Patient')}` : 
         "No scheduled appointments",
       icon: <FaCalendarAlt className="text-green-600" size={20} />,
       bgColor: "bg-green-50",

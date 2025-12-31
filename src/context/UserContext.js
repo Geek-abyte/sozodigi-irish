@@ -21,7 +21,18 @@ export const UserProvider = ({ children }) => {
         const fullUser = await fetchData('users/'+userId, token);
 
         if (fullUser) {
-          setUser(fullUser); // full user object from backend
+          // Ensure nested objects are safely handled
+          // Extract address object properties to prevent rendering errors
+          const safeUser = {
+            ...fullUser,
+            // Flatten address if it's an object to prevent React rendering errors
+            address: fullUser.address && typeof fullUser.address === 'object' 
+              ? `${fullUser.address.street || ''} ${fullUser.address.city || ''} ${fullUser.address.state || ''}`.trim() || null
+              : fullUser.address,
+            // Ensure country is a string, not nested
+            country: fullUser.address?.country || fullUser.country || null,
+          };
+          setUser(safeUser);
         } else {
           setUser(session.user); // fallback to session user
         }
