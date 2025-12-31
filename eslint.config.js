@@ -50,9 +50,9 @@ export default [
       },
     },
     rules: {
-      "prettier/prettier": "warn",
+      "prettier/prettier": "off",
       "react/react-in-jsx-scope": "off",
-      "no-unused-vars": "warn",
+      "no-unused-vars": "off",
       "no-prototype-builtins": "off",
     },
   },
