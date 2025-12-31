@@ -19,7 +19,7 @@ axiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Public axios instance without auth interceptor for public endpoints

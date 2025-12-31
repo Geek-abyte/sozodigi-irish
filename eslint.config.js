@@ -12,6 +12,30 @@ export default [
       react, // ✅ needed for JSX parsing + linting
     },
     languageOptions: {
+      globals: {
+        // Browser globals
+        window: "readonly",
+        document: "readonly",
+        navigator: "readonly",
+        localStorage: "readonly",
+        sessionStorage: "readonly",
+        fetch: "readonly",
+        AbortController: "readonly",
+        console: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        // Node.js globals
+        process: "readonly",
+        Buffer: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+        global: "readonly",
+        module: "readonly",
+        require: "readonly",
+        exports: "readonly",
+      },
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
@@ -29,6 +53,7 @@ export default [
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
       "no-unused-vars": "warn",
+      "no-prototype-builtins": "off",
     },
   },
 ];

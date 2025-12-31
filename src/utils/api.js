@@ -1,7 +1,13 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "http://localhost:5000";
 
 // Timeout Fetch with Retry
-export async function fetchWithTimeout(resource, options = {}, timeout = 10000, retries = 3) {
+export async function fetchWithTimeout(
+  resource,
+  options = {},
+  timeout = 10000,
+  retries = 3,
+) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
@@ -60,7 +66,9 @@ async function handleResponse(res) {
   } catch (readError) {
     const error = new Error("Unable to read server response");
     error.status = res.status || 0;
-    error.data = { message: readError?.message || "Unable to read server response" };
+    error.data = {
+      message: readError?.message || "Unable to read server response",
+    };
     throw error;
   }
 
@@ -68,7 +76,7 @@ async function handleResponse(res) {
   if (text) {
     try {
       data = JSON.parse(text);
-    } catch (jsonError) {
+    } catch {
       data = text;
     }
   } else {
@@ -76,9 +84,10 @@ async function handleResponse(res) {
   }
 
   if (!res.ok) {
-    const message = typeof data === "string"
-      ? data
-      : data?.message || `Error: ${res.statusText || "Unknown error"}`;
+    const message =
+      typeof data === "string"
+        ? data
+        : data?.message || `Error: ${res.statusText || "Unknown error"}`;
 
     const error = new Error(message);
     error.status = res.status;
@@ -96,12 +105,19 @@ async function handleResponse(res) {
 // GET
 export async function fetchData(endpoint, token = null) {
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
-  const res = await fetchWithTimeout(`${API_BASE_URL}/${endpoint}`, { headers });
+  const res = await fetchWithTimeout(`${API_BASE_URL}/${endpoint}`, {
+    headers,
+  });
   return handleResponse(res);
 }
 
 // POST
-export async function postData(endpoint, data, token = null, isFormData = false) {
+export async function postData(
+  endpoint,
+  data,
+  token = null,
+  isFormData = false,
+) {
   const headers = token
     ? {
         Authorization: `Bearer ${token}`,
@@ -120,11 +136,20 @@ export async function postData(endpoint, data, token = null, isFormData = false)
 
 export async function rescheduleAppointment(id, payload = {}, token = null) {
   // Reuse the existing update endpoint for consultation appointments
-  return await updateData(`consultation-appointments/update/custom/${id}`, payload, token);
+  return await updateData(
+    `consultation-appointments/update/custom/${id}`,
+    payload,
+    token,
+  );
 }
 
 // PUT
-export async function updateData(endpoint, data, token = null, isFormData = false) {
+export async function updateData(
+  endpoint,
+  data,
+  token = null,
+  isFormData = false,
+) {
   const headers = token
     ? {
         Authorization: `Bearer ${token}`,
