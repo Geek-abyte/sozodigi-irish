@@ -50,7 +50,6 @@ const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL);
 
 export default function Ecommerce() {
   const { data: session } = useSession();
-  const userRole = session?.user?.role ?? "user";
   const token = session?.user?.jwt
 
   const dispatch = useDispatch()
@@ -61,7 +60,26 @@ export default function Ecommerce() {
 
   const { user } = useUser()
 
+  // Get role from full user object (preferred) or fallback to session
+  // Normalize role to lowercase for consistent comparison
+  const rawRole = user?.role || session?.user?.role || "user";
+  const userRole = typeof rawRole === 'string' ? rawRole.toLowerCase() : rawRole;
   const userId = user?._id
+
+  // Debug: Log role information (remove in production)
+  useEffect(() => {
+    if (user || session?.user) {
+      console.log("🔍 User Role Debug:", {
+        userRole,
+        rawRole,
+        userRoleFromUser: user?.role,
+        userRoleFromSession: session?.user?.role,
+        isAdmin: userRole === "admin" || userRole === "superadmin",
+        fullUser: user,
+        sessionUser: session?.user
+      });
+    }
+  }, [user, session, userRole, rawRole]);
 
   const PRICE = 20;
 
@@ -176,8 +194,26 @@ export default function Ecommerce() {
         url = `consultation-appointments/all/paginated`
       }
       const response = await fetchData(url, token);
-      // console.log(response.data)
-      setUpcomingAppointments(response.data);
+      // Process appointments to safely handle nested objects
+      const processedAppointments = (response.data || []).map(appointment => ({
+        ...appointment,
+        // Safely extract consultant data
+        consultant: appointment.consultant ? {
+          _id: appointment.consultant._id,
+          firstName: appointment.consultant.firstName,
+          lastName: appointment.consultant.lastName,
+          email: appointment.consultant.email,
+          specialty: appointment.consultant.specialty,
+        } : null,
+        // Safely extract patient data
+        patient: appointment.patient ? {
+          _id: appointment.patient._id,
+          firstName: appointment.patient.firstName,
+          lastName: appointment.patient.lastName,
+          email: appointment.patient.email,
+        } : null,
+      }));
+      setUpcomingAppointments(processedAppointments);
     } catch (error) {
       console.error("Error fetching session data:", error);
     }
@@ -268,7 +304,7 @@ export default function Ecommerce() {
   }
 
   useEffect(() => {
-    if (userRole === "admin" || userRole === "superAdmin") {
+    if (userRole === "admin" || userRole === "superadmin") {
       fetchPatients();
       fetchDoctors();
       fetchPharmacies();
@@ -487,7 +523,7 @@ export default function Ecommerce() {
       icon: <FaUserAlt className="text-green-600" size={20} />,
       bgColor: "bg-green-50",
       iconBg: "bg-green-100",
-      visible: userRole === "admin" || userRole === "superAdmin",
+      visible: userRole === "admin" || userRole === "superadmin",
       action: handlePatients
     },
     {
@@ -499,7 +535,7 @@ export default function Ecommerce() {
       icon: <FaUserMd className="text-blue-600" size={20} />,
       bgColor: "bg-blue-50",
       iconBg: "bg-blue-100",
-      visible: userRole === "admin" || userRole === "superAdmin",
+      visible: userRole === "admin" || userRole === "superadmin",
       action: handleDoctors
     },
     {
@@ -511,7 +547,7 @@ export default function Ecommerce() {
       icon: <FaPills className="text-purple-600" size={20} />,
       bgColor: "bg-purple-50",
       iconBg: "bg-purple-100",
-      visible: userRole === "admin" || userRole === "superAdmin",
+      visible: userRole === "admin" || userRole === "superadmin",
       action: handlePharmacies
     },
     {
@@ -523,7 +559,7 @@ export default function Ecommerce() {
       icon: <FaMoneyBill className="text-red-600" size={20} />,
       bgColor: "bg-red-50",
       iconBg: "bg-red-100",
-      visible: userRole === "admin" || userRole === "superAdmin",
+      visible: userRole === "admin" || userRole === "superadmin",
       action: handleRevenues
     }
   ];
@@ -680,7 +716,7 @@ export default function Ecommerce() {
 
         {/* Existing eCommerce Grid Layout */}
         <div className="grid grid-cols-12 gap-4 md:gap-6">
-        {(userRole === "admin" || userRole === "superAdmin") &&
+        {(userRole === "admin" || userRole === "superadmin") &&
           <>
               <div className="col-span-6">
                 <MonthlyTarget />
@@ -751,8 +787,8 @@ export default function Ecommerce() {
                               </div>
                             )}
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{appointment.consultant.firstName || 'Doctor'}</p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">{appointment.consultant.specialty || 'Specialist'}</p>
+                              <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{appointment.consultant?.firstName || 'Doctor'}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{appointment.consultant?.specialty || 'Specialist'}</p>
                               <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mt-1">
                                 <span className="text-[var(--color-primary67)] mr-1">
                                   <FaCalendarAlt size={10} />
@@ -837,12 +873,12 @@ export default function Ecommerce() {
           }
 
 
-          {/* {userRole === "admin" || userRole === "superAdmin" && (
+          {/* {userRole === "admin" || userRole === "superadmin" && (
             <div className="col-span-12 xl:col-span-5">
               <DemographicCard />
             </div>
           )} */}
-          {(userRole === "admin" || userRole === "superAdmin") && (
+          {(userRole === "admin" || userRole === "superadmin") && (
             <div className="col-span-12">
               <RecentTransactions />
             </div>

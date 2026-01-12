@@ -101,7 +101,7 @@ function RootLayoutContent({ children }) {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-gray-100">
+      <body className="bg-gray-100" suppressHydrationWarning>
         <Provider store={store}>
           <RootLayoutContent>{children}</RootLayoutContent>
         </Provider>

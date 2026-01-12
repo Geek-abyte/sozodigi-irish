@@ -1,16 +1,24 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { MoreDotIcon } from "@/icons";
+import { MoreHorizontal } from "lucide-react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { fetchData } from "@/utils/api"
 import { useSession } from "next-auth/react";
 
-const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+// Dynamically import ApexCharts with proper default export handling
+const ReactApexChart = dynamic(() => import("react-apexcharts").then(mod => mod.default), {
+  ssr: false,
+  loading: () => (
+    <div className="flex justify-center items-center h-[320px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  ),
+});
 
-export default function RatingsBreakdown() {
+export default function MonthlyTarget() {
   const [series, setSeries] = useState([0, 0, 0, 0, 0]);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -96,7 +104,7 @@ export default function RatingsBreakdown() {
 
           <div className="relative inline-block">
             <button onClick={toggleDropdown} className="dropdown-toggle">
-              <MoreDotIcon className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
+              <MoreHorizontal className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
             </button>
             <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2">
               <DropdownItem

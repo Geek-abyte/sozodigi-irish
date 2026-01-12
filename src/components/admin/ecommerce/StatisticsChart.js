@@ -4,9 +4,14 @@ import dynamic from "next/dynamic";
 import { fetchData } from "@/utils/api";
 import { useSession } from "next-auth/react";
 
-// Dynamically import ApexCharts
-const ReactApexChart = dynamic(() => import("react-apexcharts"), {
+// Dynamically import ApexCharts with proper default export handling
+const ReactApexChart = dynamic(() => import("react-apexcharts").then(mod => mod.default), {
   ssr: false,
+  loading: () => (
+    <div className="flex justify-center items-center h-[350px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  ),
 });
 
 export default function StatisticsChart() {
