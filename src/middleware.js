@@ -20,7 +20,7 @@ const protectedRoutes = [
   },
   {
     pathPrefix: "/superuser",
-    requiredRoles: ["superuser", "admin", "superAdmin"],
+    requiredRoles: ["superAdmin"],
   },
 ];
 

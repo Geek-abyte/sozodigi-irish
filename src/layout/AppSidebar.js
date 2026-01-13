@@ -32,6 +32,7 @@ import {
   Camera,
   MessageSquare 
 } from 'lucide-react';
+import { ShieldCheck } from "lucide-react";
 
 const AppSidebar = () => {
   const { isExpanded, isMobileOpen, toggleMobileSidebar, isHovered, setIsHovered } = useSidebar();
@@ -363,6 +364,13 @@ const AppSidebar = () => {
         name: "Blogs",
         path: "/admin/blogs",
         roles: ["admin", "superAdmin"]
+      },
+      // Super Admin Console
+      {
+        icon: <ShieldCheck />,
+        name: "Super Admin",
+        path: "/superuser",
+        roles: ["superAdmin"]
       }
     ];
 
