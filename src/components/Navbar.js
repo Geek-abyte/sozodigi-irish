@@ -32,7 +32,7 @@ import { defaultUser } from '@/assets';
 
 import Button from "@/components/gabriel/Button";
 import { useRouter, usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useUser } from '@/context/UserContext';
 import LogoutModal from "@/components/gabriel/LogoutModal";
 
@@ -54,9 +54,11 @@ export default function TopNav({}) {
   const pathname = usePathname();
 
   const { user } = useUser() || {}
+  const { data: session } = useSession();
   const isAuthenticated = !!user;
 
-  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL;
+  // Exactly match sidebar profile image logic
+  const apiUrl = process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "";
 
   const navigate = (location) => {
     if (location === "/login") {
@@ -163,7 +165,12 @@ export default function TopNav({}) {
                   >
                     <img
                       className="h-8 w-8 rounded-full object-cover border-2 border-white shadow-sm"
-                      src={user.profileImage ? `${apiUrl}${user.profileImage}` : defaultUser}
+                      src={(() => {
+                        const img = session?.user?.profileImage || user?.profileImage;
+                        if (!img) return defaultUser.src;
+                        if (/^https?:\/\//i.test(img)) return img;
+                        return `${apiUrl}${img}`;
+                      })()}
                       alt={user.firstName}
                       crossOrigin="anonymous"
                     />
@@ -272,7 +279,12 @@ export default function TopNav({}) {
                   `}>
                     <img
                       className="h-14 w-14 rounded-full object-cover border-2 border-white shadow-md"
-                      src={user.profileImage ? `${apiUrl}${user.profileImage}` : defaultUser}
+                      src={(() => {
+                        const img = session?.user?.profileImage || user?.profileImage;
+                        if (!img) return defaultUser.src;
+                        if (/^https?:\/\//i.test(img)) return img;
+                        return `${apiUrl}${img}`;
+                      })()}
                       alt={user.firstName}
                       crossOrigin="anonymous"
                     />

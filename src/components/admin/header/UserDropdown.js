@@ -4,12 +4,23 @@ import React, { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useUser } from "@/context/UserContext";
-import { signOut } from "next-auth/react";  // Import signOut
+import { signOut, useSession } from "next-auth/react";  // Import signOut
+import { defaultUser } from "@/assets";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useUser();
   const [currentUser, setCurrentUser] = useState(null);
+  const { data: session } = useSession();
+
+  // Match sidebar image resolution logic
+  const apiUrl = process.env.NEXT_PUBLIC_NODE_API_BASE_URL || process.env.NEXT_PUBLIC_NODE_BASE_URL || "";
+  const resolveProfileImage = () => {
+    const img = session?.user?.profileImage || currentUser?.profileImage;
+    if (!img) return defaultUser.src;
+    if (/^https?:\/\//i.test(img)) return img;
+    return `${apiUrl}${img}`;
+  };
 
   useEffect(() => {
     if (user) {
@@ -46,7 +57,7 @@ export default function UserDropdown() {
           <img
             width={44}
             height={44}
-            src={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}${currentUser?.profileImage}`}
+            src={resolveProfileImage()}
             alt="User"
           />
         </span>
