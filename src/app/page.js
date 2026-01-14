@@ -286,7 +286,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-15">
           <h2 className="text-4xl font-bold text-gray-800 mb-4">SIMPLE STEPS TO ONLINE CONSULTATION</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto mb-12">
-            Sozo DigiCare has designed a streamlined, user-friendly and secure process for your Video or Phone Consultation. Here’s how it works, simplified into three easy steps:
+            Sozodigicare has designed a streamlined, user-friendly and secure process for your Video or Phone Consultation. Here’s how it works, simplified into three easy steps:
           </p>
 
           <div className="relative max-w-6xl mx-auto z-10">
@@ -487,7 +487,7 @@ export default function HomePage() {
         <DoctorsPage limit={6}  />
       </section>
 
-      {/* Why Choose Sozo Digicare */}
+      {/* Why Choose Sozodigicare */}
       <WhyChooseSozo />
 
       

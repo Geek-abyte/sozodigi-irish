@@ -7,6 +7,10 @@ const protectedRoutes = [
     requiredRoles: ["admin", "user", "pharmacyAdmin", "pharmacyEmployee", "labAdmin", "specialist", "consultant", "superAdmin"],
   },
   {
+    pathPrefix: "/dashboard",
+    requiredRoles: ["user", "specialist", "consultant", "admin", "superAdmin"],
+  },
+  {
     pathPrefix: "/admin/products",
     requiredRoles: ["admin", "pharmacyAdmin", "pharmacyEmployee", "superAdmin"],
   },

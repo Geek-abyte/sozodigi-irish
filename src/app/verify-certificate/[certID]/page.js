@@ -42,7 +42,7 @@ const PublicCertificateVerification = () => {
       <h1 className="text-2xl font-bold text-green-700 mb-4">✅ Certificate Verified</h1>
       <p className="mb-2">
         This medical certificate with ID <strong>{certificate.certID}</strong> is valid and has been
-        officially issued by <strong>Sozo Digicare</strong>.
+        officially issued by <strong>Sozodigicare</strong>.
       </p>
 
       <div className="mt-6 border-t pt-4 text-sm">
@@ -55,7 +55,7 @@ const PublicCertificateVerification = () => {
       <div className="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-400 text-sm">
         <p>
           ⚠️ This certificate has been digitally issued. For physical copies or official correspondence,
-          please contact Sozo Digicare via our support page.
+          please contact Sozodigicare via our support page.
         </p>
       </div>
     </div>

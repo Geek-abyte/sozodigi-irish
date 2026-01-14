@@ -21,6 +21,7 @@ export default function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const roleFromUrl = searchParams.get("role");
+  const [mounted, setMounted] = useState(false);
 
   // console.log("captcha", RECAPTCHA_SITE_KEY)
 
@@ -52,6 +53,15 @@ export default function SignUpPage() {
       role: roleFromUrl || "user",
     }));
   }, [roleFromUrl]);
+
+  useEffect(() => {
+    // Avoid hydration mismatches from extensions/auto-fill by only rendering after mount
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -164,7 +174,12 @@ export default function SignUpPage() {
               Please fill in your details to get started
             </p>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-y-5">
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-y-5"
+              suppressHydrationWarning
+              autoComplete="off"
+            >
               {error && (
                 <p className="text-sm text-red-600 text-center">{error}</p>
               )}
@@ -177,6 +192,8 @@ export default function SignUpPage() {
                 value={formData.email}
                 onChange={handleChange}
                 className={formInput}
+                autoComplete="email"
+                suppressHydrationWarning
               />
 
               <div className="relative">
@@ -188,6 +205,8 @@ export default function SignUpPage() {
                   value={formData.password}
                   onChange={handlePasswordChange}
                   className={formInput}
+                  autoComplete="new-password"
+                  suppressHydrationWarning
                 />
                 <button
                   type="button"

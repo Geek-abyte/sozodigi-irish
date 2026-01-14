@@ -21,10 +21,10 @@ const MedicalCertificate = ({
           <div className="mb-10">
             <img
               src="/images/logo/logo.png"
-              alt="Sozo Digicare"
+              alt="Sozodigicare"
               className="h-12 mx-auto mb-2"
             />
-            <h2 className="text-base sm:text-lg font-bold">Sozo Digicare</h2>
+            <h2 className="text-base sm:text-lg font-bold">Sozodigicare</h2>
             <p className="text-sm">11 The Avenue Folkstown Park.</p>
             <p className="text-sm mb-4">Balbriggan Co Dublin.</p>
             <h1

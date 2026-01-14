@@ -30,9 +30,9 @@ import {
   Newspaper,
   LogOut,
   Camera,
-  MessageSquare 
-} from 'lucide-react';
-import { ShieldCheck } from "lucide-react";
+  MessageSquare,
+  ShieldCheck,
+} from "lucide-react";
 
 const AppSidebar = () => {
   const { isExpanded, isMobileOpen, toggleMobileSidebar, isHovered, setIsHovered } = useSidebar();
@@ -40,7 +40,7 @@ const AppSidebar = () => {
   const [openSubmenus, setOpenSubmenus] = useState({});
   const subMenuRefs = useRef({});
 
-  const apiUrl = process.env.NEXT_PUBLIC_NODE_BASE_URL
+  const apiUrl = process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "";
 
   const [unverifiedLabCount, setUnverifiedLabCount] = useState(0);
   const [unverifiedPharmCount, setUnverifiedPharmCount] = useState(0);
@@ -52,7 +52,7 @@ const AppSidebar = () => {
   const { data: session } = useSession();
   const token = session?.user?.jwt;
 
-  const { user } = useUser()
+  const { user } = useUser();
   
 
   const toggleSubmenu = (key) => {
@@ -79,8 +79,6 @@ const AppSidebar = () => {
   }, [openSubmenus]);
 
   useEffect(() => {
-    console.log("Session token:", token); // 👈 Add this
-  
     if (!token) return; // prevent running fetches without token
   
     // Function to fetch unverified labs - requires either "admin" or "labAdmin" role
@@ -148,6 +146,8 @@ const AppSidebar = () => {
 
   const getNavItems = () => {
     const role = session?.user?.role;
+    const dashboardPath =
+      role === "admin" || role === "superAdmin" ? "/admin" : "/dashboard";
 
     const filterByRole = (items) => {
       return items
@@ -167,7 +167,7 @@ const AppSidebar = () => {
       {
         icon: <LayoutGrid />,
         name: "Dashboard",
-        path: "/admin",
+        path: dashboardPath,
         roles: ["admin", "user", "specialist", "consultant", "superAdmin"]
       },
       // availability
@@ -492,7 +492,14 @@ const AppSidebar = () => {
       {/* User Info */}
       <div className="flex flex-col items-center p-4 border-b border-gray-200">
         <img
-          src={user?.profileImage ? `${apiUrl}${user?.profileImage}` : defaultUser.src}
+          src={
+            (() => {
+              const img = session?.user?.profileImage || user?.profileImage;
+              if (!img) return defaultUser.src;
+              if (/^https?:\/\//i.test(img)) return img;
+              return `${apiUrl}${img}`;
+            })()
+          }
           crossOrigin="anonymous"
           alt="User"
           className="w-20 h-20 rounded-full mb-2 object-cover"
