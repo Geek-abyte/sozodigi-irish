@@ -173,14 +173,20 @@ export default function Ecommerce() {
       setLoading(false)
       setPrescriptions(sessionPrescriptions);
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        // Silently ignore unauthorized for roles without access
+        return;
+      }
       console.error("Error fetching session data:", error);
     }
   };
 
 
   useEffect(() => {
-    if(token && userRole !== "labAdmin" && userRole !== "pharmacyAdmin") fetchSessionData();
-  }, [token]);
+    if (token && userRole !== "labAdmin" && userRole !== "pharmacyAdmin") {
+      fetchSessionData().catch(() => {});
+    }
+  }, [token, userRole]);
 
   const fetchAppointmentData = async () => {
     if(!user) return
@@ -215,6 +221,7 @@ export default function Ecommerce() {
       }));
       setUpcomingAppointments(processedAppointments);
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) return;
       console.error("Error fetching session data:", error);
     }
   };
@@ -253,6 +260,7 @@ export default function Ecommerce() {
       // console.log(response)
       setPatients(response);
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) return;
       console.error("Error fetching session data:", error);
     }
   }
@@ -264,6 +272,7 @@ export default function Ecommerce() {
       // console.log(response)
       setDoctors(response);
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) return;
       console.error("Error fetching session data:", error);
     }
   }
@@ -286,6 +295,7 @@ export default function Ecommerce() {
   
       // console.log("Total Revenue:", calTotalRevnue(response.payments).toFixed(2));
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) return;
       console.error("Error fetching session data:", error);
     }
   };
@@ -298,6 +308,7 @@ export default function Ecommerce() {
       // console.log(response)
       setPharmacies(response);
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) return;
       console.error("Error fetching session data:", error);
     }
     

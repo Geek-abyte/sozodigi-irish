@@ -81,14 +81,26 @@ const SpecialistDetailPage = () => {
         <div>
           <p className="font-semibold mb-2">Uploaded License:</p>
           {specialist.practicingLicense ? (
-            <a
-              href={`${process.env.NEXT_PUBLIC_NODE_BASE_URL}/${specialist.practicingLicense}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block border p-2 bg-gray-50 dark:bg-gray-800 rounded"
-            >
-              View Document
-            </a>
+            (() => {
+              const base =
+                process.env.NEXT_PUBLIC_NODE_API_BASE_URL ||
+                process.env.NEXT_PUBLIC_NODE_BASE_URL ||
+                "";
+              const license = specialist.practicingLicense;
+              const url = /^https?:\/\//i.test(license)
+                ? license
+                : `${base}${license.startsWith("/") ? license : `/${license}`}`;
+              return (
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block border p-2 bg-gray-50 dark:bg-gray-800 rounded"
+                >
+                  View Document
+                </a>
+              );
+            })()
           ) : (
             <p>No license uploaded.</p>
           )}

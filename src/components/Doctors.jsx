@@ -96,8 +96,17 @@ const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
     openDialog(doctor); dispatch(setSpecialist(doctor));
   };
 
+  const resolveProfileImage = (profileImage) => {
+    if (!profileImage) return defaultUser.src;
+    if (/^https?:\/\//i.test(profileImage)) return profileImage;
+    if (!apiUrl) return profileImage.startsWith("/") ? profileImage : `/${profileImage}`;
+    return profileImage.startsWith("/")
+      ? `${apiUrl}${profileImage}`
+      : `${apiUrl}/${profileImage}`;
+  };
+
   const DoctorImage = ({ profileImage, alt = 'Doctor' }) => {
-    const [imgSrc, setImgSrc] = useState(profileImage ? `${apiUrl}${profileImage}` : defaultUser.src);
+    const [imgSrc, setImgSrc] = useState(resolveProfileImage(profileImage));
   
     return (
       <Image
@@ -240,7 +249,7 @@ const DoctorsPage = ({ limit = 6, initialVisible = 3, loadIncrement = 3 }) => {
                 <div className="md:w-1/3 bg-gradient-to-br from-[var(--color-primary-7)] to-[var(--color-primary-5)] p-8 text-white">
                   <div className="mb-6 flex flex-col items-center">
                     <img
-                      src={selectedDoctor.profileImage ? `${apiUrl}${selectedDoctor.profileImage}` : defaultUser.src}
+                      src={resolveProfileImage(selectedDoctor.profileImage)}
                       alt={`Dr. ${selectedDoctor.firstName} ${selectedDoctor.lastName}`}
                       className="w-40 h-40 rounded-full object-cover border-4 border-white shadow-lg mb-4"
                       crossOrigin="anonymous"
