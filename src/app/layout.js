@@ -65,7 +65,10 @@ function RootLayoutContent({ children }) {
 
   
   // Check if we're on the homepage
-  const isAdmin = pathname.startsWith("/admin");
+  const isAdmin =
+    pathname.startsWith("/admin") ||
+    pathname.startsWith("/doctor") ||
+    pathname.startsWith("/user");
 
   return (
     <>

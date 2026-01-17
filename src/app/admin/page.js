@@ -9,7 +9,7 @@ import {
   FaClock, FaMoneyBill, FaPlus, FaFlask 
 } from 'react-icons/fa';
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Dialog } from "@headlessui/react";
 
 import { DTable } from "@/components/gabriel";
@@ -57,6 +57,7 @@ export default function Ecommerce() {
   const specialist = useSelector((state) => state.specialist.specialist)
 
   const router = useRouter()
+  const pathname = usePathname();
 
   const { user } = useUser()
 
@@ -96,6 +97,22 @@ export default function Ecommerce() {
   const [revenue, setRevenue] = useState(null)
   const [pharmacies, setPharmacies] = useState(null)
   const [labExists, setLabExists] = useState(false)
+
+  // Redirect non-admin roles away from /admin to role-specific dashboards
+  useEffect(() => {
+    if (!session || !pathname?.startsWith("/admin")) return;
+    const uid = user?._id || session?.user?.id;
+    if (!uid) return;
+    const isAdmin = userRole === "admin" || userRole === "superadmin";
+    if (isAdmin) return;
+    const target =
+      userRole === "specialist" || userRole === "consultant"
+        ? `/doctor/${uid}`
+        : `/user/${uid}`;
+    if (pathname !== target) {
+      router.replace(target);
+    }
+  }, [session, user, userRole, pathname, router]);
 
   const [isOpen, setIsOpen] = useState(false);
 

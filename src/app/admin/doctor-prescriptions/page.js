@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { fetchData } from "@/utils/api";
+import { fetchData, getApiErrorMessage } from "@/utils/api";
 import { useToast } from "@/context/ToastContext";
 import { useUser } from "@/context/UserContext";
 
@@ -11,8 +11,10 @@ const PrescriptionsList = () => {
 
   const { data: session } = useSession();
   const { user } = useUser();
-  const { addToast } = useToast();
+  const toast = useToast();
+  const addToast = toast?.addToast ?? (() => {});
   const token = session?.user?.jwt;
+  const hasFetchedRef = useRef(false);
 
   const isDoctor = user?.role === "specialist";
   const isUser = user?.role === "user";
@@ -20,6 +22,10 @@ const PrescriptionsList = () => {
 
   useEffect(() => {
     const loadPrescriptions = async () => {
+      if (hasFetchedRef.current) return;
+      hasFetchedRef.current = true;
+
+      const controller = new AbortController();
       setLoading(true);
       try {
         let endpoint= ""
@@ -31,12 +37,20 @@ const PrescriptionsList = () => {
           endpoint = `video-sessions/by-user/${user?._id}/prescriptions`
         }
 
-        const res = await fetchData(endpoint, token);
+        if (!endpoint) {
+          addToast("Unable to determine prescriptions for your role.", "error");
+          setSessions([]);
+          return;
+        }
+
+        const res = await fetchData(endpoint, token, { signal: controller.signal });
         console.log(res)
         setSessions(res?.sessions || []);
       } catch (error) {
-        console.error(error);
-        addToast("Failed to load prescriptions", "error");
+        if (error?.name === "AbortError") return;
+        const message = getApiErrorMessage(error);
+        console.error("Failed to load prescriptions:", error);
+        addToast(message, "error");
       } finally {
         setLoading(false);
       }
@@ -45,9 +59,26 @@ const PrescriptionsList = () => {
     if (user?._id && token) {
       loadPrescriptions();
     }
-  }, [user, token]);
 
-  if (loading) return <p className="text-center mt-8">Loading prescriptions...</p>;
+    return () => {
+      hasFetchedRef.current = false;
+    };
+  }, [user?._id, user?.role, token, addToast, isDoctor, isUser, isAdmin]);
+
+  if (loading)
+    return (
+      <div className="max-w-4xl mx-auto bg-white dark:bg-gray-900 p-6 rounded-xl shadow-md mt-6 animate-pulse">
+        <div className="h-6 w-48 bg-gradient-to-r from-indigo-200 via-indigo-100 to-indigo-200 dark:from-gray-700 dark:via-gray-600 dark:to-gray-700 rounded mb-4" />
+        <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="h-16 w-full bg-gradient-to-r from-indigo-50 via-indigo-100 to-indigo-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800 rounded"
+            />
+          ))}
+        </div>
+      </div>
+    );
 
   if (sessions.length === 0) {
     return <p className="text-center mt-8">No prescriptions found.</p>;

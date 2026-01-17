@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { defaultUser } from '@/assets';
 import Link from "next/link";
 import Image from "next/image";
@@ -47,13 +47,29 @@ const AppSidebar = () => {
   const [pendingUploadedPrescriptionCount, setPendingUploadedPrescriptionCount] = useState(0);
   const [pendingLinkedPrescriptionCount, setPendingLinkedPrescriptionCount] = useState(0);
 
-  const isActive = useCallback((path) => path === pathname, [pathname]);
-
   const { data: session } = useSession();
   const token = session?.user?.jwt;
 
   const { user } = useUser();
-  
+  const role = session?.user?.role;
+  const userId = session?.user?.id || session?.user?._id;
+
+  const dashboardPath = useMemo(() => {
+    if (role === "admin" || role === "superAdmin") return "/admin";
+    if ((role === "specialist" || role === "consultant") && userId)
+      return `/doctor/${userId}`;
+    if (userId) return `/user/${userId}`;
+    return "/dashboard"; // fallback if id missing
+  }, [role, userId]);
+
+  const isActive = useCallback(
+    (path) => {
+      if (!path) return false;
+      if (path === dashboardPath) return pathname === path;
+      return path === pathname || (path !== "/" && pathname?.startsWith(path + "/"));
+    },
+    [pathname, dashboardPath]
+  );
 
   const toggleSubmenu = (key) => {
     setOpenSubmenus((prev) => ({
@@ -145,9 +161,10 @@ const AppSidebar = () => {
   };
 
   const getNavItems = () => {
-    const role = session?.user?.role;
-    const dashboardPath =
-      role === "admin" || role === "superAdmin" ? "/admin" : "/dashboard";
+    const basePath =
+      role === "admin" || role === "superAdmin"
+        ? "/admin"
+        : dashboardPath.replace(/\/$/, "");
 
     const filterByRole = (items) => {
       return items
@@ -161,6 +178,22 @@ const AppSidebar = () => {
         })
         .filter(item => !item.subItems || item.subItems.length > 0); // remove empty submenus
     };
+
+    const mapPath = (p) => {
+      if (role === "admin" || role === "superAdmin") return p;
+      if (!p.startsWith("/admin")) return p;
+      const suffix = p.slice("/admin".length);
+      return `${basePath}${suffix || ""}`;
+    };
+
+    const transformPaths = (list) =>
+      list.map((item) => {
+        const mapped = { ...item, path: item.path ? mapPath(item.path) : item.path };
+        if (item.subItems) {
+          mapped.subItems = transformPaths(item.subItems);
+        }
+        return mapped;
+      });
 
     const items =  [
       // dashboard
@@ -324,6 +357,12 @@ const AppSidebar = () => {
         path: "/admin/doctor-prescriptions",
         roles: ["user", "specialist", "admin"]
       },
+      {
+        icon: <FileText />,
+        name: "Certificates",
+        path: "/admin/certificates",
+        roles: ["specialist", "admin", "user"]
+      },
       // {
       //   icon: <FlaskConical />,
       //   name: "Laboratory Referrals",
@@ -374,7 +413,7 @@ const AppSidebar = () => {
       }
     ];
 
-    return filterByRole(items);
+    return transformPaths(filterByRole(items));
   };
   
 

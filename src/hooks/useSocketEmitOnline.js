@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useUser } from "@/context/UserContext";
+import { useToast } from "@/context/ToastContext";
 import { getSocket } from "@/lib/socket";
-import { postData, fetchData } from "@/utils/api";
+import { postData, fetchData, getApiErrorMessage } from "@/utils/api";
 import IncomingCallDialog from "@/components/IncomingCallDialog"; // ensure this component exists
 
 export default function useSocketEmitOnline() {
   const { data: session } = useSession();
   const { user } = useUser();
+  const toast = useToast();
+  const addToast = toast?.addToast ?? (() => {});
   const socketRef = useRef(null);
   const ringtoneRef = useRef(null);
 
@@ -67,9 +70,15 @@ export default function useSocketEmitOnline() {
 
         window.location.href = `/admin/appointments/session/${sessionData._id}`;
       } else {
-        console.error("❌ Failed to create session:", res.message);
+        const message =
+          res?.message ||
+          "Unable to start the session right now. Please try again.";
+        addToast(message, "error");
+        console.error("❌ Failed to create session:", message);
       }
     } catch (err) {
+      const message = getApiErrorMessage(err);
+      addToast(message, "error");
       console.error("💥 Error creating session:", err);
     } finally {
       if (ringtoneRef.current) {
@@ -141,6 +150,8 @@ export default function useSocketEmitOnline() {
 
         setIncomingCall({ appointmentId, appointment });
       } catch (err) {
+        const message = getApiErrorMessage(err);
+        addToast(message, "error");
         console.error("Failed to fetch appointment:", err);
       }
     });

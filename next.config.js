@@ -11,6 +11,19 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async rewrites() {
+    return [
+      // Route user/doctor dashboards to existing admin pages without changing URLs
+      {
+        source: "/user/:id/:path*",
+        destination: "/admin/:path*",
+      },
+      {
+        source: "/doctor/:id/:path*",
+        destination: "/admin/:path*",
+      },
+    ];
+  },
   // Temporarily disabled SVG loader due to missing Babel dependency
   // webpack(config) {
   //   config.module.rules.push({

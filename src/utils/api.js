@@ -1,6 +1,56 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_NODE_API_BASE_URL || "http://localhost:5000";
 
+const FALLBACK_ERROR_MESSAGE = "Something went wrong. Please try again.";
+
+function toUserFriendlyMessage(errorOrMessage, status) {
+  const message =
+    typeof errorOrMessage === "string"
+      ? errorOrMessage
+      : errorOrMessage?.message;
+  const statusCode =
+    typeof status === "number" ? status : errorOrMessage?.status;
+
+  if (message?.toLowerCase().includes("timeout") || errorOrMessage?.aborted) {
+    return "Request timed out. Please check your connection and try again.";
+  }
+
+  if (typeof navigator !== "undefined" && navigator.onLine === false) {
+    return "You appear to be offline. Please reconnect and try again.";
+  }
+
+  if (message?.toLowerCase().includes("failed to fetch")) {
+    return "We couldn't reach the server. Please check your connection.";
+  }
+
+  if (statusCode === 401) {
+    return "Your session expired. Please sign in again.";
+  }
+
+  if (statusCode === 403) {
+    return "You don't have permission to perform this action.";
+  }
+
+  if (statusCode && statusCode >= 500) {
+    return "We're having trouble on our end. Please try again shortly.";
+  }
+
+  return message || FALLBACK_ERROR_MESSAGE;
+}
+
+function buildApiError(message, status = 0, data = {}) {
+  const error = new Error(message || FALLBACK_ERROR_MESSAGE);
+  error.status = status;
+  error.data = data || {};
+  error.userMessage = toUserFriendlyMessage(error, status);
+  return error;
+}
+
+export function getApiErrorMessage(error) {
+  if (!error) return FALLBACK_ERROR_MESSAGE;
+  return error.userMessage || toUserFriendlyMessage(error, error?.status);
+}
+
 // Timeout Fetch with Retry
 export async function fetchWithTimeout(
   resource,
@@ -34,6 +84,7 @@ export async function fetchWithTimeout(
         if (err.name === "AbortError") {
           return { aborted: true };
         }
+        err.userMessage = getApiErrorMessage(err);
         throw err;
       }
 
@@ -45,18 +96,16 @@ export async function fetchWithTimeout(
 // Unified error handler
 async function handleResponse(res) {
   if (res?.aborted) {
-    const error = new Error("Request timeout - please try again");
-    error.status = 0;
-    error.data = { message: "Request timeout" };
-    throw error;
+    throw buildApiError("Request timeout - please try again", 0, {
+      message: "Request timeout",
+    });
   }
 
   // Ensure we have a fetch Response object
   if (!res || typeof res.text !== "function") {
-    const error = new Error("Invalid response from server");
-    error.status = 0;
-    error.data = { message: "Invalid response from server" };
-    throw error;
+    throw buildApiError("Invalid response from server", 0, {
+      message: "Invalid response from server",
+    });
   }
 
   // Read body once as text to allow manual JSON parsing
@@ -64,12 +113,9 @@ async function handleResponse(res) {
   try {
     text = await res.text();
   } catch (readError) {
-    const error = new Error("Unable to read server response");
-    error.status = res.status || 0;
-    error.data = {
+    throw buildApiError("Unable to read server response", res.status || 0, {
       message: readError?.message || "Unable to read server response",
-    };
-    throw error;
+    });
   }
 
   let data;
@@ -89,9 +135,21 @@ async function handleResponse(res) {
         ? data
         : data?.message || `Error: ${res.statusText || "Unknown error"}`;
 
-    const error = new Error(message);
-    error.status = res.status;
-    error.data = typeof data === "string" ? { message: data } : data;
+    const normalizedData = typeof data === "string" ? { message: data } : data;
+    const error = buildApiError(message, res.status, normalizedData);
+
+    if (res.status === 401 && typeof window !== "undefined") {
+      // Clear any cached auth state and force re-auth
+      localStorage.removeItem("activeVideoSession");
+      localStorage.removeItem("sessionStartTime");
+      // Use a small timeout to let toasts render before redirect
+      setTimeout(() => {
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+      }, 300);
+    }
+
     throw error;
   }
 
@@ -103,10 +161,11 @@ async function handleResponse(res) {
 }
 
 // GET
-export async function fetchData(endpoint, token = null) {
+export async function fetchData(endpoint, token = null, extraOptions = {}) {
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetchWithTimeout(`${API_BASE_URL}/${endpoint}`, {
     headers,
+    ...extraOptions,
   });
   return handleResponse(res);
 }

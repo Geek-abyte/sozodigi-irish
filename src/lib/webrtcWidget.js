@@ -4,7 +4,7 @@ import io from "socket.io-client";
 
 export function createWebRTCWidget(options = {}) {
     const defaultSettings = {
-        serverUrl: process.env.NEXT_PUBLIC_SOCKET_URL,
+        serverUrl: process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000",
         roomId: null,
         container: null,
         iceServers: [

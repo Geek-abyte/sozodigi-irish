@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
 import { PlayIcon, UsersIcon   } from "@heroicons/react/24/outline";
 import { RotateCcw, Trash } from "lucide-react";
-import { fetchData, deleteData } from "@/utils/api";
+import { fetchData, deleteData, getApiErrorMessage } from "@/utils/api";
 import { useToast } from "@/context/ToastContext";
 import ConfirmationDialog from "@/components/ConfirmationDialog";
 import ModalContainer from "@/components/gabriel/ModalContainer";
@@ -28,17 +28,28 @@ const ConsultationAppointmentsPageContent  = () => {
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [rescheduleTarget, setRescheduleTarget] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
   const { addToast } = useToast();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const controllerRef = useRef(null);
 
   const page = parseInt(searchParams.get("page") || "1", 10);
 
   const loadAppointments = async () => {
     try {
+      if (!token) return;
+      // Abort any in-flight request to reduce timeouts/spam
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      controllerRef.current = controller;
+      setLoading(true);
+
       // Prepare the query parameters
       const query = new URLSearchParams({
         page,
@@ -55,7 +66,11 @@ const ConsultationAppointmentsPageContent  = () => {
       }
   
       // Fetch the data from the backend API
-      const res = await fetchData(`consultation-appointments/all/paginated?${query.toString()}`, token);
+      const res = await fetchData(
+        `consultation-appointments/all/paginated?${query.toString()}`,
+        token,
+        { signal: controller.signal },
+      );
       console.log(res.data)
       // Handle the response and set data for appointments and pagination
       if (res && res.data) {
@@ -69,13 +84,19 @@ const ConsultationAppointmentsPageContent  = () => {
         setPagination({ totalPages: 1, currentPage: 1 });
       }
     } catch (err) {
+      if (err?.name === "AbortError") return;
       console.error("Failed to load appointments:", err);
+      addToast(getApiErrorMessage(err), "error");
+    } finally {
+      setLoading(false);
+      if (controllerRef.current) controllerRef.current = null;
     }
   };
   
 
   useEffect(() => {
     if (token) loadAppointments();
+    return () => controllerRef.current?.abort();
   }, [token, page, filters]);
 
   const handleDelete = async () => {
@@ -166,8 +187,10 @@ const ConsultationAppointmentsPageContent  = () => {
         </Link>}
       </div>
 
+      {loading && <p className="text-sm text-gray-500 mb-3">Loading appointments...</p>}
+
       {/* Filters */}
-      <div className="flex flex-wrap items-end gap-4 mb-6">
+      <div className="flex flex-wrap items-end gap-4 mb-6" suppressHydrationWarning>
         <div>
           <label className="block text-sm font-medium text-gray-600 dark:text-gray-300">Status</label>
           <select
@@ -175,6 +198,7 @@ const ConsultationAppointmentsPageContent  = () => {
             value={filters.status}
             onChange={handleFilterChange}
             className="p-2 rounded border border-gray-300"
+            suppressHydrationWarning
           >
             <option value="">All</option>
             <option value="pending">Pending</option>
@@ -191,6 +215,7 @@ const ConsultationAppointmentsPageContent  = () => {
             value={filters.dateFrom}
             onChange={handleFilterChange}
             className="p-2 rounded border border-gray-300"
+            suppressHydrationWarning
           />
         </div>
         <div>
@@ -201,6 +226,7 @@ const ConsultationAppointmentsPageContent  = () => {
             value={filters.dateTo}
             onChange={handleFilterChange}
             className="p-2 rounded border border-gray-300"
+            suppressHydrationWarning
           />
         </div>
         <div className="flex gap-2">
