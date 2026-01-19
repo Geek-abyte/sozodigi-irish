@@ -75,7 +75,15 @@ const CheckoutModal = ({
           { amount: smallest, currency },
           token
         );
-        setClientSecret(response.clientSecret);
+        const secret =
+          response?.clientSecret ||
+          response?.client_secret ||
+          response?.paymentIntent?.client_secret ||
+          "";
+        if (!secret) {
+          throw new Error("Payment secret missing from server response");
+        }
+        setClientSecret(secret);
       } catch (err) {
         console.error("Error fetching payment intent:", err.message);
         setError("Failed to initialize payment. Please try again.");
@@ -156,8 +164,19 @@ const CheckoutModal = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setProcessing(true);
     setError(null);
+
+    if (!stripe || !elements) {
+      setError("Payment is not ready. Please wait a moment and try again.");
+      return;
+    }
+
+    if (!clientSecret) {
+      setError("Payment could not start. Please retry in a moment.");
+      return;
+    }
+
+    setProcessing(true);
 
     const payload = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
