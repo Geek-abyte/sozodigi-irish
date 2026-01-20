@@ -34,8 +34,8 @@ const SessionPage = () => {
   const router = useRouter();
   
 
-  // const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}`
-  const videoUrl = `http://localhost:4000/?room=${id}`
+  const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}`
+  // const videoUrl = `http://localhost:4000/?room=${id}`
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
