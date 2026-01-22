@@ -339,13 +339,15 @@ layer(base);
 
 
 @layer utilities {
-  /* For Remove Date Icon */
-  input[type="date"]::-webkit-inner-spin-button,
-  input[type="time"]::-webkit-inner-spin-button,
+  /* Keep native date/time pickers visible so users can pick from the calendar */
+  input[type="date"],
+  input[type="time"] {
+    cursor: pointer;
+  }
+
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="time"]::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
+    display: inline-block;
   }
 }
 
