@@ -10,7 +10,8 @@ const useAppointment = (id, token) => {
       try {
         const res = await fetchData(`video-sessions/${id}`, token);
 
-        if (res.success && res.session && res.session.appointment.status === 'pending') {
+        // Only set startTime once — when the session has never been started before
+        if (res.success && res.session && res.session.appointment.status === 'pending' && !res.session.startTime) {
           await updateData(`video-sessions/${id}`, { startTime: new Date().toISOString() }, token);
         }
 

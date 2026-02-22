@@ -32,8 +32,9 @@ const SessionTimer = ({
       localStorage.setItem(sessionKey, startTime);
     }
 
-    const sessionStartTime = parseInt(startTime, 10) + 2 * 60 * 1000;
-    const sessionDurationMs = (appointment.session.appointment.duration * 60 * 1000) / 60;
+    const gracePeriodMs = 2 * 60 * 1000; // 2-minute grace period before timer starts
+    const sessionStartTime = parseInt(startTime, 10) + gracePeriodMs;
+    const sessionDurationMs = appointment.session.appointment.duration * 60 * 1000;
     const sessionEndTime = sessionStartTime + sessionDurationMs;
 
     setTotalDurationSeconds(Math.ceil(sessionDurationMs / 1000));

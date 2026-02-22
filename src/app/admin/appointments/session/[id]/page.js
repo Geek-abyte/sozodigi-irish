@@ -115,6 +115,16 @@ const SessionPage = () => {
   }, []);
 
   useEffect(() => {
+    if (!socketRef.current) return;
+
+    socketRef.current.on("session-ended", handleSessionEnded);
+
+    return () => {
+      socketRef.current.off("session-ended", handleSessionEnded);
+    };
+  }, [handleSessionEnded]);
+
+  useEffect(() => {
     appointmentRef.current = appointment;
   }, [appointment]);
 
@@ -551,16 +561,9 @@ const SessionPage = () => {
         <div className="mb-6">
           <VideoSection
             appointment={appointment}
-            session={session}
             sessionEnded={sessionEnded}
-            specialistToken={specialistToken}
-            patientToken={patientToken}
-            userRole={userRole}
             iframeRef={iframeRef}
             iframeUrl={videoUrl}
-            id={id}
-            videoRef={videoRef}
-            handleSessionEnded={handleSessionEnded}
             handleEndUserSession={handleEndSession}
           />
         </div>
