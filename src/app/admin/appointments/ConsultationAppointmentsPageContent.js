@@ -25,6 +25,7 @@ const ConsultationAppointmentsPageContent  = () => {
   const [appointments, setAppointments] = useState([]);
   const [pagination, setPagination] = useState({ totalPages: 1, currentPage: 1 });
   const [filters, setFilters] = useState({ status: "", dateFrom: "", dateTo: "" });
+  const [appliedFilters, setAppliedFilters] = useState({ status: "", dateFrom: "", dateTo: "" });
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [rescheduleTarget, setRescheduleTarget] = useState(null);
@@ -53,7 +54,7 @@ const ConsultationAppointmentsPageContent  = () => {
       // Prepare the query parameters
       const query = new URLSearchParams({
         page,
-        ...filters,
+        ...appliedFilters,
       });
 
       query.set("hasSlot", "true");
@@ -71,7 +72,6 @@ const ConsultationAppointmentsPageContent  = () => {
         token,
         { signal: controller.signal },
       );
-      console.log(res.data)
       // Handle the response and set data for appointments and pagination
       if (res && res.data) {
         setAppointments(res.data); // Update appointments state
@@ -97,7 +97,7 @@ const ConsultationAppointmentsPageContent  = () => {
   useEffect(() => {
     if (token) loadAppointments();
     return () => controllerRef.current?.abort();
-  }, [token, page, filters]);
+  }, [token, page, appliedFilters.status, appliedFilters.dateFrom, appliedFilters.dateTo]);
 
   const handleDelete = async () => {
     try {
@@ -105,7 +105,6 @@ const ConsultationAppointmentsPageContent  = () => {
       addToast("Appointment deleted successfully", "success");
       setAppointments((prev) => prev.filter((a) => a._id !== itemToDelete._id));
     } catch (error) {
-      console.log(error)
       addToast("Failed to delete appointment", "error");
     } finally {
       setIsDialogOpen(false);
@@ -120,12 +119,14 @@ const ConsultationAppointmentsPageContent  = () => {
   };
 
   const applyFilters = () => {
+    setAppliedFilters({ ...filters });
     router.push("?page=1");
-    // loadAppointments();
   };
 
   const clearFilters = () => {
-    setFilters({ status: "", dateFrom: "", dateTo: "" });
+    const empty = { status: "", dateFrom: "", dateTo: "" };
+    setFilters(empty);
+    setAppliedFilters(empty);
     router.push("?page=1");
   };
 

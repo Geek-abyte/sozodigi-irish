@@ -20,6 +20,7 @@ const ConsultationAppointmentsPageContent  = () => {
   const [appointments, setAppointments] = useState([]);
   const [pagination, setPagination] = useState({ totalPages: 1, currentPage: 1 });
   const [filters, setFilters] = useState({ status: "", dateFrom: "", dateTo: "" });
+  const [appliedFilters, setAppliedFilters] = useState({ status: "", dateFrom: "", dateTo: "" });
   const [itemToDelete, setItemToDelete] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -37,7 +38,7 @@ const ConsultationAppointmentsPageContent  = () => {
     try {
       const query = new URLSearchParams({
         page,
-        ...filters,
+        ...appliedFilters,
       }).toString();
 
       const res = await fetchData(`consultation-appointments/all/paginated?${query}`, token);
@@ -50,7 +51,7 @@ const ConsultationAppointmentsPageContent  = () => {
 
   useEffect(() => {
     if (token) loadAppointments();
-  }, [token, page, filters]);
+  }, [token, page, appliedFilters.status, appliedFilters.dateFrom, appliedFilters.dateTo]);
 
   const handleDelete = async () => {
     try {
@@ -72,12 +73,14 @@ const ConsultationAppointmentsPageContent  = () => {
   };
 
   const applyFilters = () => {
+    setAppliedFilters({ ...filters });
     router.push("?page=1");
-    loadAppointments();
   };
 
   const clearFilters = () => {
-    setFilters({ status: "", dateFrom: "", dateTo: "" });
+    const empty = { status: "", dateFrom: "", dateTo: "" };
+    setFilters(empty);
+    setAppliedFilters(empty);
     router.push("?page=1");
   };
 

@@ -26,11 +26,8 @@ export default function useSocketEmitOnline() {
         setSoundEnabled(true);
         localStorage.setItem("soundEnabled", "true");
         localStorage.setItem("soundPromptShown", "true");
-        console.log("🔊 Sound notifications enabled.");
       })
-      .catch((err) => {
-        console.warn("🔇 Silent audio play failed:", err);
-      });
+      .catch(() => {});
   };
 
   const handleAccept = async (appointmentId) => {
@@ -46,8 +43,6 @@ export default function useSocketEmitOnline() {
         specialist: user._id,
         user: appointment.patient,
       };
-
-      console.log(payload)
 
       const res = await postData("video-sessions", payload, session?.user?.jwt);
       if (res.success) {
@@ -101,12 +96,28 @@ export default function useSocketEmitOnline() {
     setIncomingCall(null);
   };
 
+  const userIdRef = useRef(user?._id);
+  const userRef = useRef(user);
+  userIdRef.current = user?._id;
+  userRef.current = user;
+
+  const soundEnabledRef = useRef(soundEnabled);
+  const showSoundPromptRef = useRef(showSoundPrompt);
+  soundEnabledRef.current = soundEnabled;
+  showSoundPromptRef.current = showSoundPrompt;
+
+  const addToastRef = useRef(addToast);
+  addToastRef.current = addToast;
+
+  const userRole = session?.user?.role;
+  const userId = user?._id;
+
   useEffect(() => {
     if (
       typeof window === "undefined" ||
       !session?.user ||
-      !["specialist", "consultant"].includes(session.user.role) ||
-      !user
+      !["specialist", "consultant"].includes(userRole) ||
+      !userId
     )
       return;
 
@@ -119,48 +130,47 @@ export default function useSocketEmitOnline() {
     }
 
     const emitSpecialistOnline = () => {
-      if (socketRef.current?.connected && user.role === "specialist") {
-        socketRef.current.emit("specialist-online", user);
+      if (socketRef.current?.connected && userRef.current?.role === "specialist") {
+        socketRef.current.emit("specialist-online", userRef.current);
       }
     };
 
-    socketRef.current.on("connect", () => {
-      console.log("✅ Specialist socket connected:", socketRef.current.id);
+    const handleConnect = () => {
       setTimeout(emitSpecialistOnline, 500);
-    });
+    };
 
-    socketRef.current.io.on("reconnect", () => {
-      console.log("🔄 Reconnected. Re-emitting specialist-online...");
+    const handleReconnect = () => {
       emitSpecialistOnline();
-    });
+    };
 
+    socketRef.current.on("connect", handleConnect);
+    socketRef.current.io.on("reconnect", handleReconnect);
     socketRef.current.off("incoming-call");
 
     socketRef.current.on("incoming-call", async ({ appointmentId }) => {
       try {
         const appointment = await fetchData(`consultation-appointments/${appointmentId}`);
 
-        if (soundEnabled && ringtoneRef.current) {
-          ringtoneRef.current.play().catch((err) => {
-            console.warn("🔇 Ringtone play error:", err);
-          });
+        if (soundEnabledRef.current && ringtoneRef.current) {
+          ringtoneRef.current.play().catch(() => {});
         }
 
-        if (showSoundPrompt) return;
+        if (showSoundPromptRef.current) return;
 
         setIncomingCall({ appointmentId, appointment });
       } catch (err) {
         const message = getApiErrorMessage(err);
-        addToast(message, "error");
-        console.error("Failed to fetch appointment:", err);
+        addToastRef.current?.(message, "error");
       }
     });
 
     return () => {
       setShowSoundPrompt(false);
+      socketRef.current?.off("connect", handleConnect);
+      socketRef.current?.io?.off("reconnect", handleReconnect);
       socketRef.current?.off("incoming-call");
     };
-  }, [session, user, soundEnabled, showSoundPrompt]);
+  }, [userRole, userId]);
 
   const IncomingCallDialogWrapper =
     incomingCall && !showSoundPrompt ? (

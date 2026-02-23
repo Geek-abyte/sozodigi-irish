@@ -67,21 +67,6 @@ export default function Ecommerce() {
   const userRole = typeof rawRole === 'string' ? rawRole.toLowerCase() : rawRole;
   const userId = user?._id
 
-  // Debug: Log role information (remove in production)
-  useEffect(() => {
-    if (user || session?.user) {
-      console.log("🔍 User Role Debug:", {
-        userRole,
-        rawRole,
-        userRoleFromUser: user?.role,
-        userRoleFromSession: session?.user?.role,
-        isAdmin: userRole === "admin" || userRole === "superadmin",
-        fullUser: user,
-        sessionUser: session?.user
-      });
-    }
-  }, [user, session, userRole, rawRole]);
-
   const PRICE = 20;
 
   const [calls, setCalls] = useState([]);
@@ -199,10 +184,15 @@ export default function Ecommerce() {
   };
 
 
+  const hasFetchedSessionRef = React.useRef(false);
+  const hasFetchedAdminRef = React.useRef(false);
+  const hasFetchedAppointmentsRef = React.useRef(false);
+
   useEffect(() => {
-    if (token && userRole !== "labAdmin" && userRole !== "pharmacyAdmin") {
-      fetchSessionData().catch(() => {});
-    }
+    if (!token || userRole === "labAdmin" || userRole === "pharmacyAdmin") return;
+    if (hasFetchedSessionRef.current) return;
+    hasFetchedSessionRef.current = true;
+    fetchSessionData().catch(() => {});
   }, [token, userRole]);
 
   const fetchAppointmentData = async () => {
@@ -307,7 +297,6 @@ export default function Ecommerce() {
     try {
       const url = `payments/all/no-pagination`;
       const response = await fetchData(url, token);
-      console.log(response.payments);
       setRevenue(response.payments);
   
       // console.log("Total Revenue:", calTotalRevnue(response.payments).toFixed(2));
@@ -332,19 +321,24 @@ export default function Ecommerce() {
   }
 
   useEffect(() => {
+    if (!token || hasFetchedAdminRef.current) return;
     if (userRole === "admin" || userRole === "superadmin") {
+      hasFetchedAdminRef.current = true;
       fetchPatients();
       fetchDoctors();
       fetchPharmacies();
       fetchRevenue();
     }
-  }, [userRole]);
+  }, [token, userRole]);
 
-  // Simulated fetch
   useEffect(() => {
+    if (!token || hasFetchedAppointmentsRef.current) return;
+    hasFetchedAppointmentsRef.current = true;
+    fetchAppointmentData();
+  }, [token, user]);
 
-    if(token) fetchAppointmentData()
-
+  useEffect(() => {
+    if (!prescriptions) return;
     setRecentMedications(prescriptions);
     setRecordsCount(prescriptions?.length);
 
@@ -353,7 +347,7 @@ export default function Ecommerce() {
       return currentStart > latest ? currentStart : latest;
     }, new Date(0));
     setLastUpdated(latestDate);
-  }, [prescriptions, token]);
+  }, [prescriptions]);
 
   const formatLastUpdated = (date) => {
     if (!date) return "No data";

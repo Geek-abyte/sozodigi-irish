@@ -51,7 +51,7 @@ export function getApiErrorMessage(error) {
   return error.userMessage || toUserFriendlyMessage(error, error?.status);
 }
 
-// Timeout Fetch with Retry
+// Timeout Fetch with Retry (handles network errors + 429 rate-limit backoff)
 export async function fetchWithTimeout(
   resource,
   options = {},
@@ -60,6 +60,11 @@ export async function fetchWithTimeout(
 ) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     const controller = new AbortController();
+
+    if (options.signal) {
+      options.signal.addEventListener("abort", () => controller.abort(), { once: true });
+    }
+
     const id = setTimeout(() => controller.abort(), timeout);
 
     try {
@@ -70,14 +75,20 @@ export async function fetchWithTimeout(
       });
 
       clearTimeout(id);
-      return res; // Success
+
+      if (res.status === 429 && attempt < retries) {
+        const retryAfter = res.headers.get("Retry-After");
+        const delay = retryAfter ? Number(retryAfter) * 1000 : 2000 * attempt;
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+
+      return res;
     } catch (err) {
       clearTimeout(id);
 
-      if (err.name === "AbortError") {
-        console.warn(`Request aborted due to timeout (Attempt ${attempt})`);
-      } else {
-        console.warn(`Fetch error: ${err.message} (Attempt ${attempt})`);
+      if (err.name === "AbortError" && options.signal?.aborted) {
+        throw err;
       }
 
       if (attempt === retries) {
@@ -88,7 +99,7 @@ export async function fetchWithTimeout(
         throw err;
       }
 
-      await new Promise((res) => setTimeout(res, 500 * attempt));
+      await new Promise((r) => setTimeout(r, 500 * attempt));
     }
   }
 }

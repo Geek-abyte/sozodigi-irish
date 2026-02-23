@@ -11,38 +11,40 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
-  const addToast = toast?.addToast ?? (() => {});
+  const addToastRef = useRef(toast?.addToast);
+  addToastRef.current = toast?.addToast;
+
   const hasFetchedRef = useRef(false);
   const mountedRef = useRef(true);
+  const lastUserIdRef = useRef(null);
+
+  const userId = session?.user?.id;
+  const token = session?.user?.jwt;
 
   useEffect(() => {
     mountedRef.current = true;
 
+    if (status !== "authenticated" || !userId || !token) {
+      setLoading(false);
+      return;
+    }
+
+    if (hasFetchedRef.current && lastUserIdRef.current === userId) {
+      setLoading(false);
+      return;
+    }
+    hasFetchedRef.current = true;
+    lastUserIdRef.current = userId;
+
+    let cancelled = false;
+
     const getUserData = async () => {
-      if (!mountedRef.current) return;
-
-      if (status !== "authenticated" || !session?.user) {
-        setLoading(false);
-        return;
-      }
-
-      // prevent duplicate fetches (e.g., React StrictMode double invoke)
-      if (hasFetchedRef.current) {
-        setLoading(false);
-        return;
-      }
-      hasFetchedRef.current = true;
-
-      const userId = session.user.id;
-      const token = session.user.jwt;
-
       try {
         const fullUser = await fetchData("users/" + userId, token);
 
-        if (!mountedRef.current) return;
+        if (cancelled || !mountedRef.current) return;
 
         if (fullUser) {
-          // Ensure nested objects are safely handled
           const safeUser = {
             ...fullUser,
             address:
@@ -53,26 +55,25 @@ export const UserProvider = ({ children }) => {
           };
           setUser(safeUser);
         } else {
-          setUser(session.user); // fallback to session user
+          setUser(session.user);
         }
       } catch (err) {
+        if (cancelled || !mountedRef.current) return;
         const message = getApiErrorMessage(err);
-        addToast(message, "error");
-        if (mountedRef.current) {
-          setUser(session.user ?? null); // fallback to session user or null
-        }
-        console.warn("Failed to load user data:", err);
+        addToastRef.current?.(message, "error");
+        setUser(session.user ?? null);
       } finally {
-        if (mountedRef.current) setLoading(false);
+        if (!cancelled && mountedRef.current) setLoading(false);
       }
     };
 
     getUserData();
+
     return () => {
+      cancelled = true;
       mountedRef.current = false;
-      hasFetchedRef.current = false;
     };
-  }, [session, status, addToast]);
+  }, [userId, token, status]);
 
   return (
     <UserContext.Provider value={{ user, loading }}>
