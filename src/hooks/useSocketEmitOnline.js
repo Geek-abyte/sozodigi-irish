@@ -31,8 +31,14 @@ export default function useSocketEmitOnline() {
   };
 
   const handleAccept = async (appointmentId) => {
+    const specialistId = user?._id || session?.user?.id || session?.user?._id;
+    if (!specialistId) {
+      addToast("Unable to identify specialist. Please reload and try again.", "error");
+      return;
+    }
+
     socketRef.current.emit("accept-call", {
-      specialistId: user._id,
+      specialistId,
       appointmentId,
     });
 
@@ -40,7 +46,7 @@ export default function useSocketEmitOnline() {
       const appointment = await fetchData(`consultation-appointments/${appointmentId}`);
       const payload = {
         appointment: appointmentId,
-        specialist: user._id,
+        specialist: specialistId,
         user: appointment.patient,
       };
 
