@@ -7,7 +7,6 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useCallback } from "react";
 import { EllipsisVertical } from "lucide-react";
-import ConfirmationDialog from "@/components/ConfirmationDialog";
 
 import { useToast } from "@/context/ToastContext";
 import { useUser } from "@/context/UserContext";
@@ -32,14 +31,14 @@ import { getSocket } from "@/lib/socket";
 const SessionPage = () => {
   const { id } = useParams();
   const router = useRouter();
-  
-
-  const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}`
-  // const videoUrl = `http://localhost:4000/?room=${id}`
 
   const { data: session } = useSession();
   const token = session?.user?.jwt;
   const userRole = session?.user?.role;
+
+  const widgetRole = userRole === "user" ? "client" : "doctor";
+  const videoUrl = `https://videowidget.sozodigicare.com/?room=${id}&role=${widgetRole}`
+  // const videoUrl = `http://localhost:4000/?room=${id}&role=${widgetRole}`
   const { user } = useUser();
   const { addToast } = useToast();
 
@@ -109,28 +108,19 @@ const SessionPage = () => {
   const videoRef = useRef();
   const appointmentRef = useRef(appointment);
   const socketRef = useRef();
+  const handleEndSessionRef = useRef();
   
   useEffect(() => {
     socketRef.current = getSocket();
   }, []);
 
   useEffect(() => {
-    if (!socketRef.current) return;
-
-    socketRef.current.on("session-ended", handleSessionEnded);
-
-    return () => {
-      socketRef.current.off("session-ended", handleSessionEnded);
-    };
-  }, [handleSessionEnded]);
-
-  useEffect(() => {
     appointmentRef.current = appointment;
   }, [appointment]);
 
   const handleEndCall = () => {
-    if (videoRef.current) {
-      videoRef.current.endCall();
+    if (iframeRef.current) {
+      iframeRef.current.contentWindow.postMessage({ action: "handleEndCall" }, "*");
     }
   };
 
@@ -173,6 +163,18 @@ const SessionPage = () => {
       router.push(`/admin/appointments/session/completed/${id}`)
     }
   };
+
+  handleEndSessionRef.current = handleEndSession;
+
+  useEffect(() => {
+    const handleIframeMessage = (event) => {
+      if (event.data?.type === "callEnded" && event.data.initiatedByMe) {
+        handleEndSessionRef.current?.();
+      }
+    };
+    window.addEventListener("message", handleIframeMessage);
+    return () => window.removeEventListener("message", handleIframeMessage);
+  }, []);
 
   const toBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -495,7 +497,16 @@ const SessionPage = () => {
       console.error("❌ Error in handleSessionEnded:", error);
     }
   }, [appointmentRef, session?.user?.id, handleEndSession, handleEndCall]); // Add only necessary dependencies
-  
+
+  useEffect(() => {
+    if (!socketRef.current) return;
+
+    socketRef.current.on("session-ended", handleSessionEnded);
+
+    return () => {
+      socketRef.current.off("session-ended", handleSessionEnded);
+    };
+  }, [handleSessionEnded]);
 
   const handleOpenQuestions = async () => {
     // console.log("Question clicked", appointment.session)
@@ -564,7 +575,6 @@ const SessionPage = () => {
             sessionEnded={sessionEnded}
             iframeRef={iframeRef}
             iframeUrl={videoUrl}
-            handleEndUserSession={handleEndSession}
           />
         </div>
 
